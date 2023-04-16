@@ -67,6 +67,13 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   <PropertyGroup Condition="'$(DisableInstalledVCTargetsUse)' != 'true'">
     <_VCTargetsPathFolders>$(CurrentVCTargetsPath);$(AdditionalVCTargetsPath)</_VCTargetsPathFolders>
     <_VCTargetsPathForToolset>$([MSBuild]::Unescape($([Microsoft.Build.Utilities.ToolLocationHelper]::FindRootFolderWhereAllFilesExist($(_VCTargetsPathFolders), $(_RelativeToolsetFiles)))))</_VCTargetsPathForToolset>
+    <!--Fix Start 我其实很奇怪，为什么上面的 FindRootFolderWhereAllFilesExist会失败，暂时通过 Exists模拟一下。-->
+    <_VCTargetsPathForToolset Condition="'$(_VCTargetsPathForToolset)' == ''">$(CurrentVCTargetsPath)</_VCTargetsPathForToolset>
+    <_VCTargetsPathForToolset Condition="'$(_VCTargetsPathForToolset)' != '' and !Exists('$(CurrentVCTargetsPath)\$(_RelativePlatformProps)')"></_VCTargetsPathForToolset>
+    <_VCTargetsPathForToolset Condition="'$(_VCTargetsPathForToolset)' != '' and !Exists('$(CurrentVCTargetsPath)\$(_RelativePlatformTargets)')"></_VCTargetsPathForToolset>
+    <_VCTargetsPathForToolset Condition="'$(_VCTargetsPathForToolset)' != '' and !Exists('$(CurrentVCTargetsPath)\$(_RelativeToolsetProps)')"></_VCTargetsPathForToolset>
+    <_VCTargetsPathForToolset Condition="'$(_VCTargetsPathForToolset)' != '' and !Exists('$(CurrentVCTargetsPath)\$(_RelativeToolsetTargets)')"></_VCTargetsPathForToolset>
+    <!--Fix End-->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(_VCTargetsPathForToolset)' != ''">

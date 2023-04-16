@@ -42,6 +42,10 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <UseDefaultPropertyPageSchemas>false</UseDefaultPropertyPageSchemas>
   </PropertyGroup>
 
+  <!--
+  __Fix__:
   <Import Project="$(CurrentVCTargetsPath)\Microsoft.CppCommon.Targets"/>
+  -->
+  <Import Project="$(CurrentVCTargetsPath)\Microsoft.CppCommon.targets"/>
   
 </Project>

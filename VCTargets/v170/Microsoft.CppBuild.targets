@@ -37,7 +37,11 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <WinMDAssembly Condition="'$(WinMDAssembly)' == ''">false</WinMDAssembly>
   </PropertyGroup>
 
+  <!--
+  __Fix__:
   <Import Project="$(VCTargetsPath)\Microsoft.BuildSteps.Targets"/>
+  -->
+  <Import Project="$(VCTargetsPath)\Microsoft.BuildSteps.targets"/>
 
   <!-- Global up-to-date check support -->
   <PropertyGroup Condition="'$(UseSolutionDirInProjectEvaluationFingerprint)' != 'false'">

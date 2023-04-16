@@ -152,7 +152,11 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <Import Condition="'$(_ToolsetFound)' != 'true' and '$(_UseDefaultToolset)' != 'true'" Project="$(VCTargetsPath)\Microsoft.Cpp.MissingToolset.targets"/>
   </ImportGroup>
   
+  <!--
+  __Fix__:
   <Import Condition="'$(ConfigurationType)' == 'Makefile'" Project="$(VCTargetsPath)\Microsoft.MakeFile.Targets"/>
+  -->
+  <Import Condition="'$(ConfigurationType)' == 'Makefile'" Project="$(VCTargetsPath)\Microsoft.MakeFile.targets"/>
     
     <!-- *******************************************************************************************
         Cleaning targets

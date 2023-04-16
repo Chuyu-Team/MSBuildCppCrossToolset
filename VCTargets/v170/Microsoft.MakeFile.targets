@@ -26,7 +26,11 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <IntermediateOutputPath Condition="'$(IntermediateOutputPath)' == ''">$(IntDir)</IntermediateOutputPath>
   </PropertyGroup>
 
+  <!--
+  __Fix__:
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.Targets" />
+  -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 
   <Target Name="PrepareForNMakeBuild" DependsOnTargets="SetBuildDefaultEnvironmentVariables;SetUserMacroEnvironmentVariables">
     <!-- Create the directories for intermediate and final build products, and any other arbitrary directories. -->
@@ -222,7 +226,11 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   </ItemGroup>
 
   <PropertyGroup>
+    <!--
+    __Fix__:
     <AppTypeMakefileTarget Condition="'$(AppTypeMakefileTarget)' == ''">$(VCTargetsPath)\Application Type\$(ApplicationType)\$(ApplicationTypeRevision)\$(ApplicationType).Makefile.Targets</AppTypeMakefileTarget>
+    -->
+    <AppTypeMakefileTarget Condition="'$(AppTypeMakefileTarget)' == ''">$(VCTargetsPath)\Application Type\$(ApplicationType)\$(ApplicationTypeRevision)\$(ApplicationType).Makefile.targets</AppTypeMakefileTarget>
   </PropertyGroup>
 
   <Import Condition="Exists('$(AppTypeMakefileTarget)')" Project="$(AppTypeMakefileTarget)" />

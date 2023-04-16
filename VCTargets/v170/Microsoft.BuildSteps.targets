@@ -32,7 +32,11 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <DebugType>none</DebugType>
   </PropertyGroup>
 
+  <!--
+  __Fix__:
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.Targets" />
+  -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 
   <PropertyGroup>
     <!-- Restore the property in case it is used by some extensons -->
