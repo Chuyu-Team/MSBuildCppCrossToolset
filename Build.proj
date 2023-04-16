@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+MSBuild.exe "Build.proj"
+-->
+
+<Project InitialTargets="ValidateSolutionConfiguration" DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(_GetProjectAllConfiguration)' != 'true'">
+    <GlobalProperties></GlobalProperties>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(MSBuildThisFileDirectory)MSBuildCppTasks.sln">
+        <Configuration>Release</Configuration>
+        <Platform>Any CPU</Platform>
+        <AdditionalProperties>Configuration=%(Configuration);Platform=%(Platform)</AdditionalProperties>
+    </ProjectReference>
+  </ItemGroup>
+  
+  <Target Name="ValidateSolutionConfiguration">
+    <Message Text="正在生成解决方案配置“$(Configuration)|$(Platform)”。" />
+  </Target>
+  
+  <Target Name="Build">
+    <!--包还原-->
+    <MSBuild Projects="@(ProjectReference)" Targets="Restore" StopOnFirstFailure="True" Properties="$(GlobalProperties)"/>
+
+    <!--启动编译-->
+    <MSBuild Projects="@(ProjectReference)" StopOnFirstFailure="True" BuildInParallel="True" Properties="$(GlobalProperties)"/>
+    
+    <!--复制文件到产出目录-->
+    <ItemGroup>
+      <VCTargetsFiles Include="$(MSBuildThisFileDirectory)\VCTargets\**\*.*"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(VCTargetsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)\Microsoft.Build.CppTasks.Common\bin\Release\net6.0\Microsoft.Build.CppTasks.Common.dll" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)\YY.Build.Linux.Tasks\bin\Release\net6.0\YY.Build.Linux.Tasks.dll" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0" />
+      
+    <ItemGroup>
+      <PlatformsRootFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Linux.Tasks\Targets\*.*"/>
+      <PlatformsFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Linux.Tasks\Targets\Platforms\**\*.*"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(PlatformsRootFiles)" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\ARM\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\ARM64\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\MIPS\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\x64\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\x86\%(RecursiveDir)%(Filename)%(Extension)" />
+  </Target>
+  
+  <Target Name="_GetProjectAllConfiguration" Returns="@(AllProjectReferenceConfigurations)">
+    <!--故意过滤Debug配置-->
+    <CreateItem
+      Condition="'%(ProjectConfiguration.Configuration)' != 'Debug' and '%(ProjectConfiguration.Configuration)' != 'Release' and '%(ProjectConfiguration.Platform)' != 'ARM64'"
+      Include="$(MSBuildProjectFullPath)"
+      AdditionalMetadata="Configuration=%(ProjectConfiguration.Configuration);Platform=%(ProjectConfiguration.Platform);AdditionalProperties=Configuration=%(ProjectConfiguration.Configuration)%3BPlatform=%(ProjectConfiguration.Platform)%3B">
+      <Output TaskParameter="Include" ItemName="AllProjectReferenceConfigurations"/>
+    </CreateItem>
+  </Target>
+</Project>

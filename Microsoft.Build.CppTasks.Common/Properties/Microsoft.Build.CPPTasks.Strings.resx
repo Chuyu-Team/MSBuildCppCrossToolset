@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+<resheader name="resmimetype"><value>text/microsoft-resx</value></resheader><resheader name="version"><value>1.3</value></resheader><resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader><data name="Native_TrackingCommandMessage"><value>Tracking command:</value></data>
+  <data name="BMIAlreadyReferenced"><value>{0}Reference '{1}'='{2}'  is ignored as '{1}'='{3}' already exists. </value></data>
+  <data name="VCRemote.BuildingProject"><value>Building the project on the build agent...</value></data>
+  <data name="VCRemote.FileNotExist"><value>The file '{0}' will not be added to the build agent because it does not exist.</value></data>
+  <data name="TrackedVCToolTask.CannotParseToolOutput"><value>MSB8071: Cannot parse tool output '{0}' with regex '{1}': {2}</value></data>
+  <data name="Message.InvalidImportance"><value>MSB3511: "{0}" is an invalid value for the "Importance" parameter. Valid values are: High, Normal and Low.</value></data>
+  <data name="MissingRequiredArgument"><value>Missing required argument &lt;{0}&gt; for property &lt;{1}&gt;.</value></data>
+  <data name="MultiTool.CyclicDependency"><value>Cannot build the following source files because there is a cyclic dependency between them: {0}.</value></data>
+  <data name="Shared.ParametersMustHaveTheSameLength"><value>Parameters "{0}" and "{1}" must have the same number of elements.</value></data>
+  <data name="CustomBuildStepMessage"><value>Performing Custom Build Step</value></data>
+  <data name="VCMessage.MSB8035.RemoteBuild.MissingRootFolderForLocalRelativePaths"><value>MSB8035: Root folder for local relative paths is not defined, but relative path {0} is used. Please change it to a full path or define root folder.</value></data>
+  <data name="Move.Error"><value>Unable to move file "{0}" to "{1}". {2}</value></data>
+  <data name="ModuleDependencies.UnexpectedJsonData"><value>MSB8067: Unexpected number of sources '{0}' in Module Dependencies file '{1}'. Only one source data is currenty supported.</value></data>
+  <data name="GetOutOfDateItems.ItemDependsOnAnotherItemOutput"><value>"The build of '{0}' depends on '{1}' which is produced by the build of '{2}'. The items cannot be built in parallel."</value></data>
+  <data name="MultiTool.DependencyIssue"><value>MultiToolTask has encounted an issue scheduling task because one or more tasks still remains but none could be started.  Please check the inputs and their dependency to avoid cirular loops.</value></data>
+  <data name="VCRemote.BuildingSourceMap"><value>Building the source maps...</value></data>
+  <data name="TrackedVCToolTask.RebuildingAllSourcesCommandLineChanged"><value>All source files are not up-to-date:  command line has changed since the last build.</value></data>
+  <data name="Scanning"><value>Scanning sources for module dependencies...</value></data>
+  <data name="CustomBuild.InvalidOutput"><value>MSB8063: Custom build for item "{0}" specifies invalid path "{1}" as an output. This may cause incremental build to work incorrectly.</value></data>
+  <data name="VCRemote.FinishedAddingSources"><value>Finished adding the sources to the build agent.</value></data>
+  <data name="CustomBuild.CircularDepedencyDetected"><value>MSB8017: A circular dependency has been detected while executing custom build commands for item "{0}". This may cause incremental build to work incorrectly.</value></data>
+  <data name="VCRemote.CopyingBuildOutput"><value>Copying remote build output to: {0}.</value></data>
+  <data name="ReferencingBMI"><value>{0}Referencing '{1}'='{2}'.</value></data>
+  <data name="CL.RebuildingNoPDB"><value>Forcing recompile of all source files due to missing PDB "{0}".</value></data>
+  <data name="MultiTool.TaskStatus"><value>Task '{0}' took {1}ms.</value></data>
+  <data name="MissingAttribute"><value>Element &lt;{0}&gt; does not contain the required attribute "{1}".</value></data>
+  <data name="VCToolsVersionDoesNotMatchPlatformToolset"><value>MSB8052: MSVC Toolset Version '{0}' is not compatible with '{1}' Platform Toolset. Please either change Platform Toolset to {2} or MSVC Toolset Version (VCToolsVersion property) to  the version with the format '{3}*.*'. To use default MSVC Toolset Version for a given Platform Toolset don't set VCToolsVersion property.</value></data>
+  <data name="TrackedVCToolTask.RebuildingDueToInvalidTLogContents"><value>MSB8015: All source files are not up-to-date:  forcing a rebuild of all source files due to the contents of '{0}' being invalid.</value></data>
+  <data name="VCMessage.MSB8010"><value>MSB8010: Specified platform toolset (v90) requires Visual Studio 2008. Please make sure that Visual Studio 2008 is installed on the machine.</value></data>
+  <data name="VCMessage.MSB8011"><value>MSB8011: Failed to register output. Please try enabling Per-user Redirection or register the component from a command prompt with elevated permissions.</value></data>
+  <data name="VCMessage.MSB8012"><value>MSB8012: {0}({1}) does not match the {2}'s OutputFile property value ({3}). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %({4}.OutputFile).</value></data>
+  <data name="VCMessage.MSB8013"><value>MSB8013: This project doesn't contain the Configuration and Platform combination of {0}.</value></data>
+  <data name="VCMessage.MSB8016"><value>MSB8016: This project does not support the current Configuration Type ({0}).</value></data>
+  <data name="VCMessage.MSB8019"><value>MSB8019: This build is consuming a component "{0}" that is not packaged because the component is not coming from a Windows Store app project "{1}".</value></data>
+  <data name="VCMessage.MSB8032"><value>MSB8032: The Platform or PlatformToolset is not available from a 64bit environment.  Consider building from 32bit environment instead.</value></data>
+  <data name="VCMessage.MSB8033"><value>{0} -&gt; {1} (Partial PDB)</value></data>
+  <data name="VCMessage.MSB8030"><value>MSB8030: The linker switch "Minimum Required Version" requires "SubSystem" to be set.  Without "SubSystem", the "Minimum Required Version" would not be passed to linker and could prevent to the output binary from running on older Operating Systems.</value></data>
+  <data name="VCMessage.MSB8031"><value>MSB8031: Building an MFC project for a non-Unicode character set is deprecated. You must change the project property to Unicode or download an additional library. See https://go.microsoft.com/fwlink/p/?LinkId=286820 for more information.</value></data>
+  <data name="VCMessage.MSB8036"><value>MSB8036: The Windows SDK version {0} was not found. Install the required version of Windows SDK or change the SDK version in the project property pages or by right-clicking the solution and selecting "Retarget solution".</value></data>
+  <data name="VCMessage.MSB8037"><value>MSB8037: The Windows SDK version {0} for Desktop C++ {1} Apps was not found. Install the required version of Windows SDK or change the SDK version in the project property pages or by right-clicking the solution and selecting "Retarget solution". </value></data>
+  <data name="VCMessage.MSB8034"><value>{0} -&gt; {1} (Full PDB)</value></data>
+  <data name="VCMessage.MSB8035"><value>{0} -&gt; {1} (Partial -&gt; Full PDB)</value></data>
+  <data name="VCMessage.MSB8038"><value>MSB8038: Platform Toolset is not defined. Please select one of the available Platform Toolsets in the Project Properties UI.</value></data>
+  <data name="VCMessage.MSB8039"><value>Warning: Full debug symbol generation from partial PDBs is not supported for static libraries.</value></data>
+  <data name="VCMessage.MSB8003"><value>MSB8003: The {0} property is not defined. Some build tools may not be found.</value></data>
+  <data name="VCMessage.MSB8002"><value>MSB8002: Specified platform toolset ({0}) is not compatible with the targeted .NET Framework version ({1}). Please set TargetFrameworkVersion to one of the supported values ('v2.0', 'v3.0', 'v3.5').</value></data>
+  <data name="VCMessage.MSB8005"><value>MSB8005: The property '{0}' doesn't exist.  Skipping...</value></data>
+  <data name="VCMessage.MSB8004"><value>MSB8004: {0} Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the {1} Directory.</value></data>
+  <data name="VCMessage.MSB8007"><value>MSB8007: The Platform for project '{0}' is invalid.  Platform='{1}'. You may be seeing this message because you are trying to build a project without a solution file, and have specified a non-default Platform that doesn't exist for this project.</value></data>
+  <data name="VCMessage.MSB8006"><value>MSB8006: The Platform for project '{0}' is invalid.  Platform='{1}'. This error may also appear if some other project is trying to follow a project-to-project reference to this project, this project has been unloaded or is not included in the solution, and the referencing project does not build using the same or an equivalent Platform.</value></data>
+  <data name="VCMessage.MSB8009"><value>MSB8009: .NET Framework 2.0/3.0/3.5 target the v90 platform toolset. Please make sure that Visual Studio 2008 is installed on the machine.</value></data>
+  <data name="VCMessage.MSB8008"><value>MSB8008: Specified platform toolset ({0}) is not installed or invalid. Please make sure that a supported PlatformToolset value is selected.</value></data>
+  <data name="VCMessage.MSB8054"><value>MSB8054: /ZW (WinRT language extensions) not supported by clang-cl.</value></data>
+  <data name="VCMessage.MSB8055"><value>MSB8055: /openmp (OpenMP language extensions) not supported not supported by clang-cl.</value></data>
+  <data name="VCMessage.MSB8056"><value>MSB8056: /experimental:module not supported by clang-cl.</value></data>
+  <data name="VCMessage.MSB8057"><value>MSB8057: 'C++ Clang tools for Windows (15.0.1 - x64/x86)' component is not installed in Visual Studio.  Open the 'Visual Studio Installer' and install 'C++ Clang tools for Windows (15.0.1 - x64/x86)' under the 'Desktop development with C++' workload.  Learn more: https://aka.ms/AA55s5p </value></data>
+  <data name="VCMessage.MSB8051"><value>MSB8051: Support for targeting Windows XP is deprecated and will not be present in future releases of Visual Studio. Please see https://go.microsoft.com/fwlink/?linkid=2023588 for more information.</value></data>
+  <data name="VCMessage.MSB8053"><value>MSB8053: /clr (common language runtime) not supported by clang-cl.</value></data>
+  <data name="VCMessage.MSB8058"><value>MSB8058: -fsanitize=address (Enable Address Sanitizer) not supported by platform '{0}'.</value></data>
+  <data name="VCMessage.MSB8059"><value>MSB8059: -fsanitize=address (Enable Address Sanitizer) is incompatible with option '{0}'.</value></data>
+  <data name="VCMessage.MSB8023"><value>MSB8023: Execution path ({0}) could not be found.</value></data>
+  <data name="VCMessage.MSB8022"><value>MSB8022: Building Desktop applications for the {0} platform is not supported.</value></data>
+  <data name="VCMessage.MSB8021"><value>MSB8021: The value '{0}' of the variable '{1}' is incompatible with the value '{2}' of the variable '{3}'.</value></data>
+  <data name="VCMessage.MSB8020"><value>MSB8020: The build tools for {0} (Platform Toolset = '{1}') cannot be found. To build using the {1} build tools, please install {0} build tools.  Alternatively, you may upgrade to the current Visual Studio tools by selecting the Project menu or right-click the solution, and then selecting "Retarget solution".</value></data>
+  <data name="VCMessage.MSB8027"><value>MSB8027: Two or more files with the name of {0} will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are {1}.</value></data>
+  <data name="VCMessage.MSB8026"><value>MSB8026: Static analysis is not supported with the current platform toolset.</value></data>
+  <data name="VCMessage.MSB8025"><value>MSB8025: Using legacy manifest embedding because of {0} on Manifest Tool is set.</value></data>
+  <data name="VCMessage.MSB8024"><value>MSB8024: Using static version of the C++ runtime library is not supported.</value></data>
+  <data name="VCMessage.MSB8029"><value>MSB8029: The Intermediate directory or Output directory cannot reside under the Temporary directory as it could lead to issues with incremental build.</value></data>
+  <data name="VCMessage.MSB8028"><value>MSB8028: The intermediate directory ({1}) contains files shared from another project ({0}).  This can lead to incorrect clean and rebuild behavior.</value></data>
+  <data name="VCMessage.MSB8076"><value>MSB8076: Only ARM, ARM64 and ARM64EC platforms are supported.</value></data>
+  <data name="VCMessage.MSB8077"><value>MSB8077: Some files are set to compile as C++/CLI, but 'Enable CLR Support for Individual Files' property is not defined. See 'Advanced Property Page' documentation for more details.</value></data>
+  <data name="VCMessage.MSB8075"><value>MSB8075: We do not support building UWP AppContainer applications for ARM64EC.</value></data>
+  <data name="VCMessage.MSB8072"><value>MSB8072: /std:c++latest (MSVC preview - features from the latest C++ working draft ) not supported by clang-cl.</value></data>
+  <data name="VCMessage.MSB8073"><value>MSB8073: Cannot find LLVM toolset version '{0}': the folder '{1}' does not exist. Please make sure LLVM toolset version '{0}' is installed or choose another toolset version. Learn more: https://aka.ms/AA55s5p</value></data>
+  <data name="VCMessage.MSB8041"><value>MSB8041: {0} libraries are required for this project. Install them from the Visual Studio installer (Individual Components tab) for any toolsets and architectures being used.</value></data>
+  <data name="VCMessage.MSB8040"><value>MSB8040: Spectre-mitigated libraries are required for this project. Install them from the Visual Studio installer (Individual components tab) for any toolsets and architectures being used. Learn more: https://aka.ms/Ofhn4c</value></data>
+  <data name="VCMessage.MSB8042"><value>MSB8042: {0} libraries with Spectre Mitigations are required for this project. Install them from the Visual Studio installer (Individual components tab) for any toolsets and architectures being used. Learn more: https://aka.ms/Ofhn4c</value></data>
+  <data name="VCMessage.MSB8061"><value>MSB8061: No tool enabled for Code Analysis.</value></data>
+  <data name="VCMessage.MSB8060"><value>MSB8060: Microsoft Code Analysis is not supported by clang-cl.</value></data>
+  <data name="TrackedVCToolTask.RebuildingSourceCommandLineChanged"><value>Source file "{0}" is not up-to-date: command line has changed since the last build.</value></data>
+  <data name="Shared.ParameterCannotHaveZeroLength"><value>Parameter "{0}" cannot have zero length.</value></data>
+  <data name="CommandLineDiffer"><value>Expected "{0}" but got "{1}".</value></data>
+  <data name="ModuleDependencies.JsonReadingError"><value>MSB8074: Cannot read Module Dependencies file {0}: {1} The build order might be incorrect.</value></data>
+  <data name="InvalidType"><value>Expecting "{0}".</value></data>
+  <data name="TrackedVCToolTask.CreateUnicodeOutputPipeFailed"><value>MSB8016: Can not turn on Unicode output for "{0}". Some Unicode characters will be improperly displayed.</value></data>
+  <data name="GetOutOfDateItems.RebuildingSourceOutputsChanged"><value>Source file '{0}' is not up-to-date: list of outputs has changed since the last build.</value></data>
+  <data name="Move.FileComment"><value>Moving file from "{0}" to "{1}".</value></data>
+  <data name="CustomBuild.ExitCodeError"><value>MSB8066: Custom build for '{0}' exited with code {1}.</value></data>
+  <data name="XamlTaskParseFailed"><value>Unable to parse Xaml task.  {0}</value></data>
+  <data name="VCMessage.MSB8033.RemoteBuild.MissingDirectoryMapping"><value>MSB8033: Cannot determine a remote location corresponding to {0} directory on local machine. Some files might not be found during remote build. Please change the properties to use relative paths or add a local-remote folders mapping in Tools - Options - Cross Platform – C++ - iOS - Mapping.</value></data>
+  <data name="CustomBuild.MissingOutput"><value>MSB8065: Custom build for item "{0}" succeeded, but specified output "{1}" has not been created. This may cause incremental build to work incorrectly.</value></data>
+  <data name="CustomBuild.NoOutputs"><value>MSB8018: No outputs specified for item "{0}". Its custom build command will be skipped.</value></data>
+  <data name="XmlError"><value>Xml Error: {0}.</value></data>
+  <data name="ArgumentRequired"><value>Switch &lt;{0}&gt; requires an argument.</value></data>
+  <data name="MultiTool.PostExecuteToolTiming"><value>Cleanup phase took {0}ms.</value></data>
+  <data name="VCRemote.WaitingForBuildToFinish"><value>Waiting for the build to finish on the build agent...</value></data>
+  <data name="CustomBuild.InvalidDependency"><value>MSB8062: Custom build for item "{0}" specifies invalid path "{1}" as an additional dependency. This may cause incremental build to work incorrectly.</value></data>
+  <data name="VCToolsVersionNotInstaled"><value>MSB8070: Cannot find MSVC toolset version '{0}': the folder '{1}' does not exist. Please make sure MSVC toolset version '{0}' is  installed or choose another toolset version.</value></data>
+  <data name="MultiTool.TaskFound"><value>{0} task found.</value></data>
+  <data name="VCRemote.FinishedAddingProject"><value>Finished adding the project to the build agent.</value></data>
+  <data name="TrackedVCToolTask.RebuildingDueToInvalidTLog"><value>MSB8014: All source files are not up-to-date:  forcing a rebuild of all sources due to an error with the tracking logs. {0}</value></data>
+  <data name="TrackedVCToolTask.RebuildingNoCommandTLog"><value>All source files are not up-to-date: missing command TLog "{0}".</value></data>
+  <data name="MetaGenInfoReferenceDirectories"><value>To improve incremental build performance for managed components, please make sure that the 'VC++ Directories-&gt;Reference Directories' points to all the paths which contain the referenced managed assemblies.</value></data>
+  <data name="VCMessage.MSB8020_AppType"><value>MSB8020: The build tools for '{2}' application Type {0} (Platform Toolset = '{1}') cannot be found. Please install the workflow for this application type and include the build tools for the </value></data>
+  <data name="MultiTool.SameTrackerLogDirectory"><value>All Sources must have the same TrackerLogDirectory ({0},{1}).</value></data>
+  <data name="VCRemote.FinishedBuildingProject"><value>Finished building the project on the build agent.</value></data>
+  <data name="VCRemote.AddingProject"><value>Adding the project to the build agent...</value></data>
+  <data name="InternalError"><value>Internal Error has occurred. Most likely a bug.</value></data>
+  <data name="Unity_MinMoreThanMax"><value>"Minimum Number of Sources in a Unity File" ({0}) cannot be more than "Maximum Number of Sources in a Unity File" ({1}). </value></data>
+  <data name="VCRemote.RemoteOutputDirectory"><value>Remote output directory: {0}</value></data>
+  <data name="Shared.ParameterCannotBeNull"><value>Parameter "{0}" cannot be null.</value></data>
+  <data name="CannotDeleteTlogs"><value>MSB8078: Cannot delete old '{0}' tlog files: {1}</value></data>
+  <data name="MissingRootElement"><value>Xml file must start with the root element &lt;{0}&gt;.</value></data>
+  <data name="VCRemote.RemoteProject"><value>Remote project: {0}</value></data>
+  <data name="VCRemote.BuildOutput"><value>{0}.vcxproj -&gt; host: {1}  output: {2}/{3}{4}</value></data>
+  <data name="General.InvalidValue"><value>MSB3098: "{1}" task received an invalid value for the "{0}" parameter.</value></data>
+  <data name="Shared.FailedCreatingTempFile"><value>MSB5003: Failed to create a temporary file. Temporary files folder is full or its path is incorrect. {0}</value></data>
+  <data name="VCMessage.InvalidCode"><value>MSB8001: "{0}" is an invalid value for the "Code" parameter.</value></data>
+  <data name="VCMessage.InvalidType"><value>MSB8000: "{0}" is an invalid value for the "Type" parameter. Valid values are: Warning and Error.</value></data>
+  <data name="VCRemote.BuildFailed"><value>Remote build failed, a remote machine has not been configured for build or the connection was lost. If a machine was not paired, please pair it by using the instructions in this link: {0}</value></data>
+  <data name="SourceDependsOnSource"><value>{0} depends on {1}</value></data>
+  <data name="BuildingHeaderUnit"><value>Building header unit {0} as {1} imports it.</value></data>
+  <data name="Unity_CleanupOldUnityFiles"><value>"The following files previously generated for unity build were deleted as they are no longer used: {0}. </value></data>
+  <data name="MultiTool.AddSource"><value>Adding source "{0}".</value></data>
+  <data name="GenerateDesktopDeployRecipeFileException"><value>Remote deployment might be slow/inefficient. {0}</value></data>
+  <data name="GenerateCommandLineError"><value>Error generating command line switch for '{0}' with value '{1}': {2}</value></data>
+  <data name="FileNotOpen"><value>Unable to open file {0} because {1}</value></data>
+  <data name="VCRemote.BuildStarted"><value>Build started on the build agent.</value></data>
+  <data name="Error.MissingFile"><value>Required file "{0}" is missing.</value></data>
+  <data name="VCRemote.FinishedCopyingBuildOutput"><value>Finished copying remote build output.</value></data>
+  <data name="VCRemote.FileInvalid"><value>The file '{0}' will not be added to the build agent because it is invalid.</value></data>
+  <data name="MultiTool.SourceNotMatchCommand"><value>Source "{0}" doesn't match previous command line.
+*** Previous command line: '{1}'
+*** Current  command line: '{2}'</value></data>
+  <data name="MultiTool.AddDone"><value>{0} will run on {1} out of {2} file(s) in {4} batches.  Startup phase took {3}ms.</value></data>
+  <data name="XamlTaskCreationFailed"><value>Unable to create Xaml task.  Compilation failed.  {0}</value></data>
+  <data name="ImproperType"><value>Element &lt;{0}&gt; has invalid type of "{1}".</value></data>
+  <data name="MultiTool.SourceOutOfDate"><value>Source "{0}" is out of date.</value></data>
+  <data name="MultiTool.BuildingWith"><value>Building with "{0}".</value></data>
+  <data name="MissingRequiredArgumentWithValue"><value>Missing required argument &lt;{0}&gt; for property &lt;{1}&gt; which is set to {2}.</value></data>
+  <data name="ArgumentOutOfRange"><value>Element &lt;{0}&gt; has an invalid value of "{1}".</value></data>
+  <data name="Compiling"><value>Compiling...</value></data>
+  <data name="VCRemote.RemoteProjectDirectory"><value>Remote project directory: {0}</value></data>
+  <data name="CustomBuild.MissingDependency"><value>MSB8064: Custom build for item "{0}" succeeded, but specified dependency "{1}" does not exist. This may cause incremental build to work incorrectly.</value></data>
+  <data name="GetOutOfDateItems.RebuildingSourceDependenciesChanged"><value>Source file '{0}' is not up-to-date: list of dependencies has changed since the last build.</value></data>
+  <data name="MultiTool.AddSourceWithDep"><value>Adding source "{0}" with dependency on "{1}".</value></data>
+  <data name="VCRemote.AddingSources"><value>Adding the sources to the build agent...</value></data>
+  <data name="VCRemote.BuildFailedSeeOutputWindow"><value>Remote build failed, please see the Output Window - Build output for more details.</value></data>
+  </root>

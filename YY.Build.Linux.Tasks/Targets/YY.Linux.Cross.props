@@ -1,0 +1,227 @@
+<!--
+***********************************************************************************************
+Linux.WSL.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+<PropertyGroup>
+    <!-- By default we use the same bitness as the hosting platform -->
+    <PreferredToolArchitecture Condition="'$(PreferredToolArchitecture)' == ''">x64</PreferredToolArchitecture>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(DisableRegistryUse)' != 'true'">
+    <LinuxIncludePath Condition="'$(LinuxIncludePath)' == ''">$(DevEnvDir)VC\Linux\include</LinuxIncludePath>
+    <GDBRoot Condition="'$(GDBRoot)' == ''">$(DevEnvDir)VC\Linux\bin\gdb\gdb-multiarch\</GDBRoot>
+    <GdbShellExecProgramPath Condition="'$(GdbShellExecProgramPath)' == ''">$(DevEnvDir)CommonExtensions\Microsoft\Linux\Linux</GdbShellExecProgramPath>
+    <LinuxNatvisPath Condition="'$(LinuxNatvisPath)' == ''">$(DevEnvDir)CommonExtensions\Microsoft\Linux\Linux</LinuxNatvisPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GDBPath Condition="'$(GDBPath)' == '' AND '$(GDBRoot)' != ''">$(GDBRoot)gdb-multiarch.exe</GDBPath>
+    <GdbShellExecProgram Condition="'$(GdbShellExecProgram)' == '' AND '$(GdbShellExecProgramPath)' != ''">$(GdbShellExecProgramPath)\shellexec.exe</GdbShellExecProgram>
+    <GdbShellExecProgramFlags Condition="'$(GdbShellExecProgramFlags)' == ''"></GdbShellExecProgramFlags>
+    <LinuxNatvisFile Condition="'$(LinuxNatvisFile)' == '' AND '$(LinuxNatvisPath)' != ''">$(LinuxNatvisPath)\stl.natvis</LinuxNatvisFile>
+    <GetResolvedLinkLibs_Order Condition="'$(GetResolvedLinkLibs_Order)' == ''">BreadthFirst</GetResolvedLinkLibs_Order>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Required for enabling Team Build projects -->
+    <OutDirWasSpecified Condition=" '$(OutDir)'!='' AND '$(OutDirWasSpecified)'=='' ">true</OutDirWasSpecified>
+    <OutDirWasSpecified Condition=" '$(OutDir)'=='' AND '$(OutDirWasSpecified)'=='' ">false</OutDirWasSpecified>
+
+    <IntDir Condition="'$(IntDir)'=='' AND '$(IntermediateOutputPath)'!=''">$(IntermediateOutputPath)</IntDir>
+    <IntDir Condition="'$(IntDir)'=='' AND '$(IntermediateOutputPath)'==''">$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(OutDir)'=='' AND '$(ProjectDir)' == ''">$(IntDir)</OutDir>
+    <OutDir Condition="'$(OutDir)'=='' AND '$(ProjectDir)' != ''">$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+
+    <LastWSLTargetFile>$(IntDir)LastWSLTarget.tlog</LastWSLTargetFile>
+
+    <!-- Disable features not supported by Linux projects -->
+    <UseOfMFC>false</UseOfMFC>
+    <UseOfATL>false</UseOfATL>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+
+  <!-- Default values -->
+  <PropertyGroup>
+    <TargetRuntime>Native</TargetRuntime>
+    <TargetExt />
+    <ProjectName Condition="'$(ProjectName)' == ''">$(MSBuildProjectName)</ProjectName>
+    <EnableIncrementalBuild Condition="'$(EnableIncrementalBuild)' == ''">No</EnableIncrementalBuild>
+    <NinjaOutputFile>build.ninja</NinjaOutputFile>
+    <ExtensionsToDeleteOnClean Condition="'$(ExtensionsToDeleteOnClean)' == ''">*.d;*.tlog;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
+    <PreBuildEventUseInBuild Condition="'$(PreBuildEventUseInBuild)' == ''">true</PreBuildEventUseInBuild>
+    <PreLinkEventUseInBuild Condition="'$(PreLinkEventUseInBuild)' == ''">true</PreLinkEventUseInBuild>
+    <PostBuildEventUseInBuild Condition="'$(PostBuildEventUseInBuild)' == ''">true</PostBuildEventUseInBuild>
+
+    <!-- Default Remote Debugging Target matches the Name property of WSLTargetValue in LinuxRemoteTargetsProviderCommonImpl.cs -->
+    <RemoteDebuggingTarget>WSL</RemoteDebuggingTarget>
+
+    <ConfigurationType Condition="'$(ConfigurationType)' == ''">Application</ConfigurationType>
+
+    <DebugChildProcesses Condition="'$(DebugChildProcesses)' == ''">false</DebugChildProcesses>
+
+    <ValidateArchitecture Condition="'$(ValidateArchitecture)' == ''">True</ValidateArchitecture>
+    <EnableASAN Condition="'$(EnableASAN)' == ''">false</EnableASAN>
+    <WSLPath Condition="'$(WSLPath)' == ''">default</WSLPath>
+    <RemoteProjectDir Condition="'$(RemoteProjectDir)' == ''">$(RemoteRootDir)/$(ProjectName)</RemoteProjectDir>
+    <_VC_IsWSLToolset>true</_VC_IsWSLToolset>
+  </PropertyGroup>
+
+  <!-- ConfigurationType Specific values -->
+  <PropertyGroup Condition="'$(ConfigurationType)' == 'Application'">
+    <LinkCompiled>true</LinkCompiled>
+    <TargetExt>.out</TargetExt>
+    <TargetName Condition="'$(TargetName)' == ''">$(ProjectName)</TargetName>
+    <OutputType>exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ConfigurationType)' == 'DynamicLibrary'">
+    <LinkCompiled>true</LinkCompiled>
+    <TargetExt>.so</TargetExt>
+    <TargetName Condition="'$(TargetName)' == ''">lib$(ProjectName)</TargetName>
+    <OutputType>library</OutputType>
+  </PropertyGroup>
+
+   <PropertyGroup Condition="'$(ConfigurationType)' == 'StaticLibrary'">
+    <LibCompiled>true</LibCompiled>
+    <TargetExt>.a</TargetExt>
+    <TargetName Condition="'$(TargetName)' == ''">lib$(ProjectName)</TargetName>
+    <OutputType>staticlibrary</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RemoteDebuggingMode Condition="'$(RemoteDebuggingMode)' == ''">gdb</RemoteDebuggingMode>
+    <DebuggerWorkingDirectory Condition="'$(DebuggerWorkingDirectory)' == '' and '$(ConfigurationType)' != 'Makefile'">$(OutDir)</DebuggerWorkingDirectory>
+    <DebuggerWorkingDirectory Condition="'$(DebuggerWorkingDirectory)' == '' and '$(ConfigurationType)' == 'Makefile'"></DebuggerWorkingDirectory>
+    <EnablePrettyPrinting Condition="'$(EnablePrettyPrinting)' == ''">true</EnablePrettyPrinting>
+    <ShowDisplayString Condition="'$(ShowDisplayString)' == ''">true</ShowDisplayString>
+    <LoadAllSymbols Condition="'$(LoadAllSymbols)' == ''">enabled</LoadAllSymbols>
+    <MIMode Condition="'$(MIMode)' == ''">gdb</MIMode>
+    <ASANRuntimeFlags Condition="'$(ASANRuntimeFlags)' == ''">detect_leaks=0</ASANRuntimeFlags>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- VCToolsInstallDir and WindowsSdkDir are required to statisfy the missing directory detection. -->
+    <VCToolsInstallDir Condition="'$(VCToolsInstallDir)' == ''">VCToolsInstallDir_is_not_defined</VCToolsInstallDir>
+    <WindowsSdkDir Condition="'$(WindowsSdkDir)' == ''">WindowsSdkDir_is_not_defined</WindowsSdkDir>
+    <!-- LlvmPlatformName is required to statisfy the ASAN platform check. -->
+    <LlvmPlatformName Condition="'$(LlvmPlatformName)' == ''">LlvmPlatformName_is_not_defined</LlvmPlatformName>
+    <_CheckDev11ToolsInstalled>false</_CheckDev11ToolsInstalled>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <CustomBuild>
+      <Message                     Condition="'%(CustomBuild.Message)'                    == ''">Performing Custom Build Tools</Message>
+      <LinkObjects                 Condition="'%(CustomBuild.LinkObjects)'                == ''">true</LinkObjects>
+      <TreatOutputAsContent        Condition="'%(CustomBuild.TreatOutputAsContent)'       == ''">false</TreatOutputAsContent>
+      <TrackerLogDirectory         Condition="'%(CustomBuild.TrackerLogDirectory)'        == ''">$(TLogLocation)</TrackerLogDirectory>
+      <MinimalRebuildFromTracking  Condition="'%(CustomBuild.MinimalRebuildFromTracking)' == ''">true</MinimalRebuildFromTracking>
+      <AcceptableNonZeroExitCodes  Condition="'%(CustomBuild.AcceptableNonZeroExitCodes)' == ''">$(AcceptableNonZeroExitCodes)</AcceptableNonZeroExitCodes>
+    </CustomBuild>
+    <CustomBuildStep>
+      <Message                     Condition="'%(CustomBuildStep.Message)'=='' and '$(LangID)'=='1033'" >Performing Custom Build Step</Message>
+    </CustomBuildStep>
+    <ProjectReference>
+      <LinkLibraryDependencies      Condition="'%(ProjectReference.LinkLibraryDependencies)' == '' and '$(ConfigurationType)' == 'StaticLibrary'">false</LinkLibraryDependencies>
+      <LinkLibraryDependencies      Condition="'%(ProjectReference.LinkLibraryDependencies)' == ''">true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs   Condition="'%(ProjectReference.UseLibraryDependencyInputs)' == ''">false</UseLibraryDependencyInputs>
+      <ReferenceOutputAssembly      Condition="'%(ProjectReference.ReferenceOutputAssembly)' == ''">false</ReferenceOutputAssembly>
+      <Private                      Condition="'%(ProjectReference.Private)' == ''">true</Private>
+    </ProjectReference>
+    <ClCompile>
+      <ClangMode>true</ClangMode>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <DebugInformationFormat Condition="'$(UseDebugLibraries)' == 'true'">FullDebug</DebugInformationFormat>
+      <DebugInformationFormat Condition="'$(UseDebugLibraries)' != 'true'">Minimal</DebugInformationFormat>
+      <PreprocessorDefinitions Condition="'$(UseDebugLibraries)' != 'true'">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CAdditionalWarning>switch;no-deprecated-declarations;empty-body;conversion;return-type;parentheses;no-pointer-sign;no-format;uninitialized;unreachable-code;unused-function;unused-value;unused-variable;%(CAdditionalWarning)</CAdditionalWarning>
+      <CppAdditionalWarning>switch;no-deprecated-declarations;empty-body;conversion;return-type;parentheses;no-format;uninitialized;unreachable-code;unused-function;unused-value;unused-variable;%(CppAdditionalWarning)</CppAdditionalWarning>
+      <Optimization Condition="'$(UseDebugLibraries)' == 'true'">Disabled</Optimization>
+      <Optimization Condition="'$(UseDebugLibraries)' != 'true'">Full</Optimization>
+      <StrictAliasing>false</StrictAliasing>
+      <ProgramDatabaseFileName>$(IntDir)</ProgramDatabaseFileName>
+      <UnrollLoops>false</UnrollLoops>
+      <LinkTimeOptimization>false</LinkTimeOptimization>
+      <NoCommonBlocks>false</NoCommonBlocks>
+      <OmitFramePointers Condition="'$(UseDebugLibraries)' == 'true'">false</OmitFramePointers>
+      <OmitFramePointers Condition="'$(UseDebugLibraries)' != 'true'">true</OmitFramePointers>
+      <ExceptionHandling>Enabled</ExceptionHandling>
+      <ObjCExceptionHandling>Disabled</ObjCExceptionHandling>
+      <MakeStringsReadOnly>true</MakeStringsReadOnly>
+      <ThreadSafeStatics>Yes</ThreadSafeStatics>
+      <RelaxIEEE>false</RelaxIEEE>
+      <HideInlineMethods>false</HideInlineMethods>
+      <PositionIndependentCode Condition="'$(ConfigurationType)' != 'DynamicLibrary'">false</PositionIndependentCode>
+      <PositionIndependentCode Condition="'$(ConfigurationType)' == 'DynamicLibrary'">true</PositionIndependentCode>
+      <SymbolsHiddenByDefault>false</SymbolsHiddenByDefault>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ObjectFileName>$(IntDir)%(filename).o</ObjectFileName>
+      <CompileAs>Default</CompileAs>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <Verbose>false</Verbose>
+      <EnablePREfast Condition="'%(ClCompile.EnablePREfast)' == ''">false</EnablePREfast>
+      <OmitFramePointers Condition="'%(ClCompile.OmitFramePointers)' == ''">false</OmitFramePointers>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <PrecompiledHeaderOutputFileDirectory>$(IntDir)</PrecompiledHeaderOutputFileDirectory>
+      <PrecompiledHeaderOutputFile></PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderCompileAs>CompileAsCpp</PrecompiledHeaderCompileAs>
+      <CLanguageStandard>c11</CLanguageStandard>
+      <CppLanguageStandard>c++11</CppLanguageStandard>
+      <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+    </ClCompile>
+    <Link>
+      <ShowProgress>false</ShowProgress>
+      <Version>false</Version>
+      <VerboseOutput>false</VerboseOutput>
+      <Trace>false</Trace>
+      <PrintMap>false</PrintMap>
+      <IncrementalLink>false</IncrementalLink>
+      <IgnoreDefaultLibraries>false</IgnoreDefaultLibraries>
+      <UnresolvedSymbolReferences>true</UnresolvedSymbolReferences>
+      <OptimizeForMemory>false</OptimizeForMemory>
+      <DebuggerSymbolInformation>true</DebuggerSymbolInformation>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <WholeArchiveBegin>false</WholeArchiveBegin>
+      <Relocation>true</Relocation>
+      <!-- FunctionBinding causes gdb stepping to fail on x86. -->
+      <FunctionBinding Condition="'$(PlatformTarget)' != 'x86'">true</FunctionBinding>
+      <FunctionBinding Condition="'$(PlatformTarget)' == 'x86'">false</FunctionBinding>
+      <NoExecStackRequired>true</NoExecStackRequired>
+      <LinkDLL Condition="'$(ConfigurationType)' == 'DynamicLibrary'">true</LinkDLL>
+    </Link>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <Command>Replacement</Command>
+      <CreateIndex>true</CreateIndex>
+      <NoWarnOnCreate>true</NoWarnOnCreate>
+    </Lib>
+    <LibFullPathTemp>
+      <TimestampSurrogate>$(LastBuildState)</TimestampSurrogate>
+    </LibFullPathTemp>
+  </ItemDefinitionGroup>
+  <PropertyGroup>
+    <!--  Initial Debugger page and debugger -->
+    <DebuggerFlavor>LinuxWSLDebugger</DebuggerFlavor>
+    <DebuggerType>NativeOnly</DebuggerType>
+
+    <!-- Disables the default tools as they are not relavent to Raspberry in the Property Pages -->
+    <UseDefaultProjectTools>false</UseDefaultProjectTools>
+
+    <!-- Hide default General Page to show our own -->
+    <UseDefaultGeneralPropertyPageSchema>false</UseDefaultGeneralPropertyPageSchema>
+
+    <!-- Guid used to define the group of items to show in the Add Item Dialog. -->
+    <AddItemTemplateGuid Condition="'$(AddItemTemplateGuid)' == ''">{EB21DC10-A496-4D6C-B221-49E4C7F8FB0B}</AddItemTemplateGuid>
+
+    <MultiProcNumber>1</MultiProcNumber>
+  </PropertyGroup>
+</Project>
