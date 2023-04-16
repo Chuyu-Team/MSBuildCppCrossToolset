@@ -1,0 +1,24 @@
+<!--
+***********************************************************************************************
+Linux.TargetNames.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+ <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" TreatAsLocalProperty="Platform">
+  <PropertyGroup>
+    <!-- Short names for platform toolsets (added to project name in Solution Explorer) -->
+    <_PlatformToolsetShortNameFor_WSL_1_0 Condition="'$(_PlatformToolsetShortNameFor_WSL_1_0)' == ''">WSL_GCC_1_0</_PlatformToolsetShortNameFor_WSL_1_0>
+    <_PlatformToolsetFriendlyNameFor_WSL_1_0 Condition="'$(_PlatformToolsetFriendlyNameFor_WSL_1_0)' == ''">GCC for Windows Subsystem for Linux</_PlatformToolsetFriendlyNameFor_WSL_1_0>
+    <_PlatformToolsetFriendlyNameFor_WSL2_1_0 Condition="'$(_PlatformToolsetFriendlyNameFor_WSL2_1_0)' == ''">WSL2 GCC Toolset</_PlatformToolsetFriendlyNameFor_WSL2_1_0>
+    <_PlatformToolsetFriendlyNameFor_WSL_Clang_1_0 Condition="'$(_PlatformToolsetFriendlyNameFor_WSL_Clang_1_0)' == ''">Clang for Windows Subsystem for Linux</_PlatformToolsetFriendlyNameFor_WSL_Clang_1_0>
+    <_PlatformToolsetFriendlyNameFor_WSL2_Clang_1_0 Condition="'$(_PlatformToolsetFriendlyNameFor_WSL2_Clang_1_0)' == ''">WSL2 Clang Toolset</_PlatformToolsetFriendlyNameFor_WSL2_Clang_1_0>
+    <_PlatformToolsetFriendlyNameFor_Remote_GCC_1_0 Condition="'$(_PlatformToolsetFriendlyNameFor_Remote_GCC_1_0)' == ''">GCC for Remote Linux</_PlatformToolsetFriendlyNameFor_Remote_GCC_1_0>
+    <_PlatformToolsetFriendlyNameFor_Remote_Clang_1_0 Condition="'$(_PlatformToolsetFriendlyNameFor_Remote_Clang_1_0)' == ''">Clang for Remote Linux</_PlatformToolsetFriendlyNameFor_Remote_Clang_1_0>
+  </PropertyGroup>
+</Project>

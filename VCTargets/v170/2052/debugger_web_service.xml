@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="WebServiceDebugger" DisplayName="Web 服务调试器" PageTemplate="debugger" Description="Web 服务调试器选项" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Persistence="UserFile"/>
+  </Rule.DataSource>
+  <StringProperty Name="WebServiceDebuggerHttpUrl" DisplayName="HTTP URL" Description="指定项目的 URL。" F1Keyword="VC.Project.IVCWebSvcDebugPageObject.HttpUrl"/>
+  <EnumProperty Name="WebServiceDebuggerDebuggerType" DisplayName="调试器类型" Description="指定要使用的调试器类型。如果设置为“自动”，则将根据 EXE 文件的内容选择调试器类型。" F1Keyword="VC.Project.IVCWebSvcDebugPageObject.DebuggerType">
+    <EnumValue Name="NativeOnly" DisplayName="仅限本机" Description="仅限本机"/>
+    <EnumValue Name="ManagedOnly" DisplayName="仅限托管" Description="仅限托管"/>
+    <EnumValue Name="Mixed" DisplayName="混合" Description="混合"/>
+    <EnumValue Name="Auto" DisplayName="自动" Description="自动"/>
+    <EnumValue Name="Script" DisplayName="脚本" Description="脚本"/>
+  </EnumProperty>
+  <BoolProperty Name="WebServiceDebuggerSQLDebugging" DisplayName="SQL 调试" Description="附加 SQL 调试器。" F1Keyword="VC.Project.IVCWebSvcDebugPageObject.SQLDebugging"/>
+  <BoolProperty Name="UseLegacyManagedDebugger" Visible="false"/>
+</Rule>

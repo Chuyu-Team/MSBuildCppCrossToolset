@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationGeneralFile" DisplayName="常规" PageTemplate="generic" Description="常规" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" Label="Configuration" ItemType="{}{AnyType}"/>
+  </Rule.DataSource>
+  <BoolProperty Name="ExcludedFromBuild" DisplayName="从生成中排除" Category="General" Description="从此配置的生成中排除选定的文件。" F1Keyword="VC.Project.VCFileConfiguration.ExcludedFromBuild"/>
+  <BoolProperty Name="DeploymentContent" DisplayName="内容" Category="General" Description="指定文件是否为可部署的内容。" F1Keyword="VC.Project.VCFileConfiguration.DeploymentContent">
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" Label="Configuration" ItemType="{}{AnyType}"/>
+    </BoolProperty.DataSource>
+  </BoolProperty>
+  <DynamicEnumProperty Name="{}{ItemType}" DisplayName="项类型" Category="General" Description="项类型确定生成工具或文件。" EnumProvider="ItemTypes" F1Keyword="VC.Project.VCFileConfiguration.Tool">
+    <DynamicEnumProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="{}{AnyType}" HasConfigurationCondition="false"/>
+    </DynamicEnumProperty.DataSource>
+  </DynamicEnumProperty>
+  <StringProperty Name="GeneratorTarget" Visible="false"/>
+</Rule>

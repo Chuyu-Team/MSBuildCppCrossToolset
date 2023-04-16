@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationGeneral" DisplayName="常规" PageTemplate="generic" Description="常规" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+    <Category Name="ProjectDefaults" DisplayName="项目默认值" Description="项目默认值"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" Label="Configuration"/>
+  </Rule.DataSource>
+  <StringProperty Name="OutDir" DisplayName="输出目录" Description="指定输出文件目录的相对路径；可以包含环境变量。" Category="General" Default="$(SolutionDir)$(ConfigurationName)" Subtype="folder" F1Keyword="VC.Project.VCConfiguration.OutputDirectory">
+                  <StringProperty.DataSource>
+                     <DataSource Persistence="ProjectFile" Label=""/>
+                  </StringProperty.DataSource>
+  </StringProperty>
+                  
+  <StringProperty Name="IntDir" DisplayName="中间目录" Description="指定中间文件目录的相对路径；可以包含环境变量。" Category="General" Default="$(ConfigurationName)" Subtype="folder" F1Keyword="VC.Project.VCConfiguration.IntermediateDirectory">
+                  <StringProperty.DataSource>
+                     <DataSource Persistence="ProjectFile" Label=""/>
+                  </StringProperty.DataSource>
+  </StringProperty>
+  <EnumProperty Name="ConfigurationType" DisplayName="配置类型" Description="指定此配置生成的输出类型。" Category="ProjectDefaults" F1Keyword="VC.Project.VCConfiguration.ConfigurationType">
+    <EnumValue Name="Makefile" DisplayName="生成文件" Description="生成文件"/>
+    <EnumValue Name="Application" DisplayName="应用程序(.exe)" Description="应用程序(.exe)"/>
+    <EnumValue Name="DynamicLibrary" DisplayName="动态库(.dll)" Description="动态库(.dll)"/>
+    <EnumValue Name="StaticLibrary" DisplayName="静态库(.lib)" Description="静态库(.lib)"/>
+    <EnumValue Name="Utility" DisplayName="实用工具" Description="实用工具"/>
+  </EnumProperty>
+
+  <EnumProperty Name="CLRSupport" DisplayName="公共语言运行时支持" Description="选择您的代码所使用的公共语言运行时支持。" Category="ProjectDefaults" F1Keyword="VC.Project.VCConfiguration.ManagedExtensions">
+    <EnumValue Name="false" DisplayName="无公共语言运行时支持" Description="无公共语言运行时支持"/>
+    <EnumValue Name="true" DisplayName="公共语言运行时支持(/clr)" Description="公共语言运行时支持(/clr)"/>
+    <EnumValue Name="Pure" DisplayName="纯 MSIL 公共语言运行时支持(/clr:pure)" Description="纯 MSIL 公共语言运行时支持(/clr:pure)"/>
+    <EnumValue Name="Safe" DisplayName="安全 MSIL 公共语言运行时支持(/clr:safe)" Description="安全 MSIL 公共语言运行时支持(/clr:safe)"/>
+  </EnumProperty>
+  <StringProperty Name="TargetFrameworkVersion" DisplayName=".NET 目标框架版本" Description="项目所面向的 .NET Framework 版本。这仅在设置了“公共语言运行时支持”时适用。" ReadOnly="true" Category="ProjectDefaults" F1Keyword="VC.Project.TargetFrameworkVersion"/>
+
+  <StringProperty Name="BuildLogFile" DisplayName="生成日志文件" Description="指定启用生成记录时要写入的生成日志文件。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="General" Default="$(ProjectDir)\$(MSBuildProjectName).log" Subtype="file">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="BuildLog" PersistedName="Path"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="_ProjectFileVersion" DisplayName="项目文件版本" Description="指定用于创建此项目文件的转换工具的版本。" Category="General" Visible="false">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="ProjectGuid" Visible="False">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" Label="Globals" HasConfigurationCondition="False"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <EnumProperty Name="UseOfMfc" Visible="false">
+    <EnumValue Name="false"/>
+    <EnumValue Name="Static"/>
+    <EnumValue Name="Dynamic"/>
+  </EnumProperty>
+  <EnumProperty Name="UseOfAtl" Visible="false">
+    <EnumValue Name="false"/>
+    <EnumValue Name="Static"/>
+    <EnumValue Name="Dynamic"/>
+  </EnumProperty>
+  <EnumProperty Name="CharacterSet" Visible="false">
+    <EnumValue Name="NotSet"/>
+    <EnumValue Name="Unicode"/>
+    <EnumValue Name="MultiByte"/>
+  </EnumProperty>
+  <StringProperty Name="PlatformToolset" Visible="False"/>
+  <StringProperty Name="TargetFrameworkMoniker" Visible="false"/>
+  <StringProperty Name="TargetPath" Visible="False"/>
+  <StringProperty Name="MSBuildProjectDirectory" Visible="false"/>
+  <StringProperty Name="PackageAction" Visible="false" Description="将项目打包时使用的 MSBuild 目标。"/>
+  <StringProperty Name="DefaultContentType" Visible="false" Description="添加文件时使用的默认内容类型名称。"/>
+  <StringProperty Name="VCInstallDir" Visible="false"/>
+  <StringProperty Name="VCIDEInstallDir" Visible="false"/>
+  <StringProperty Name="VSInstallDir" Visible="false"/>
+  <StringProperty Name="Platform" Visible="false"/>
+  <StringProperty Name="Configuration" Visible="false"/>
+  <StringProperty Name="DebuggerSymbolsPath" Visible="false"/>
+  <BoolProperty Name="WindowsAppContainer" Visible="false"/>
+  <StringProperty Name="TargetPlatformVersion" Visible="false"/>
+  <BoolProperty Name="UseDebugLibraries" Visible="false"/>
+  <BoolProperty Name="EnableManagedIncrementalBuild" Visible="false"/>
+  <StringProperty Name="AssemblySearchPaths" Visible="false"/>
+  <StringProperty Name="DefaultPlatformToolset" Visible="false"/>
+  <BoolProperty Name="EnableDesignTimeBuild" Visible="false"/>
+  <BoolProperty Name="AppContainerApplication" Visible="false"/>
+  <EnumProperty Name="TargetRuntime" Visible="false">
+    <EnumValue Name="Managed"/>
+    <EnumValue Name="Native"/>
+    <EnumValue Name="AppHost" DisplayName="Windows 应用程序"/>
+  </EnumProperty>
+</Rule>

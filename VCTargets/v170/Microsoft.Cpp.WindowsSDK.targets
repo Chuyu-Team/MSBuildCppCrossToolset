@@ -1,0 +1,51 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.WindowsSDK.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup Condition="'$(DesignTimeBuild)' != 'true' and '$(TargetPlatformVersion)' != '7.0' and '$(DisableRegistryUse)' != 'true'">
+    <PrepareForBuildDependsOn>_CheckWindowsSDKInstalled;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>
+  </PropertyGroup>
+
+
+  <!-- this target is supposed to run only for projects usign Windows SDKs 8.1 and later -->
+  <Target Name="_CheckWindowsSDKInstalled" DependsOnTargets="$(_CheckWindowsSDKInstalledDependsOn)">
+    <!-- 8.1 -->
+    <PropertyGroup Condition="'$(TargetPlatformVersion)' == '8.1' and '$(WindowsSDKInstalled)' == '' and '$(WindowsSDK_UAP_Support)' == '' and '$(WindowsSDK_Desktop_Support)' == ''">
+      <WindowsSDKInstalled>false</WindowsSDKInstalled>
+      <WindowsSDK_UAP_Support>false</WindowsSDK_UAP_Support>
+      <WindowsSDK_Desktop_Support>false</WindowsSDK_Desktop_Support>
+      <WindowsSDK_UAP_Support Condition="Exists('$(WindowsSdkDir)\DesignTime\CommonConfiguration\Neutral\UAP\$(TargetPlatformVersion)\UAP.props')">true</WindowsSDK_UAP_Support>
+      <WindowsSDK_Desktop_Support Condition="Exists('$(WindowsSdkDir)\DesignTime\CommonConfiguration\Neutral\Windows.props')">true</WindowsSDK_Desktop_Support>
+      <WindowsSDKInstalled Condition="'$(WindowsSDK_UAP_Support)' == 'true' or '$(WindowsSDK_Desktop_Support)' == 'true'">true</WindowsSDKInstalled>
+    </PropertyGroup>
+
+    <!-- 10.0 -->
+    <PropertyGroup Condition="'$(WindowsSDKInstalled)' == '' and '$(WindowsSDK_UAP_Support)' == '' and '$(WindowsSDK_Desktop_Support)' == ''">
+      <WindowsSDKInstalled>false</WindowsSDKInstalled>
+      <WindowsSDK_UAP_Support>false</WindowsSDK_UAP_Support>
+      <WindowsSDK_Desktop_Support>false</WindowsSDK_Desktop_Support>
+            
+      <WindowsSDKInstalled Condition="Exists('$(WindowsSdkDir)\DesignTime\CommonConfiguration\Neutral\UAP\$(TargetPlatformVersion)\UAP.props')">true</WindowsSDKInstalled>
+      <!-- Currently we assume that UWP SDK portion is installed when UAP.props is found-->
+      <WindowsSDK_UAP_Support> $(WindowsSDKInstalled)</WindowsSDK_UAP_Support>
+      <WindowsSDK_Desktop_Support Condition="Exists('$(WindowsSdkDir)\Include\$(TargetPlatformVersion)\shared\sdkddkver.h') and
+                                             Exists('$(WindowsSdkDir)\Lib\$(TargetPlatformVersion)\um\$(PlatformTarget)\gdi32.lib')">true</WindowsSDK_Desktop_Support>
+    </PropertyGroup>
+
+    <!-- general error message if windows SDK is not installed -->
+    <VCMessage Code="MSB8036" Type="Error" Arguments="$(TargetPlatformVersion)" Condition="'$(WindowsSDKInstalled)' != 'true'" />
+
+    <!-- special error message if Desktop support for a particular platform is not installed -->
+    <VCMessage Code="MSB8037" Type="Error" Arguments="$(TargetPlatformVersion);$(PlatformTarget)" Condition="'$(WindowsAppContainer)' != 'true' and '$(WindowsSDK_Desktop_Support)' != true" />
+  </Target>
+</Project>  

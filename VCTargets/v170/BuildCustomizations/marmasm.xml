@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule
+    Name="MARMASM"
+    PageTemplate="tool"
+    DisplayName="Microsoft ARM Assembler"
+    Order="200">
+    <Rule.DataSource>
+      <DataSource
+        Persistence="ProjectFile"
+        ItemType="MARMASM" />
+    </Rule.DataSource>
+    <Rule.Categories>
+      <Category
+        Name="General">
+        <Category.DisplayName>
+          <sys:String>General</sys:String>
+        </Category.DisplayName>
+      </Category>
+      <Category
+        Name="Command Line"
+        Subtype="CommandLine">
+        <Category.DisplayName>
+          <sys:String>Command Line</sys:String>
+        </Category.DisplayName>
+      </Category>
+      <Category
+        Name="Preprocessor"
+        Subtype="Preprocessor">
+        <Category.DisplayName>
+          <sys:String>Preprocessor</sys:String>
+        </Category.DisplayName>
+      </Category>
+    </Rule.Categories>
+    <StringProperty
+      Name="Inputs"
+      Category="Command Line"
+      IsRequired="true">
+      <StringProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          ItemType="MARMASM"
+          SourceType="Item" />
+      </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty
+      Name="Errors"
+      HelpUrl="https://docs.microsoft.com/cpp/assembler/arm/arm-assembler-command-line-reference"
+      DisplayName="Redirect Filename"
+      Description="Redirect error and warning messages to filename"
+      Switch="-errors &quot;[value]&quot;" />
+    <StringListProperty
+      Name="IncludePaths"
+      HelpUrl="https://docs.microsoft.com/cpp/assembler/arm/arm-assembler-command-line-reference"
+      DisplayName="Include Paths"
+      Description="Sets path for include file.     (/I dir[;dir])"
+      Switch="-I &quot;[value]&quot;" />
+    <StringProperty
+      Name="PreDefineDirective"
+      HelpUrl="https://docs.microsoft.com/cpp/assembler/arm/arm-assembler-command-line-reference"
+      DisplayName="Predefine Directive"
+      Description="SETA, SETL, or SETS directive to predefine a symbol"
+      Switch="-predefine &quot;[value]&quot;" />
+    <BoolProperty
+      Name="NoWarn"
+      HelpUrl="https://docs.microsoft.com/cpp/assembler/arm/arm-assembler-command-line-reference"
+      DisplayName="Disable all warning messages"
+      Description="Disable all warning messages"
+      Switch="-nowarn" />
+    <StringProperty
+      Name="Ignore"
+      HelpUrl="https://docs.microsoft.com/cpp/assembler/arm/arm-assembler-command-line-reference"
+      DisplayName="Ignore Warning"
+      Description="Disable the specified warning."
+      Switch="-ignore &quot;[value]&quot;" />
+    <EnumProperty
+      Name="PEMachineType"
+      HelpUrl="https://docs.microsoft.com/cpp/assembler/arm/arm-assembler-command-line-reference"
+      DisplayName="Preserve Identifier Case"
+      Description="Machine type to set in the PE header">
+      <EnumValue
+        Name="ARM"
+        DisplayName="ARM"
+        Switch="-machine:ARM" />
+      <EnumValue
+        Name="THUMB"
+        DisplayName="THUMB"
+        Switch="-machine:THUMB" />
+      <EnumValue
+        Name="ARMCE"
+        DisplayName="ARMCE"
+        Switch="-machine:ARMCE" />
+    </EnumProperty>
+    <BoolProperty
+      Name="OldIT"
+      HelpUrl="https://docs.microsoft.com/cpp/assembler/arm/arm-assembler-command-line-reference"
+      DisplayName="Generate ARMv7-style IT blocks"
+      Description="Generate ARMv7-style IT blocks"
+      Switch="-oldit" />
+    <StringProperty
+      Name="AdditionalArgumentsFile"
+      HelpUrl="https://docs.microsoft.com/cpp/assembler/arm/arm-assembler-command-line-reference"
+      DisplayName="Additional Command-Line Arguments Filename"
+      Description="Read additional command-line arguments from the specified file."
+      Switch="-via &quot;[value]&quot;" />
+    <BoolProperty
+      Name="GenerateDebugInformation"
+      HelpUrl="https://docs.microsoft.com/cpp/assembler/arm/arm-assembler-command-line-reference"
+      DisplayName="Generate Debug Information"
+      Description="Generates Debug Information.     (-g)"
+      Switch="-g" />
+    <StringProperty
+      Name="CommandLineTemplate"
+      DisplayName="Command Line"
+      Visible="False"
+      IncludeInCommandLine="False" />
+    <EnumProperty
+      Name="ErrorReport"
+      HelpUrl="https://docs.microsoft.com/cpp/assembler/arm/arm-assembler-command-line-reference"
+      DisplayName="Error Reporting"
+      Description="Specify how internal assembler errors are reported to Microsoft.">
+      <EnumValue
+        Name="Queue"
+        DisplayName="Prompt the user to send reports at the next admin logon"
+        Switch="-errorReport:queue" />
+      <EnumValue
+        Name="None"
+        DisplayName="Do not send reports"
+        Switch="-errorReport:none" />
+      <EnumValue
+        Name="Prompt"
+        DisplayName="Prompt the user to send reports immediately"
+        Switch="-errorReport:prompt" />
+      <EnumValue
+        Name="Send"
+        DisplayName="Send reports automatically"
+        Switch="-errorReport:send" />
+    </EnumProperty>
+    <StringProperty
+      Name="ObjectFileName"
+      Category="Object File"
+      HelpUrl="https://msdn.microsoft.com/library/default.asp?url=/library/en-us/vcmasm/html/vclrfml.asp"
+      DisplayName="Object File Name"
+      Description="Specifies the name of the output object file."
+      Switch="-o &quot;[value]&quot;" />
+    <DynamicEnumProperty
+     Name="MARMASMBeforeTargets"
+     Category="General"
+     EnumProvider="Targets"
+     IncludeInCommandLine="False">
+      <DynamicEnumProperty.DisplayName>
+        <sys:String>Execute Before</sys:String>
+      </DynamicEnumProperty.DisplayName>
+      <DynamicEnumProperty.Description>
+        <sys:String>Specifies the targets for the build customization to run before.</sys:String>
+      </DynamicEnumProperty.Description>
+      <DynamicEnumProperty.ProviderSettings>
+        <NameValuePair
+          Name="Exclude"
+          Value="^MARMASMBeforeTargets|^Compute" />
+      </DynamicEnumProperty.ProviderSettings>
+      <DynamicEnumProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          ItemType=""
+          HasConfigurationCondition="true" />
+      </DynamicEnumProperty.DataSource>
+    </DynamicEnumProperty>
+    <DynamicEnumProperty
+      Name="MARMASMAfterTargets"
+      Category="General"
+      EnumProvider="Targets"
+      IncludeInCommandLine="False">
+      <DynamicEnumProperty.DisplayName>
+        <sys:String>Execute After</sys:String>
+      </DynamicEnumProperty.DisplayName>
+      <DynamicEnumProperty.Description>
+        <sys:String>Specifies the targets for the build customization to run after.</sys:String>
+      </DynamicEnumProperty.Description>
+      <DynamicEnumProperty.ProviderSettings>
+        <NameValuePair
+          Name="Exclude"
+          Value="^MARMASMAfterTargets|^Compute" />
+      </DynamicEnumProperty.ProviderSettings>
+      <DynamicEnumProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          ItemType=""
+          HasConfigurationCondition="true" />
+      </DynamicEnumProperty.DataSource>
+    </DynamicEnumProperty>
+    <StringProperty
+      Name="ExecutionDescription"
+      DisplayName="Execution Description"
+      IncludeInCommandLine="False"
+      Visible="False" />
+    <StringListProperty
+      Name="AdditionalDependencies"
+      DisplayName="Additional Dependencies"
+      IncludeInCommandLine="False"
+      Visible="False" />
+    <StringProperty
+      Subtype="AdditionalOptions"
+      Name="AdditionalOptions"
+      Category="Command Line">
+      <StringProperty.DisplayName>
+        <sys:String>Additional Options</sys:String>
+      </StringProperty.DisplayName>
+      <StringProperty.Description>
+        <sys:String>Additional Options</sys:String>
+      </StringProperty.Description>
+    </StringProperty>
+    <BoolProperty
+      Name="PreprocessWithCl"
+      DisplayName="Preprocess assembly source files with cl.exe"
+      Description="Specifies whether to use cl.exe compiler for preprocessing source files before being built with armasm assembler."
+      Category="General"
+      Visible="true"
+      HelpUrl="https://docs.microsoft.com/en-us/cpp/preprocessor/c-cpp-preprocessor-reference">
+    </BoolProperty>
+    <StringListProperty
+      Subtype="folder"
+      Name="AdditionalIncludeDirectories"
+      DisplayName="Additional Include Directories"
+      Description="Specifies one or more directories to add to the include path. Separate with ';' if more than one.     (/I[path])"
+      Category="Preprocessor"
+      Switch="I"
+      F1Keyword="VC.Project.VCCLCompilerTool.AdditionalIncludeDirectories">
+    </StringListProperty>
+    <BoolProperty
+      Name="IgnoreStandardIncludePath"
+      DisplayName="Ignore Standard Include Paths"
+      Description="Prevents the compiler from searching for include files in directories specified in the INCLUDE environment variables."
+      Category="Preprocessor"
+      Switch="X"
+      F1Keyword="VC.Project.VCCLCompilerTool.IgnoreStandardIncludePath">
+    </BoolProperty>
+    <StringListProperty
+      Name="PreprocessorDefinitions"
+      DisplayName="Preprocessor Definitions"
+      Description="Defines a preprocessing symbols for your source file."
+      Category="Preprocessor"
+      Switch="D "
+      F1Keyword="VC.Project.VCCLCompilerTool.PreprocessorDefinitions">
+    </StringListProperty>
+    <StringProperty
+      Name="PreprocessOutputPath"
+      DisplayName="Preprocess Output Path"
+      Description="Specify the output path for the preprocesser. The default location is the same as the source file(s)."
+      Category="Preprocessor"
+      Switch="Fi"
+      Visible="false">
+    </StringProperty>
+    <StringListProperty
+      Name="UndefinePreprocessorDefinitions"
+      DisplayName="Undefine Preprocessor Definitions"
+      Description="Specifies one or more preprocessor undefines.     (/U[macro])"
+      Category="Preprocessor"
+      Switch="U"
+      F1Keyword="VC.Project.VCCLCompilerTool.UndefinePreprocessorDefinitions">
+    </StringListProperty>
+    <BoolProperty
+      Name="UndefineAllPreprocessorDefinitions"
+      DisplayName="Undefine All Preprocessor Definitions"
+      Description="Undefine all previously defined preprocessor values.     (/u)"
+      Category="Preprocessor"
+      Switch="u"
+      F1Keyword="VC.Project.VCCLCompilerTool.UndefineAllPreprocessorDefinitions">
+    </BoolProperty>
+    <BoolProperty
+      ReverseSwitch="Zc:preprocessor-"
+      Name="UseStandardPreprocessor"
+      DisplayName="Use Standard Conforming Preprocessor"
+      Description="Use a standard conforming preprocessor (/Zc:preprocessor). Currently implied by /std:c11 and /std:c17. To use legacy preprocessor set this property to 'No'. "
+      Category="Preprocessor"
+      Switch="Zc:preprocessor"
+      F1Keyword="VC.Project.VCCLCompilerTool.PreprocessorStandard">
+    </BoolProperty>
+  </Rule>
+  <ItemType
+    Name="MARMASM"
+    DisplayName="Microsoft ARM Assembler" />
+  <FileExtension
+    Name="*.asm"
+    ContentType="MARMASM" />
+  <ContentType
+    Name="MARMASM"
+    DisplayName="Microsoft ARM Assembler"
+    ItemType="MARMASM" />
+</ProjectSchemaDefinitions>

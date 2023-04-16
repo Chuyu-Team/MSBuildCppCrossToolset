@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationBuildEvents" DisplayName="生成事件" PageTemplate="tool" Order="90" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <Rule.Categories>
+    <Category Name="PreBuild" DisplayName="生成前事件"/>
+    <Category Name="PreLink" DisplayName="链接前事件"/>
+    <Category Name="PostBuild" DisplayName="生成后事件"/>
+  </Rule.Categories>
+  <StringProperty Name="PreBuildCommand" Category="PreBuild" DisplayName="命令行" Description="指定让生成前事件工具运行的命令行。" F1Keyword="VC.Project.IVCEventTool.CommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PreBuildEvent" PersistedName="Command"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="PreBuildMessage" Category="PreBuild" DisplayName="说明" Description="指定让生成前事件工具显示的说明。" F1Keyword="VC.Project.IVCEventTool.Description">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PreBuildEvent" PersistedName="Message"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="PreBuildEventUseInBuild" Category="PreBuild" DisplayName="在生成中使用" Description="指定是否将该生成事件从当前配置的生成中排除。" F1Keyword="VC.Project.IVCEventTool.ExcludedFromBuild">
+  </BoolProperty>
+
+  <StringProperty Name="PreLinkCommand" Category="PreLink" DisplayName="命令行" Description="指定让链接前事件工具运行的命令行。" F1Keyword="VC.Project.IVCEventTool.CommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PreLinkEvent" PersistedName="Command"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="PreLinkMessage" Category="PreLink" DisplayName="说明" Description="指定让链接前事件工具显示的说明。" F1Keyword="VC.Project.IVCEventTool.Description">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PreLinkEvent" PersistedName="Message"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="PreLinkEventUseInBuild" Category="PreLink" DisplayName="在生成中使用" Description="指定是否将该生成事件从当前配置的生成中排除。" F1Keyword="VC.Project.IVCEventTool.ExcludedFromBuild">
+  </BoolProperty>
+
+  <StringProperty Name="PostBuildCommand" Category="PostBuild" DisplayName="命令行" Description="指定让生成后事件工具运行的命令行。" F1Keyword="VC.Project.IVCEventTool.CommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PostBuildEvent" PersistedName="Command"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="PostBuildMessage" Category="PostBuild" DisplayName="说明" Description="指定让生成后事件工具显示的说明。" F1Keyword="VC.Project.IVCEventTool.Description">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PostBuildEvent" PersistedName="Message"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="PostBuildEventUseInBuild" Category="PostBuild" DisplayName="在生成中使用" Description="指定是否将该生成事件从当前配置的生成中排除。" F1Keyword="VC.Project.IVCEventTool.ExcludedFromBuild">
+  </BoolProperty>
+</Rule>

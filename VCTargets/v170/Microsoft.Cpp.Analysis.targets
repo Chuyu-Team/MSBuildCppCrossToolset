@@ -1,0 +1,133 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Analysis.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Determine which analysis tools are enabled/disabled -->
+
+  <PropertyGroup>
+    <RunClangCppAnalysis>false</RunClangCppAnalysis>
+    <RunClangCppAnalysis Condition="'$(RunCppAnalysis)'=='true' AND '$(EnableClangTidyCodeAnalysis)'=='true' AND '$(ApplicationType)' != 'Linux'">true</RunClangCppAnalysis>
+  </PropertyGroup>
+
+  <Target Name="NoAnalysisToolEnabledWarning"
+          Condition="'$(RunCppAnalysis)'=='true' AND '$(EnableMicrosoftCodeAnalysis)'=='false' AND '$(EnableClangTidyCodeAnalysis)'=='false'"
+          AfterTargets="ClCompile">
+    <VCMessage Code="MSB8061" Type="Warning" />
+  </Target>
+
+  <!-- ClangTidy Run Code Analysis support -->
+
+  <PropertyGroup Condition="'$(RunClangCppAnalysis)'=='true'">
+    <ClangTidyAfterTargets>$(ClangTidyAfterTargets);ClCompile</ClangTidyAfterTargets>
+  </PropertyGroup>
+
+  <!-- Special case that runs analysis for selected file compile -->
+  <Target Name="RunSelectedFileClangTidy"
+          Condition="'$(RunClangCppAnalysis)'=='true' AND '$(SelectedFiles)'!=''"
+          DependsOnTargets="ClangTidy;AddSarifLogFileMetadata;WriteAnalysisResultManifest"
+          AfterTargets="ClCompile">
+    <Message Text="Running clang analysis targets for selected files $(SelectedFiles)" />
+  </Target>
+
+  <!-- ClangCl Toolset handling -->
+
+  <!-- Microsoft Code Analysis is not supported with the clang-cl toolset. -->
+  <Target Name="MicrosoftAnalysisIncompatiableWithClangCl"
+          Condition="'$(RunCppAnalysis)'=='true' AND '$(EnableMicrosoftCodeAnalysis)'=='true' AND '$(UseClangCl)'=='true'"
+          AfterTargets="ClCompile">
+    <VCMessage Code="MSB8060" Type="Error" />
+  </Target>
+
+  <PropertyGroup Condition="'$(EnableMicrosoftCodeAnalysis)'=='true' OR '$(EnableClangTidyCodeAnalysis)'=='true'">
+    <AnalysisResultManifestFile>$(IntDir)CodeAnalysisResultManifest.txt</AnalysisResultManifestFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RunCppAnalysis)'=='true' AND '$(EnableMicrosoftCodeAnalysis)'=='true' AND '$(VCCodeAnalysisUX)'=='true'">
+    <AfterClCompileTargets>$(AfterClCompileTargets);AddSarifLogFileMetadata</AfterClCompileTargets>
+    <WriteAnalysisResultManifestDependsOn>$(WriteAnalysisResultManifestDependsOn);AddSarifLogFileMetadata</WriteAnalysisResultManifestDependsOn>
+  </PropertyGroup>
+
+  <!-- Special case for individual file compilation. -->
+  <Target Name="SelectAnalysisManifest"
+          Condition="'$(RunMsvcAnalysis)'=='true' and '$(SelectedFiles)'!=''"
+          DependsOnTargets="AddSarifLogFileMetadata;WriteAnalysisResultManifest"
+          AfterTargets="SelectClCompile" />
+
+  <PropertyGroup Condition="'$(RunCppAnalysis)'=='true' AND ('$(EnableMicrosoftCodeAnalysis)'=='true' OR '$(EnableClangTidyCodeAnalysis)'=='true') AND '$(VCCodeAnalysisUX)'=='true'">
+    <AfterClCompileTargets>$(AfterClCompileTargets);WriteAnalysisResultManifest</AfterClCompileTargets>
+  </PropertyGroup>
+
+  <!-- Add Sarif file metadata to each CL item. -->
+  <Target Name="AddSarifLogFileMetadata">
+    <ItemGroup>
+      <ClCompile>
+        <SarifLogFile>%(ObjectFileName)%(FileName).nativecodeanalysis.sarif</SarifLogFile>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
+
+  <!-- Create the analysis result manifest file. -->
+  <Target Name="WriteAnalysisResultManifest"
+          DependsOnTargets="$(WriteAnalysisResultManifestDependsOn)">
+    <Delete Condition="Exists($(AnalysisResultManifestFile))"
+            Files="$(AnalysisResultManifestFile)" />
+    <!-- Write CL result paths. -->
+    <WriteLinesToFile
+          Condition="'$(EnableMicrosoftCodeAnalysis)'=='true'"
+          File="$(AnalysisResultManifestFile)"
+          Lines="@(ClCompile->'%(SarifLogFile)')"
+          Encoding="Unicode"
+          Overwrite="false" />
+    <!-- Write ClangTidy result path. -->
+    <WriteLinesToFile
+          Condition="'$(EnableClangTidyCodeAnalysis)'=='true'"
+          File="$(AnalysisResultManifestFile)"
+          Lines="$(IntDir)$(ClangTidyLogFile)"
+          Encoding="Unicode"
+          Overwrite="false" />
+    <!-- Write experimental diagnostic result paths. -->
+    <WriteLinesToFile
+          Condition="'$(EnableMicrosoftCodeAnalysis)'=='true'"
+          File="$(AnalysisResultManifestFile)"
+          Lines="@(ClCompile->'%(ExpSarifLogFile)')"
+          Encoding="Unicode"
+          Overwrite="false" />
+  </Target>
+
+  <!-- Properties page for C++ Code Analysis configuration -->
+  <ItemGroup Condition="'$(ConfigurationType)'!='Utility' AND '$(ApplicationType)' != 'Linux'">
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(LangID)\code_analysis.xml" />
+  </ItemGroup>
+
+  <!-- Experimental tooling diagnostics. -->
+  <PropertyGroup Condition="'$(EnableExperimentalDiagnostics)'=='true'">
+    <AfterClCompileTargets>$(AfterClCompileTargets);AddExperimentalSarifLogFileMetadata;WriteAnalysisResultManifest</AfterClCompileTargets>
+    <OnClCompileErrorTargets>$(OnClCompileErrorTargets);AddExperimentalSarifLogFileMetadata;WriteAnalysisResultManifest</OnClCompileErrorTargets>
+    <WriteAnalysisResultManifestDependsOn>$(WriteAnalysisResultManifestDependsOn);AddExperimentalSarifLogFileMetadata</WriteAnalysisResultManifestDependsOn>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(EnableExperimentalDiagnostics)'=='true'">
+    <ClCompile>
+      <AdditionalOptions>%(AdditionalOptions) /experimental:log$(IntDir)\</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- Add Experimental Sarif file metadata to each CL item. -->
+  <Target Name="AddExperimentalSarifLogFileMetadata">
+    <ItemGroup>
+      <ClCompile>
+        <ExpSarifLogFile>%(ObjectFileName)%(FileName).sarif</ExpSarifLogFile>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
+</Project>

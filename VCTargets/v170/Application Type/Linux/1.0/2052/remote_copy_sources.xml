@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="LinuxRemoteCopySources" DisplayName="复制源" PageTemplate="generic" Description="复制源" Order="9" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" Label=""/>
+  </Rule.DataSource> 
+
+  <StringProperty Name="SourcesToCopyRemotelyOverride" DisplayName="要复制的源" Description="指定要复制到远程系统的源。如果更改此列表，要复制到远程系统的文件所在的目录结构可能改变或受到其他影响。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="General" Default="">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" Label=""/>
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <BoolProperty Name="LocalRemoteCopySources" DisplayName="复制和管理源" Description="指定是否要将源复制到远程系统。" Category="General" F1Keyword="">
+  </BoolProperty>
+  
+  <BoolProperty Visible="false" Name="CleanRemoteProjectDirectory" DisplayName="清理远程项目目录" Description="指定是否在执行清理生成目标时删除远程项目目录。" Category="General" F1Keyword="">
+  </BoolProperty>
+     
+  <StringListProperty Name="AdditionalSourcesToCopyMapping" DisplayName="要复制的其他源" Description="指定要从远程系统中复制的其他源。(可选)可使用如下语法将列表提供为本地到远程映射对: fulllocalpath1:=fullremotepath1;fulllocalpath2:=fullremotepath2，可在其中将本地文件复制远程系统上的指定远程位置。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="General" Default="">
+    <StringListProperty.DataSource>
+      <DataSource Persistence="ProjectFile" Label=""/>
+    </StringListProperty.DataSource>
+  </StringListProperty>
+  
+  <EnumProperty Name="RemoteCopySourceMethod" DisplayName="远程复制源方法" Description="指定用于从远程 Linux 目标复制源的方法。" Category="General" F1Keyword="VC.Project.VCConfiguration.RemoteCopySourceMethod" Default="rsync">
+    <EnumValue Name="rsync" DisplayName="rsync"/>
+    <EnumValue Name="sftp" DisplayName="sftp"/>
+    <EnumProperty.DataSource>
+      <DataSource Persistence="ProjectFile" Label=""/>
+    </EnumProperty.DataSource>
+  </EnumProperty>
+</Rule>

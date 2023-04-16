@@ -1,0 +1,140 @@
+﻿<!--
+***********************************************************************************************
+Linux.Common.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- RecipeFile Targets -->
+  <PropertyGroup>
+    <BeforeBuildCompileTargets>
+      CreateRecipeFile;
+      MergeRecipeFiles;
+      ComputeIncludePathsFromRecipes;
+      $(BeforeBuildCompileTargets);
+    </BeforeBuildCompileTargets>
+
+    <DetermineProjectTypeTargets>
+      $(DetermineProjectTypeTargets);
+      ComputeIncludePathsFromRecipes
+    </DetermineProjectTypeTargets>
+  </PropertyGroup>
+
+  <UsingTask TaskName="Microsoft.Build.CPPTasks.MergeRecipeLists" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+
+  <PropertyGroup>
+    <ProjectRecipeFile>$([System.IO.Path]::Combine($(ProjectDir), $(TargetName)$(TargetExt).recipe))</ProjectRecipeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectRecipe Include="$(ProjectRecipeFile)">
+      <Configuration>$(Configuration)</Configuration>
+      <Platform>$(Platform)</Platform>
+      <Triplet>$(TargetTriplet)</Triplet>
+    </ProjectRecipe>
+  </ItemGroup>
+
+  <Target Name="GetRecipeFile" DependsOnTargets="CreateRecipeFile" Returns="@(ProjectRecipe)" />
+
+  <Target Name="CreateRecipeFile" DependsOnTargets="$(CommonBuildOnlyTargets);_AssignProjectReferencesPlatformType;$(CreateRecipeFileDependOnTargets)">
+    <MSBuild Projects="@(_MSBuildProjectReferenceExistent->WithMetadataValue('ProjectApplicationType', '$(ProjectApplicationType)'))"
+             Targets="GetRecipeFile"
+             BuildInParallel="$(BuildInParallel)"
+             Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration);%(_MSBuildProjectReferenceExistent.SetPlatform)"
+             Condition="'%(_MSBuildProjectReferenceExistent.Extension)' == '.vcxproj' and '@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''">
+      <Output TaskParameter="TargetOutputs" ItemName="ReferenceRecipeFiles" />
+    </MSBuild>
+
+    <ItemGroup>
+      <IncludeFolders Include="$(ProjectPublicIncludePath)" />
+      <ProjectRecipe>
+        <LocalLibPath>$(TargetPath)</LocalLibPath>
+        <RemoteLibPath>$(RemoteTargetPath)</RemoteLibPath>
+        <ProjectPublicIncludePath>@(IncludeFolders->'%(fullpath)')</ProjectPublicIncludePath>
+        <RemoteIncludePath>$(RemoteIncludePath)</RemoteIncludePath>
+        <ObjPaths>$([System.IO.Path]::Combine($(ProjectDir), $(IntDir)))</ObjPaths>
+        <RecipeFiles>@(ReferenceRecipeFiles)</RecipeFiles>
+        <RemoteProjectPath>$(_ResolvedRemoteProjectDir)</RemoteProjectPath>
+      </ProjectRecipe>
+      <ProjectRecipe Include="@(ReferenceRecipeFiles)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="MergeRecipeFiles" DependsOnTargets="CreateRecipeFile" >
+    <MergeRecipeLists
+      RecipeFiles="@(ProjectRecipe)"
+      OutputFile="$(ProjectRecipeFile).merged">
+      <Output TaskParameter="MergedRecipe" ItemName="MergedRecipe" />
+    </MergeRecipeLists>
+  </Target>
+
+  <Target Name="ComputeIncludePathsFromRecipes" DependsOnTargets="MergeRecipeFiles">
+    <PropertyGroup>
+      <!-- Designtime should use local paths -->
+      <AdditionalIncludeDirectoriesFromRecipes Condition="'$(DesignTimeBuild)' != 'true'">%(MergedRecipe.RemoteIncludePath);$(AdditionalIncludeDirectoriesFromRecipes)</AdditionalIncludeDirectoriesFromRecipes>
+      <AdditionalIncludeDirectoriesFromRecipes Condition="'$(DesignTimeBuild)' == 'true'">%(MergedRecipe.ProjectPublicIncludePath);$(AdditionalIncludeDirectoriesFromRecipes)</AdditionalIncludeDirectoriesFromRecipes>
+      <IncludePath>$(IncludePath);$(AdditionalIncludeDirectoriesFromRecipes)</IncludePath>
+    </PropertyGroup>
+  </Target>
+
+  <!-- Change this target if link needs to clean extra files that is not tracked from the task. -->
+  <Target Name="ComputeLinkImportLibraryOutputsForClean" />
+
+  <!-- Linux doesn't support pdbs.-->
+  <Target Name="CreateFullDebugSymbols" />
+
+  <!-- Extract shared objects from Sources list so we link against portable dynamic libraries -->
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.ExtractSharedLibraryReferences" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+
+  <PropertyGroup>
+    <SharedLibraryPathFile>$(TLogLocation)SharedLibraryPaths.$(TargetName).tlog</SharedLibraryPathFile>
+  </PropertyGroup>
+  
+  <Target Name="_ExtractSharedLibraryReferences" >
+  <ExtractSharedLibraryReferences
+    Sources="@(Link)">
+    <Output TaskParameter="RemoveFromLink" ItemName="RemoveFromLink"/>
+    <Output TaskParameter="SharedLibrarySources" ItemName="SharedLibrarySources"/>
+    <Output TaskParameter="SharedLibraryDirectories" ItemName="SharedLibraryDirectories"/>
+    </ExtractSharedLibraryReferences>
+    <ItemGroup>
+      <Link Remove="@(RemoveFromLink)"/>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_WriteSharedLibraryPaths" Condition="@(SharedLibraryDirectories) != '' and $(LinkSkippedExecution) != 'true'" AfterTargets="_ExtractSharedLibraryReferences">
+    <WriteLinesToFile
+            File="$(SharedLibraryPathFile)"
+            Lines="@(SharedLibraryDirectories)"
+            Overwrite="true"
+            Encoding="Unicode"/>
+  </Target>
+
+  <!-- Copy Sources Targets shared between Linux & WSL2-->
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.ValidateSources" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.ConsolidateSourcesToCopy" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+
+  <Target Name="_ValidateSources" Condition="'$(LocalRemoteCopySources)' != 'false'">
+    <ValidateSources
+      Sources ="@(FinalSourcesToCopyRemotely)"
+      ProjectDir="$(ProjectDir)" />
+  </Target>
+
+  <Target Name="_ConsolidateSourcesToCopy" Condition="'$(LocalRemoteCopySources)' != 'false'">
+    <ConsolidateSourcesToCopy
+      ProjectDir="$(ProjectDir)"
+      Sources="@(SourcesToCopyRemotely);@(DataFilesToCopyRemotely)"
+      SourcesOverride="$(SourcesToCopyRemotelyOverride)"
+      AdditionalSourcesMappings="$(AdditionalSourcesToCopyMapping)">
+      <Output TaskParameter="SourcesToCopyRemotely" ItemName="FinalSourcesToCopyRemotely"/>
+      <Output TaskParameter="AdditionalSourcesToCopyRemotely" ItemName="AdditionalSourcesToCopyRemotely"/>
+    </ConsolidateSourcesToCopy>
+  </Target>
+</Project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="AppHostLocalDebugger" DisplayName="本地调试器" PageTemplate="debugger" Order="100" Description="本地调试器选项" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+  <Rule.Metadata>
+    <sys:Guid x:Key="DebugTargetTypeCommandGuid">FEEA6E9D-77D8-423F-9EDE-3970CBB76125</sys:Guid>
+    <sys:UInt32 x:Key="DebugTargetTypeCommandId">0x200</sys:UInt32>
+  </Rule.Metadata>
+  <Rule.DataSource>
+    <DataSource Persistence="UserFile"/>
+  </Rule.DataSource>
+  <Rule.Categories>
+    <Category Name="StartOptions" DisplayName="启动选项" Description="启动选项"/>
+  </Rule.Categories>
+  <BoolProperty Name="DebuggerLaunchApplication" DisplayName="启动应用程序" Category="StartOptions" Description="指定是立即启动我的应用程序还是在我的应用程序开始运行时等待对其进行调试。"/>
+  <EnumProperty Name="DebuggerType" DisplayName="调试器类型" Category="StartOptions" Description="指定要启用的调试器。设置为“混合”时，将同时调用调试托管代码和本机代码的调试器。">
+    <EnumValue Name="NativeOnly" DisplayName="仅限本机" Description="仅限本机"/>
+    <EnumValue Name="ManagedOnly" DisplayName="仅限托管" Description="仅限托管"/>
+    <EnumValue Name="GPUOnly" DisplayName="仅限 GPU (C++ AMP)" Description="仅限 GPU (C++ AMP)"/>
+    <EnumValue Name="Script" DisplayName="仅脚本" Description="仅脚本"/>
+    <EnumValue Name="Mixed" DisplayName="混合(托管和本机)" Description="混合(托管和本机)"/>
+  </EnumProperty>
+  <DynamicEnumProperty Name="GPUDebuggerTargetType" DisplayName="调试加速器类型" EnumProvider="GPUTargets" Description="要用于调试 GPU 代码的调试加速器类型。(GPU 调试器为活动状态时可用。)"/>
+  <EnumProperty Name="GPURefDebuggerBreakOnAllThreads" DisplayName="GPU 默认断点行为" Description="设置 GPU 调试器中断的频率。" F1Keyword="VC.Project.IVCGPURefDebugPageObject.BreakpointBehavior">
+    <EnumValue Name="GPURefBreakOncePerWarp" DisplayName="每次换行中断一次" Description="每次换行中断一次"/>
+    <EnumValue Name="GPURefBreakForCPUThread" DisplayName="对每个线程中断(类似 CPU 行为)" Description="对每个线程中断(类似 CPU 行为)"/>
+  </EnumProperty>
+</Rule>

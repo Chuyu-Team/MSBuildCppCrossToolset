@@ -1,0 +1,218 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Unity.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Unity build support
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="CreateUnityFiles" AssemblyFile="$(MSBuildThisFileDirectory)Microsoft.Build.CppTasks.Common.dll"/>
+  <UsingTask TaskName="CleanupOldUnityFiles" AssemblyFile="$(MSBuildThisFileDirectory)Microsoft.Build.CppTasks.Common.dll"/>
+
+  <ItemGroup>
+    <PropertyPageSchema Condition="'$(ConfigurationType)' != 'Utility'" Include="$(MSBuildThisFileDirectory)$(LangID)\unity_cl_extension.xml"/>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(DesignTimeBuild)' != 'true'">
+    <ComputeCompileInputsTargets>
+      $(ComputeCompileInputsTargets);
+      CreateUnityFiles;
+    </ComputeCompileInputsTargets>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(DesignTimeBuild)' == 'true'">
+    <ComputeCompileInputsTargets>
+      $(ComputeCompileInputsTargets);
+      HideUnityFilesFromIntellisense;
+    </ComputeCompileInputsTargets>
+  </PropertyGroup>
+
+  <Target Name="HideUnityFilesFromIntellisense"
+          Condition="'@(ClCompile)' != ''">
+    <ItemGroup>
+      <ClCompile Condition="'%(ClCompile.CustomUnityFile)' == 'true' and '%(ClCompile.IncludeInUnityFile)' != 'true'">
+        <AdditionalOptions>/ClRemove %(ClCompile.AdditionalOptions)</AdditionalOptions>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
+
+
+  <Target Name="CreateUnityFiles"
+          Condition="'@(ClCompile)' != '' and '@(SelectedFiles)' == ''">
+    <ItemGroup>
+      <_UnityClCompile Include="@(ClCompile)" Condition="'%(ClCompile.IncludeInUnityFile)' == 'true' and
+                                                         '%(ClCompile.CustomUnityFile)' != 'true' and 
+                                                         '%(ClCompile.UnityFilesDirectory)' != '' and 
+                                                         '%(ClCompile.PrecompiledHeader)' != 'Create' and 
+                                                         '%(ClCompile.ExcludedFromBuild)' != 'true'" />
+    </ItemGroup>
+
+    <!-- Create unity files, which will contain files with the same compiler options  -->
+    <CreateUnityFiles
+        Condition="'@(_UnityClCompile)' != ''"
+        Sources="@(_UnityClCompile)"
+        UnityFilesDirectory="%(_UnityClCompile.UnityFilesDirectory)"
+        CombineFilesOnlyFromTheSameFolder="%(_UnityClCompile.CombineFilesOnlyFromTheSameFolder)"
+        MinFilesInUnityFile="%(_UnityClCompile.MinFilesInUnityFile)"
+        MaxFilesInUnityFile="%(_UnityClCompile.MaxFilesInUnityFile)"
+        MinUnityFiles="%(_UnityClCompile.MinUnityFiles)"
+        AddCodeBeforeSourceInclude="%(_UnityClCompile.AddCodeBeforeSourceInclude)"
+        AddCodeAfterSourceInclude="%(_UnityClCompile.AddCodeAfterSourceInclude)"
+        AddCodeBeforeSourceIncludeFromFile="%(_UnityClCompile.AddCodeBeforeSourceIncludeFromFile)"
+        AddCodeAfterSourceIncludeFromFile="%(_UnityClCompile.AddCodeAfterSourceIncludeFromFile)"
+        ProjectName="$(ProjectName)"
+        AdditionalBMIDirectories           ="%(_UnityClCompile.AdditionalBMIDirectories)"
+        AdditionalHeaderUnitDependencies   ="%(_UnityClCompile.AdditionalHeaderUnitDependencies)"
+        AdditionalIncludeDirectories       ="%(_UnityClCompile.AdditionalIncludeDirectories)"
+        AdditionalModuleDependencies       ="%(_UnityClCompile.AdditionalModuleDependencies)"
+        AdditionalOptions                  ="%(_UnityClCompile.AdditionalOptions) /bigobj"
+        AdditionalUsingDirectories         ="%(_UnityClCompile.AdditionalUsingDirectories)"
+        AssemblerListingLocation           ="%(_UnityClCompile.AssemblerListingLocation)"
+        AssemblerOutput                    ="%(_UnityClCompile.AssemblerOutput)"
+        BasicRuntimeChecks                 ="%(_UnityClCompile.BasicRuntimeChecks)"
+        BrowseInformation                  ="%(_UnityClCompile.BrowseInformation)"
+        BrowseInformationFile              ="%(_UnityClCompile.BrowseInformationFile)"
+        BufferSecurityCheck                ="%(_UnityClCompile.BufferSecurityCheck)"
+        CallingConvention                  ="%(_UnityClCompile.CallingConvention)"
+        ControlFlowGuard                   ="%(_UnityClCompile.ControlFlowGuard)"
+        CompileAsManaged                   ="%(_UnityClCompile.CompileAsManaged)"
+        CompileAsWinRT                     ="%(_UnityClCompile.CompileAsWinRT)"
+        CompileAs                          ="%(_UnityClCompile.CompileAs)"
+        ConformanceMode                    ="%(_UnityClCompile.ConformanceMode)"
+        DebugInformationFormat             ="%(_UnityClCompile.DebugInformationFormat)"
+        DiagnosticsFormat                  ="%(_UnityClCompile.DiagnosticsFormat)"
+        DisableLanguageExtensions          ="%(_UnityClCompile.DisableLanguageExtensions)"
+        DisableSpecificWarnings            ="%(_UnityClCompile.DisableSpecificWarnings)"
+        EnableASAN                         ="%(_UnityClCompile.EnableASAN)"
+        EnableEnhancedInstructionSet       ="%(_UnityClCompile.EnableEnhancedInstructionSet)"
+        EnableFiberSafeOptimizations       ="%(_UnityClCompile.EnableFiberSafeOptimizations)"
+        EnableFuzzer                       ="%(_UnityClCompile.EnableFuzzer)"
+        EnableModules                      ="%(_UnityClCompile.EnableModules)"
+        EnableParallelCodeGeneration       ="%(_UnityClCompile.EnableParallelCodeGeneration)"
+        EnablePREfast                      ="%(_UnityClCompile.EnablePREfast)"
+        EnforceTypeConversionRules         ="%(_UnityClCompile.EnforceTypeConversionRules)"
+        ErrorReporting                     ="%(_UnityClCompile.ErrorReporting)"
+        ExceptionHandling                  ="%(_UnityClCompile.ExceptionHandling)"
+        ExpandAttributedSource             ="%(_UnityClCompile.ExpandAttributedSource)"
+        ExternalDirectoriesEnv             ="%(_UnityClCompile.ExternalDirectoriesEnv)"
+        ExternalTemplatesDiagnostics       ="%(_UnityClCompile.ExternalTemplatesDiagnostics)"
+        ExternalWarningLevel               ="%(_UnityClCompile.ExternalWarningLevel)"
+        DisableAnalyzeExternal             ="%(_UnityClCompile.DisableAnalyzeExternal)"
+        AnalyzeExternalRuleset             ="%(_UnityClCompile.AnalyzeExternalRuleset)"
+        FavorSizeOrSpeed                   ="%(_UnityClCompile.FavorSizeOrSpeed)"
+        FloatingPointExceptions            ="%(_UnityClCompile.FloatingPointExceptions)"
+        FloatingPointModel                 ="%(_UnityClCompile.FloatingPointModel)"
+        ForceConformanceInForLoopScope     ="%(_UnityClCompile.ForceConformanceInForLoopScope)"
+        ForcedIncludeFiles                 ="%(_UnityClCompile.ForcedIncludeFiles)"
+        ForcedUsingFiles                   ="%(_UnityClCompile.ForcedUsingFiles)"
+        FunctionLevelLinking               ="%(_UnityClCompile.FunctionLevelLinking)"
+        GenerateModuleDependencies         ="%(_UnityClCompile.GenerateModuleDependencies)"
+        GenerateSourceDependencies         ="%(_UnityClCompile.GenerateSourceDependencies)"       
+        GenerateXMLDocumentationFiles      ="%(_UnityClCompile.GenerateXMLDocumentationFiles)"
+        GuardEHContMetadata                ="%(_UnityClCompile.GuardEHContMetadata)"
+        GuardSignedReturns                 ="%(_UnityClCompile.GuardSignedReturns)"
+        IgnoreStandardIncludePath          ="%(_UnityClCompile.IgnoreStandardIncludePath)"
+        InlineFunctionExpansion            ="%(_UnityClCompile.InlineFunctionExpansion)"
+        IntelJCCErratum                    ="%(_UnityClCompile.IntelJCCErratum)"
+        IntrinsicFunctions                 ="%(_UnityClCompile.IntrinsicFunctions)"
+        LanguageStandard                   ="%(_UnityClCompile.LanguageStandard)"
+        LanguageStandard_C                 ="%(_UnityClCompile.LanguageStandard_C)"
+        MinimalRebuild                     ="%(_UnityClCompile.MinimalRebuild)"
+        ModuleDependenciesFile             ="%(_UnityClCompile.ModuleDependenciesFile)"
+        ModuleOutputFile                   ="%(_UnityClCompile.ModuleOutputFile)"              
+        MultiProcessorCompilation          ="%(_UnityClCompile.MultiProcessorCompilation)"
+        ObjectFileName                     ="$(IntDir)"
+        OmitDefaultLibName                 ="%(_UnityClCompile.OmitDefaultLibName)"
+        OmitFramePointers                  ="%(_UnityClCompile.OmitFramePointers)"
+        OpenMPSupport                      ="%(_UnityClCompile.OpenMPSupport)"
+        Optimization                       ="%(_UnityClCompile.Optimization)"
+        PrecompiledHeader                  ="%(_UnityClCompile.PrecompiledHeader)"
+        PrecompiledHeaderFile              ="%(_UnityClCompile.PrecompiledHeaderFile)"
+        PrecompiledHeaderOutputFile        ="%(_UnityClCompile.PrecompiledHeaderOutputFile)"
+        PREfastAdditionalOptions           ="%(_UnityClCompile.PREfastAdditionalOptions)"
+        PREfastAdditionalPlugins           ="%(_UnityClCompile.PREfastAdditionalPlugins)"
+        PREfastLog                         ="%(_UnityClCompile.PREfastLog)"
+        PREfastRulesetFile                 ="%(_UnityClCompile.PREfastRulesetFile)"
+        PREfastProjectDirectory            ="%(_UnityClCompile.PREfastProjectDirectory)"
+        PREfastRulesetDirectories          ="%(_UnityClCompile.PREfastRulesetDirectories)"       
+        PreprocessKeepComments             ="%(_UnityClCompile.PreprocessKeepComments)"
+        PreprocessorDefinitions            ="%(_UnityClCompile.PreprocessorDefinitions)"
+        PreprocessSuppressLineNumbers      ="%(_UnityClCompile.PreprocessSuppressLineNumbers)"
+        PreprocessToFile                   ="%(_UnityClCompile.PreprocessToFile)"
+        ProcessorNumber                    ="%(_UnityClCompile.ProcessorNumber)"
+        ProgramDataBaseFileName            ="%(_UnityClCompile.ProgramDataBaseFileName)"
+        RemoveUnreferencedCodeData         ="%(_UnityClCompile.RemoveUnreferencedCodeData)"
+        RuntimeLibrary                     ="%(_UnityClCompile.RuntimeLibrary)"
+        RuntimeTypeInfo                    ="%(_UnityClCompile.RuntimeTypeInfo)"
+        SDLCheck                           ="%(_UnityClCompile.SDLCheck)"
+        ShowIncludes                       ="%(_UnityClCompile.ShowIncludes)"
+        SourceDependenciesFile             ="%(_UnityClCompile.SourceDependenciesFile)"
+        WarningVersion                     ="%(_UnityClCompile.WarningVersion)"
+        SmallerTypeCheck                   ="%(_UnityClCompile.SmallerTypeCheck)"
+        SpectreMitigation                  ="%(_UnityClCompile.SpectreMitigation)"
+        StdIfcDirectory                    ="%(_UnityClCompile.StdIfcDirectory)"
+        StringPooling                      ="%(_UnityClCompile.StringPooling)"
+        StructMemberAlignment              ="%(_UnityClCompile.StructMemberAlignment)"
+        SupportJustMyCode                  ="%(_UnityClCompile.SupportJustMyCode)"
+        SuppressStartupBanner              ="%(_UnityClCompile.SuppressStartupBanner)"
+        TranslateIncludes                  ="%(_UnityClCompile.TranslateIncludes)"
+        TreatAngleIncludeAsExternal        ="%(_UnityClCompile.TreatAngleIncludeAsExternal)"
+        TreatSpecificWarningsAsErrors      ="%(_UnityClCompile.TreatSpecificWarningsAsErrors)"
+        TreatWarningAsError                ="%(_UnityClCompile.TreatWarningAsError)"
+        TreatWChar_tAsBuiltInType          ="%(_UnityClCompile.TreatWChar_tAsBuiltInType)"
+        UndefineAllPreprocessorDefinitions ="%(_UnityClCompile.UndefineAllPreprocessorDefinitions)"
+        UndefinePreprocessorDefinitions    ="%(_UnityClCompile.UndefinePreprocessorDefinitions)"
+        UseFullPaths                       ="%(_UnityClCompile.UseFullPaths)"
+        UseStandardPreprocessor            ="%(_UnityClCompile.UseStandardPreprocessor)"
+        UseUnicodeForAssemblerListing      ="%(_UnityClCompile.UseUnicodeForAssemblerListing)"
+        WarningLevel                       ="%(_UnityClCompile.WarningLevel)"
+        WholeProgramOptimization           ="%(_UnityClCompile.WholeProgramOptimization)"
+        WinRTNoStdLib                      ="%(_UnityClCompile.WinRTNoStdLib)"
+        XMLDocumentationFileName           ="%(_UnityClCompile.XMLDocumentationFileName)"
+        CreateHotpatchableImage            ="%(_UnityClCompile.CreateHotpatchableImage)"
+    >
+      <Output TaskParameter="UnityFiles" ItemName="_GeneratedUnityClCompile"/>
+    </CreateUnityFiles>
+
+    <ItemGroup>
+      <_UnityFileDependency Include="@(_UnityClCompile->MetaData('AddCodeBeforeSourceIncludeFromFile')->FullPath()->ToUpperInvariant()->Distinct())" />
+      <_UnityFileDependency Include="@(_UnityClCompile->MetaData('AddCodeAfterSourceIncludeFromFile')->FullPath()->ToUpperInvariant()->Distinct())" />
+    </ItemGroup>
+
+    <CleanupOldUnityFiles
+      Sources             ="@(_GeneratedUnityClCompile)"
+      ObjectFileDirectory ="$(IntDir)"
+      DependencyFiles     ="@(_UnityFileDependency)"
+      TrackerLogDirectory ="$(TLogLocation)"
+      TrackFileAccess     ="$(TrackFileAccess)"
+    />
+
+    <ItemGroup>
+      <!-- remove all items which are included in generated unity files -->
+      <ClCompile Remove="@(_UnityClCompile)" Condition="'@(_UnityClCompile)' != ''"/>
+
+      <!-- remove all items which are included in custom unity files -->
+      <ClCompile Remove="@(ClCompile)" Condition="'%(ClCompile.IncludeInUnityFile)' == 'true' and
+                                                   '%(ClCompile.CustomUnityFile)' == 'true' and
+                                                   '%(ClCompile.PrecompiledHeader)' != 'Create' and 
+                                                   '%(ClCompile.ExcludedFromBuild)' != 'true'" />
+
+      <!-- add all unity files -->
+      <ClCompile Include="@(_GeneratedUnityClCompile)" />
+
+      <!-- cleanup -->
+      <_UnityClCompile Remove="@(_UnityClCompile)" />
+      <_GeneratedUnityClCompile Remove="@(_GeneratedUnityClCompile)" />
+      <_UnityFileDependency Remove="@(_UnityFileDependency)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

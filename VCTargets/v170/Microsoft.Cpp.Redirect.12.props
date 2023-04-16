@@ -1,0 +1,38 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.12.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+      created a backup copy.  Incorrect changes to this file will make it
+      impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <_VCTargetsPathForToolset Condition="'$(VCTargetsPath12)' != ''">$([MSBuild]::Unescape($([Microsoft.Build.Utilities.ToolLocationHelper]::FindRootFolderWhereAllFilesExist($(VCTargetsPath12), $(_RelativeToolsetFiles)))))</_VCTargetsPathForToolset>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(_VCTargetsPathForToolset)' != ''">
+    <_ToolsetFound>true</_ToolsetFound>
+    <_ToolsetVCTargetsVersion>v120</_ToolsetVCTargetsVersion>
+  </PropertyGroup>
+
+  <Import Condition="'$(_ToolsetFound)' == 'true'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.ToolsetLocation.props" />
+
+  <!-- try older VS versions if toolset is not found -->
+  <Import Condition="'$(_ToolsetFound)' != 'true'  and '$(MinSupportedVCTargetsVersion)' != 'v120'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.Redirect.11.props" />
+  
+  <PropertyGroup Condition="'$(_ToolsetFound)' == 'true' and ('$(WindowsAppContainer)' == 'true' or '$(ApplicationType)' == 'Windows Phone Silverlight')">
+     <!-- For Phone 8.1 projects, override the _UpgradePlatformToolset, as upgrade to V140 toolset should be disabled -->
+     <_UpgradePlatformToolsetFor_v120>v120</_UpgradePlatformToolsetFor_v120>
+  </PropertyGroup>
+ 
+  <PropertyGroup Condition="'$(_ToolsetFound)' == 'true' and '$(WindowsAppContainer)' == 'true'">
+    <CanBeStartupProject>$(AppxPackage)</CanBeStartupProject>
+  </PropertyGroup>
+
+</Project>

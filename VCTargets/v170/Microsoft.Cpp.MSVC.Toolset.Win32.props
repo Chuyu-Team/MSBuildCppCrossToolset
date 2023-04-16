@@ -1,0 +1,24 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.MSVC.Toolset.Win32.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.MSVC.Toolset.Common.props"/>
+
+  <PropertyGroup>
+    <ExecutablePath Condition="'$(ExecutablePath)' == ''">$(VC_ExecutablePath_x86);$(CommonExecutablePath)</ExecutablePath>
+    <ReferencePath Condition="'$(ReferencePath)' == ''">$(VC_ReferencesPath_x86);</ReferencePath>
+    <LibraryPath Condition="'$(LibraryPath)' == ''">$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <ExcludePath Condition="'$(ExcludePath)' == ''">$(CommonExcludePath);$(VC_ExecutablePath_x86);$(VC_LibraryPath_x86)</ExcludePath>
+    <DebugCppRuntimeFilesPath>$(VC_DebugCppRuntimeFilesPath_x86);$(UniversalDebugCRT_ExecutablePath_x86)</DebugCppRuntimeFilesPath>
+    <CppRuntimeFilesPath>$(VC_CppRuntimeFilesPath_x86);</CppRuntimeFilesPath>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,230 @@
+<!--
+***********************************************************************************************
+BuidAsX.ARM64EC.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- *******************************************************************************************
+    These are specific targets that are needed when we are trying to build a binary as ARM64X.
+    ARM64X is the resulting binary from linking ARM64 and ARM64EC objs and libs into one.
+    When building a project as ARM64EC/ARM64, if the BuildAsX property is set to true, 
+    the  BuildOtherXConfiguration is invoked in order to retrieve the objs and extra libs from the
+    corresponding ARM64/ARM64EC project needed by the linker to build the project as ARM64X
+  ******************************************************************************************* -->
+
+  <PropertyGroup>
+    <BuildAsXBuildStepsDependsOn>
+      PrepareForBuild;
+      InitializeBuildStatus;
+      ResolveReferences;
+      ResetBuildingInsideVisualStudio;
+      BuildExtraNonXReferences;
+    </BuildAsXBuildStepsDependsOn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <BuildLibTargets>
+      $(BuildLibTargets);
+      BuildOtherXConfiguration;
+    </BuildLibTargets>
+    <BuildAsXTargets>
+      RemoveLibTargets;
+      RemoveAlreadyCompiledResources;
+      BuildAsXBuildSteps;
+      GetLinkInputs;
+      GetLibInputs
+    </BuildAsXTargets>
+  </PropertyGroup>
+
+  <Target Name="BuildOtherXConfiguration"
+          Condition="'$(BuildAsX)' == 'true'"
+          DependsOnTargets="GetReferencedVCProjectsInfo;$(ComputeLibInputsTargets);$(ComputeLinkInputsTargets)"
+          Returns="@(LibAndLinkInputs)">
+    <PropertyGroup Condition="'@(ReferencedVCProjectsInfo)' != ''">
+      <_ReferencedProjectsBuildAsX Condition="'%(ReferencedVCProjectsInfo.FileType)' == 'BuildAsX'">@(ReferencedVCProjectsInfo)</_ReferencedProjectsBuildAsX>
+    </PropertyGroup>
+ 
+    <PropertyGroup>
+      <_ResourcesAlreadyCompiled Condition="'@(ResourceCompile)' != ''">@(ResourceCompile)</_ResourcesAlreadyCompiled>
+    </PropertyGroup>
+
+    <MSBuild
+            Projects="$(OtherProjectForX)" 
+            Targets="$(BuildAsXTargets)"
+            Properties="Configuration=$(OtherConfigurationNameForX);BuildProjectReferences=false;Platform=$(PlatformForX);BuildingForX=true;BuildAsX=false;_ResourcesAlreadyCompiled=$(_ResourcesAlreadyCompiled);_ReferencedProjectsBuildAsX=$(_ReferencedProjectsBuildAsX)">
+            <Output TaskParameter="TargetOutputs" ItemName="LibAndLinkInputs" /> 
+    </MSBuild>
+
+    <ItemGroup>
+      <Link Include="$(ModuleDefPrefix)%(Link.ModuleDefinitionFile)" Condition="'$(RemoveModuleDef)' == 'true' and '%(Link.ModuleDefinitionFile)' != ''"/>
+      <Lib Include="$(ModuleDefPrefix)%(Lib.ModuleDefinitionFile)" Condition="'$(RemoveModuleDef)' == 'true' and '%(Lib.ModuleDefinitionFile)' != ''"/>
+      <Link Include="@(LibAndLinkInputs)" Condition="'%(LibAndLinkInputs.Type)' == 'LinkModuleDefinitionFile'"/>
+      <Lib Include="@(LibAndLinkInputs)" Condition="'%(LibAndLinkInputs.Type)' == 'LibModuleDefinitionFile'"/>
+      <Link Condition="'%(LibAndLinkInputs.Type)' == 'ForLink'" Include="@(LibAndLinkInputs)"/>
+      <Lib Condition="'%(LibAndLinkInputs.Type)' == 'ForLib'" Include="@(LibAndLinkInputs)"/>
+    </ItemGroup>
+
+    <!-- Remove module definition file for arm64 during build as x, as added it to inputs using /defArm64Native -->
+    <ItemGroup Condition="'$(RemoveModuleDef)' == 'true'"> 
+      <Link>
+        <ModuleDefinitionFile></ModuleDefinitionFile>
+      </Link>
+      <Lib>
+        <ModuleDefinitionFile></ModuleDefinitionFile>
+      </Lib>
+    </ItemGroup>  
+  </Target>
+
+  <PropertyGroup>
+  	<GetProjectInfoForReferenceDependsOn Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildAsX)' == 'true'">
+      $(GetProjectInfoForReferenceDependsOn);
+      AddBuildAsXToProjectsInfoForReference;
+    </GetProjectInfoForReferenceDependsOn>
+  </PropertyGroup>
+
+  <Target Name="AddBuildAsXToProjectsInfoForReference">
+    <ItemGroup>
+      <ProjectInfoForReference Include="$(MSBuildProjectFullPath)">
+        <ProjectType>$(ConfigurationType)</ProjectType>
+        <FileType>BuildAsX</FileType>
+      </ProjectInfoForReference>
+    </ItemGroup>
+  </Target>
+
+  <!-- This target removes the $(BuildLibTarget) from the compile targets when building the arm64/arm64ec counterpart for ARM64X. 
+  This prevents the librarian from fully creating the arm64/arm64ec lib as it will be unnecessary extra time cost-->
+  <Target Name="RemoveLibTargets">
+    <ItemGroup>
+      <_NewBuildCompileTargets Include="$(BuildCompileTargets)"/>
+      <_NewBuildCompileTargets Remove="$(BuildLibTargets)" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <BuildCompileTargets>@(_NewBuildCompileTargets)</BuildCompileTargets>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="RemoveAlreadyCompiledResources">
+    <ItemGroup>
+      <ResourceCompile Remove="$(_ResourcesAlreadyCompiled)"/>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="BuildAsXBuildSteps"
+          DependsOnTargets="$(BuildAsXBuildStepsDependsOn);$(BuildGenerateSourcesTargets);$(BuildCompileTargets)">
+  </Target>
+
+  <Target Name="GetLinkInputs"
+          DependsOnTargets="$(ComputeLinkInputsTargets)"
+          Condition="'$(LinkCompiled)' == 'true'"
+          Returns="@(LinkInputs)">
+          <ItemGroup>
+            <LinkInputs Include="@(Link->Metadata('FullPath')->ClearMetadata())">
+              <Type>ForLink</Type>
+            </LinkInputs>
+
+            <!-- When Building as ARM64X, specify special .def prefix -->
+            <LinkInputs Include="$(ModuleDefPrefix)%(Link.ModuleDefinitionFile)" Condition="'%(Link.ModuleDefinitionFile)' != ''">
+              <Type>LinkModuleDefinitionFile</Type>
+            </LinkInputs>
+          </ItemGroup>
+  </Target>
+
+  <Target Name="GetLibInputs"
+          DependsOnTargets="$(ComputeLibInputsTargets)"
+          Condition="'$(LibCompiled)' == 'true'"
+          Returns="@(LibInputs)">
+          <ItemGroup>
+            <LibInputs Include="@(Lib->Metadata('FullPath')->ClearMetadata())">
+              <Type>ForLib</Type>
+            </LibInputs>
+           
+            <!-- When Building as ARM64X, specify special .def prefix -->
+            <LibInputs Include="$(ModuleDefPrefix)%(Lib.ModuleDefinitionFile)" Condition="'%(Lib.ModuleDefinitionFile)' != ''">
+              <Type>LibModuleDefinitionFile</Type>
+            </LibInputs>
+          </ItemGroup>
+  </Target>
+
+  <Target Name="ResetBuildingInsideVisualStudio"
+          Condition="'$(OriginalBuildingInsideVisualStudio)' != ''">
+    <PropertyGroup>
+      <BuildingInsideVisualStudio>$(OriginalBuildingInsideVisualStudio)</BuildingInsideVisualStudio>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="BuildExtraNonXReferences"
+          Condition="'$(BuildingForX)' == 'true' ">
+    <ItemGroup Condition="'$(_ReferencedProjectsBuildAsX)'!=''">
+      <ReferencedProjectsBuildAsXItem Include="$(_ReferencedProjectsBuildAsX)"/>
+      <ReferencedProjectsBuildAsXItem>
+        <RelativePath>$([MSBuild]::MakeRelative($(ProjectDir), %(ReferencedProjectsBuildAsXItem.Identity)))</RelativePath>
+      </ReferencedProjectsBuildAsXItem>
+    </ItemGroup>
+    
+    <!-- remove projects that have already been built as ARM64X -->
+    <ItemGroup Condition="'@(ReferencedProjectsBuildAsXItem)' != ''">
+      <_MSBuildProjectReferenceExistent Remove="@(ReferencedProjectsBuildAsXItem->'%(RelativePath)')"/>
+      <_MSBuildProjectReferenceExistent Remove="@(ReferencedProjectsBuildAsXItem->'%(Identity)')"/>
+    </ItemGroup>
+    
+    <MSBuild Projects="$(SolutionPath)"
+         Targets="GetSolutionConfigurationContents"
+         Condition="'@(_MSBuildProjectReferenceExistent)' != '' and '$(SolutionPath)' != '*Undefined*' and '$(SolutionPath)' != ''"
+         Properties="Configuration=$(Configuration);Platform=$(Platform)">
+      <Output TaskParameter="TargetOutputs" PropertyName="_SolutionConfigurationContentsToUse"/>
+    </MSBuild>
+    
+    <!-- Assign the right project configuration to these project references using the solution configuration contents for the current X platform -->
+    <AssignProjectConfiguration
+       ProjectReferences="@(_MSBuildProjectReferenceExistent)"
+       CurrentProject="$(ProjectPath)"
+       CurrentProjectConfiguration="$(Configuration)"
+       CurrentProjectPlatform="$(Platform)"
+       DefaultToVcxPlatformMapping="$(DefaultToVcxPlatformMapping)"
+       VcxToDefaultPlatformMapping="$(VcxToDefaultPlatformMapping)"
+       OutputType="$(OutputType)"
+       ResolveConfigurationPlatformUsingMappings="false"
+       SolutionConfigurationContents="$(_SolutionConfigurationContentsToUse)"
+       AddSyntheticProjectReferencesForSolutionDependencies="$(AddSyntheticProjectReferencesForSolutionDependencies)"
+       OnlyReferenceAndBuildProjectsEnabledInSolutionConfiguration = "$(OnlyReferenceAndBuildProjectsEnabledInSolutionConfiguration)"
+       ShouldUnsetParentConfigurationAndPlatform = "$(ShouldUnsetParentConfigurationAndPlatform)" >
+
+      <Output TaskParameter="AssignedProjects" ItemName="UniqueNonXProjectReferenceWithConfiguration"/>
+      <Output TaskParameter="UnassignedProjects" ItemName="UniqueNonXProjectReferenceWithConfiguration"/>
+    </AssignProjectConfiguration>
+
+    <ItemGroup Condition="'@(UniqueNonXProjectReferenceWithConfiguration)' != ''">
+      <_MSBuildProjectReferenceExistent Remove="@(_MSBuildProjectReferenceExistent)"/>
+      <_MSBuildProjectReferenceExistent Include="@(UniqueNonXProjectReferenceWithConfiguration)"/>
+    </ItemGroup>
+
+    <!-- 
+    Build these arm64ec/arm64 project references.
+    Set BuildingInsideVisualStudio to false so that the project references of these projects will actually build.
+    This will be reset by the ResetBuildingInsideVisualStudio target, once each project's project references are built -->
+
+    <MSBuild  Projects="@(UniqueNonXProjectReferenceWithConfiguration)"
+              Targets="Build;GetResolvedLinkLibs"
+              BuildInParallel="$(BuildInParallel)"
+              Properties="%(UniqueNonXProjectReferenceWithConfiguration.SetConfiguration); %(UniqueNonXProjectReferenceWithConfiguration.SetPlatform);  %(UniqueNonXProjectReferenceWithConfiguration.SetTargetFramework);OriginalBuildingInsideVisualStudio=true;CurrentSolutionConfigurationContents=$(_SolutionConfigurationContentsToUse);BuildingInsideVisualStudio=false;BuildingForX=false;BuildProjectReferences=true"
+              ContinueOnError="$(ContinueOnError)"
+              RemoveProperties="%(UniqueNonXProjectReferenceWithConfiguration.GlobalPropertiesToRemove)"
+              >
+      <Output TaskParameter="TargetOutputs" ItemName="LibFullPath"/>
+    </MSBuild>
+    
+    <!-- Add the arm64ec/arm64 resolvedlinklibs to _ResolvedNativeProjectReferencePaths -->
+    <ItemGroup>
+      <_ResolvedNativeProjectReferencePaths Include="@(LibFullPath)"/>
+    </ItemGroup>
+  </Target>
+</Project>

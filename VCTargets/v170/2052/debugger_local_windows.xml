@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="WindowsLocalDebugger" DisplayName="本地 Windows 调试器" PageTemplate="debugger" Description="本地 Windows 调试器选项" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Persistence="UserFile" />
+  </Rule.DataSource>
+  <StringProperty Name="LocalDebuggerCommand" DisplayName="命令" Description="要执行的调试命令。" F1Keyword="VC.Project.IVCLocalDebugPageObject.Command">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultFindFullPathPropertyEditor" DisplayName="&lt;regsvr32.exe&gt;">
+        <ValueEditor.Metadata>
+          <NameValuePair Name="Exename" Value="regsvr32.exe" />
+        </ValueEditor.Metadata>
+      </ValueEditor>
+      <ValueEditor EditorType="DefaultStringPropertyEditor" DisplayName="&lt;编辑...&gt;" />
+      <ValueEditor EditorType="DefaultFilePropertyEditor" DisplayName="&lt;浏览...&gt;" />
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <StringProperty Name="LocalDebuggerCommandArguments" DisplayName="命令参数" Description="要传递到应用程序的命令行参数。" F1Keyword="VC.Project.IVCLocalDebugPageObject.CommandArguments">
+    <Argument Property="LocalDebuggerCommand" />
+  </StringProperty>
+  <StringProperty Name="LocalDebuggerWorkingDirectory" DisplayName="工作目录" Description="应用程序的工作目录。默认情况下，为包含项目文件的目录。" Subtype="folder" F1Keyword="VC.Project.IVCLocalDebugPageObject.WorkingDirectory" />
+  <BoolProperty Name="LocalDebuggerAttach" DisplayName="附加" Description="指定调试器是否应尝试在启动调试时附加到现有进程。" F1Keyword="VC.Project.IVCLocalDebugPageObject.Attach" />
+  <EnumProperty Name="LocalDebuggerDebuggerType" DisplayName="调试器类型" Description="指定要使用的调试器类型。如果设置为“自动”，则将根据 EXE 文件的内容选择调试器类型。" F1Keyword="VC.Project.IVCLocalDebugPageObject.DebuggerType">
+    <EnumProperty.Metadata>
+      <NameValuePair Name="IsDebugType" Value="true" />
+    </EnumProperty.Metadata>
+    <EnumValue Name="NativeOnly" DisplayName="仅限本机" />
+    <EnumValue Name="ManagedOnly" DisplayName="仅限托管(.NET Framework)" />
+    <EnumValue Name="Mixed" DisplayName="混合(.NET Framework)" />
+    <EnumValue Name="ManagedCore" DisplayName="仅限托管(.NET Core)" />
+    <EnumValue Name="NativeWithManagedCore" DisplayName="混合(.NET Core)" />
+    <EnumValue Name="Auto" DisplayName="自动" />
+    <EnumValue Name="Script" DisplayName="脚本" />
+    <EnumValue Name="GPUOnly" DisplayName="仅限 GPU (C++ AMP)" />
+    <EnumValue Name="JavaScriptForWebView2" DisplayName="JavaScript (WebView2)" />
+  </EnumProperty>
+  <StringListProperty Name="LocalDebuggerEnvironment" DisplayName="环境" Description="指定调试对象的环境，或要与现有环境合并的变量。" Separator="&#xA;" F1Keyword="VC.Project.IVCLocalDebugPageObject.Environment" />
+  <DynamicEnumProperty Name="LocalGPUDebuggerTargetType" DisplayName="调试加速器类型" Category="GPUOptions" EnumProvider="GPUTargets" F1Keyword="VC.Project.IVCLocalDebugPageObject.GPUDebuggerTargetType" Description="要用于调试 GPU 代码的调试加速器类型。(GPU 调试器为活动状态时可用。)">
+    <DynamicEnumProperty.Metadata>
+      <NameValuePair Name="ParentPropertyName" Value="LocalDebuggerDebuggerType" />
+      <NameValuePair Name="ParentPropertyValue" Value="GPUOnly" />
+    </DynamicEnumProperty.Metadata>
+  </DynamicEnumProperty>
+  <EnumProperty Name="GPURefDebuggerBreakOnAllThreads" DisplayName="GPU 默认断点行为" Category="GPUOptions" Description="设置 GPU 调试器中断的频率。" F1Keyword="VC.Project.IVCLocalDebugPageObject.GPUBreakOnAllThreads">
+    <EnumValue Name="GPURefBreakOncePerWarp" DisplayName="每次换行中断一次" Description="每次换行中断一次" />
+    <EnumValue Name="GPURefBreakForCPUThread" DisplayName="对每个线程中断(类似 CPU 行为)" Description="对每个线程中断(类似 CPU 行为)" />
+    <EnumProperty.Metadata>
+      <NameValuePair Name="ParentPropertyName" Value="LocalDebuggerDebuggerType" />
+      <NameValuePair Name="ParentPropertyValue" Value="GPUOnly" />
+    </EnumProperty.Metadata>
+  </EnumProperty>
+  <BoolProperty Name="LocalDebuggerMergeEnvironment" DisplayName="合并环境" Description="将指定的环境变量与现有环境合并。" F1Keyword="VC.Project.IVCLocalDebugPageObject.EnvironmentMerge" />
+  <BoolProperty Name="LocalDebuggerSQLDebugging" DisplayName="SQL 调试" Description="附加 SQL 调试器。" F1Keyword="VC.Project.IVCLocalDebugPageObject.SQLDebugging" />
+  <DynamicEnumProperty Name="LocalDebuggerAmpDefaultAccelerator" DisplayName="Amp 默认快捷键" EnumProvider="AmpAccelerators" F1Keyword="VC.Project.IVCLocalDebugPageObject.AmpDefaultAccelerator" Description="重写 C++ AMP 的默认快捷键选择。调试托管代码时不适用该属性。">
+  </DynamicEnumProperty>
+  <BoolProperty Name="UseLegacyManagedDebugger" Visible="false" />
+</Rule>

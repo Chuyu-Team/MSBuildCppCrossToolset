@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="LIB" PageTemplate="tool" DisplayName="文档管理程序" SwitchPrefix="/" Order="40" xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规"/>
+    <Category Name="All Options" DisplayName="所有选项" Subtype="Search"/>
+    <Category Name="Command Line" DisplayName="命令行" Subtype="CommandLine"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="Lib" Label="" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <StringProperty Subtype="file" Name="OutputFile" DisplayName="输出文件" Description="/OUT 选项可重写 lib 创建的程序的默认名称和位置。" Category="General" Switch="OUT" Separator=":" F1Keyword="VC.Project.VCLibrarianTool.OutputFile">
+  </StringProperty>
+  <StringListProperty Subtype="file" Name="AdditionalDependencies" DisplayName="附加依赖项" Description="指定要添加到链接命令行的附加项。[例如 kernel32.lib] " Category="General" F1Keyword="VC.Project.VCLibrarianTool.AdditionalDependencies">
+  </StringListProperty>
+  <StringListProperty Subtype="folder" Name="AdditionalLibraryDirectories" DisplayName="附加库目录" Description="允许用户重写环境库路径。" Category="General" Switch="LIBPATH:" F1Keyword="VC.Project.VCLibrarianTool.AdditionalLibraryDirectories">
+  </StringListProperty>
+  <BoolProperty Name="SuppressStartupBanner" DisplayName="取消显示启动版权标志" Description="/NOLOGO 选项禁止显示版权消息和版本号。" Category="General" Switch="NOLOGO" F1Keyword="VC.Project.VCLibrarianTool.SuppressStartupBanner">
+  </BoolProperty>
+  <StringProperty Subtype="file" Name="ModuleDefinitionFile" DisplayName="模块定义文件名" Description="/DEF 选项将模块定义文件(.def)传递到 LIB。只能为 LIB 指定一个 .def 文件。" Category="General" Switch="DEF" Separator=":" F1Keyword="VC.Project.VCLibrarianTool.ModuleDefinitionFile">
+  </StringProperty>
+  <BoolProperty Name="IgnoreAllDefaultLibraries" DisplayName="忽略所有默认库" Description="/NODEFAULTLIB 选项通知 Lib，从其解析外部引用时搜索的库列表中移除一个或多个默认库。" Category="General" Switch="NODEFAULTLIB" F1Keyword="VC.Project.VCLibrarianTool.IgnoreAllDefaultLibraries">
+  </BoolProperty>
+  <StringListProperty Subtype="file" Name="IgnoreSpecificDefaultLibraries" DisplayName="忽略特定默认库" Description="希望 Lib 在解析外部引用时忽略的库。" Category="General" Switch="NODEFAULTLIB:" F1Keyword="VC.Project.VCLibrarianTool.IgnoreDefaultLibraryNames">
+  </StringListProperty>
+  <StringListProperty Name="ExportNamedFunctions" DisplayName="导出命名函数" Description="导出一个或多个指定的函数 。" Category="General" Switch="EXPORT:" F1Keyword="VC.Project.VCLibrarianTool.ExportNamedFunctions">
+  </StringListProperty>
+  <StringProperty Name="ForceSymbolReferences" DisplayName="强制符号引用" Description="强制 Lib 包括对此符号的引用。" Category="General" Switch="INCLUDE" Separator=":" F1Keyword="VC.Project.VCLibrarianTool.ForceSymbolReferences">
+  </StringProperty>
+  <BoolProperty Name="UseUnicodeResponseFiles" DisplayName="使用 UNICODE 响应文件" Description="使用 UNICODE 响应文件 : 指示项目系统在生成文档管理程序时生成 UNICODE 响应文件。  当项目中的文件具有 UNICODE 路径时，将此属性设置为“是”。" Category="General" IncludeInCommandLine="false" F1Keyword="VC.Project.VCLibrarianTool.UseUnicodeResponseFiles">
+  </BoolProperty>
+  <BoolProperty Name="LinkLibraryDependencies" DisplayName="链接库依赖项" Description="指定是否自动链接项目依赖项的库输出。" Category="General" IncludeInCommandLine="false" F1Keyword="VC.Project.VCLibrarianTool.LinkLibraryDependencies">
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="ProjectReference" Label="" HasConfigurationCondition="true"/>
+    </BoolProperty.DataSource>
+  </BoolProperty>
+  <EnumProperty Name="ErrorReporting" DisplayName="错误报告" Description="允许您直接向 Microsoft 提供内部编译器错误(ICE)信息。" Category="General" F1Keyword="VC.Project.VCLibrarianTool.ErrorReporting">
+    <EnumValue Name="PromptImmediately" Switch="ERRORREPORT:PROMPT" DisplayName="立即提示" Description="立即提示。">
+    </EnumValue>
+    <EnumValue Name="QueueForNextLogin" Switch="ERRORREPORT:QUEUE" DisplayName="排队等候下一次登录" Description="排队等候下一次登录。">
+    </EnumValue>
+    <EnumValue Name="SendErrorReport" Switch="ERRORREPORT:SEND" DisplayName="发送错误报告" Description="发送错误报告。">
+    </EnumValue>
+    <EnumValue Name="NoErrorReport" Switch="ERRORREPORT:NONE" DisplayName="无错误报告" Description="无错误报告。">
+    </EnumValue>
+  </EnumProperty>
+  <StringProperty Name="DisplayLibrary" DisplayName="将库显示到标准输出" Description="将有关输出库的信息显示到标准输出。可以将输出重定向到文件。可以使用 /LIST 来确定现有库的内容，而不用修改库。" Category="General" Switch="LIST" Separator=":" Visible="false">
+  </StringProperty>
+  <BoolProperty ReverseSwitch="WX:NO" Name="TreatLibWarningAsErrors" DisplayName="将 Lib 警告视为错误" Description="如果使用 /WX，lib 生成警告时将不生成任何输出文件。" Category="General" Switch="WX" F1Keyword="VC.Project.VCLibrarianTool.TreatLibWarningsAsErrors">
+  </BoolProperty>
+  <EnumProperty Name="TargetMachine" DisplayName="目标计算机" Description="/MACHINE 选项指定程序的目标平台。" Category="General" F1Keyword="VC.Project.VCLibrarianTool.TargetMachine">
+    <EnumValue Name="MachineARM" Switch="MACHINE:ARM" DisplayName="MachineARM" Description="MachineARM">
+    </EnumValue>
+    <EnumValue Name="MachineARM64" Switch="MACHINE:ARM64" DisplayName="MachineARM64" Description="MachineARM64">
+    </EnumValue>
+    <EnumValue Name="MachineARM64X" Switch="MACHINE:ARM64X" DisplayName="MachineARM64X" Description="MachineARM64X">
+    </EnumValue>
+    <EnumValue Name="MachineEBC" Switch="MACHINE:EBC" DisplayName="MachineEBC" Description="MachineEBC">
+    </EnumValue>
+    <EnumValue Name="MachineIA64" Switch="MACHINE:IA64" DisplayName="MachineIA64" Description="MachineIA64">
+    </EnumValue>
+    <EnumValue Name="MachineMIPS" Switch="MACHINE:MIPS" DisplayName="MachineMIPS" Description="MachineMIPS">
+    </EnumValue>
+    <EnumValue Name="MachineMIPS16" Switch="MACHINE:MIPS16" DisplayName="MachineMIPS16" Description="MachineMIPS16">
+    </EnumValue>
+    <EnumValue Name="MachineMIPSFPU" Switch="MACHINE:MIPSFPU" DisplayName="MachineMIPSFPU" Description="MachineMIPSFPU">
+    </EnumValue>
+    <EnumValue Name="MachineMIPSFPU16" Switch="MACHINE:MIPSFPU16" DisplayName="MachineMIPSFPU16" Description="MachineMIPSFPU16">
+    </EnumValue>
+    <EnumValue Name="MachineSH4" Switch="MACHINE:SH4" DisplayName="MachineSH4" Description="MachineSH4">
+    </EnumValue>
+    <EnumValue Name="MachineTHUMB" Switch="MACHINE:THUMB" DisplayName="MachineTHUMB" Description="MachineTHUMB">
+    </EnumValue>
+    <EnumValue Name="MachineX64" Switch="MACHINE:X64" DisplayName="MachineX64" Description="MachineX64">
+    </EnumValue>
+    <EnumValue Name="MachineX86" Switch="MACHINE:X86" DisplayName="MachineX86" Description="MachineX86">
+    </EnumValue>
+  </EnumProperty>
+  <EnumProperty Name="SubSystem" DisplayName="子系统" Description="/SUBSYSTEM 选项告知操作系统如何运行 .exe 文件。子系统的选择会影响链接器将选择的入口点符号(或入口点函数)。" Category="General" F1Keyword="VC.Project.VCLibrarianTool.SubSystem">
+    <EnumProperty.Arguments>
+      <Argument Property="MinimumRequiredVersion" IsRequired="false"/>
+    </EnumProperty.Arguments>
+    <EnumValue Name="Console" Switch="SUBSYSTEM:CONSOLE" DisplayName="控制台" Description="Win32 字符模式应用程序。操作系统会为控制台应用程序指定一个控制台。如果定义 main 或 wmain，则默认值是 CONSOLE。">
+    </EnumValue>
+    <EnumValue Name="Windows" Switch="SUBSYSTEM:WINDOWS" DisplayName="窗口" Description="应用程序不需要控制台，原因很可能是它会创建自己的窗口来与用户进行交互。如果定义 WinMain 或 wWinMain，则默认值是 WINDOWS。">
+    </EnumValue>
+    <EnumValue Name="Native" Switch="SUBSYSTEM:NATIVE" DisplayName="本机" Description="针对 Windows NT 的设备驱动程序。如果指定 /DRIVER:WDM，则默认值是 NATIVE。">
+    </EnumValue>
+    <EnumValue Name="EFI Application" Switch="SUBSYSTEM:EFI_APPLICATION" DisplayName="EFI 应用程序" Description="EFI 应用程序。">
+    </EnumValue>
+    <EnumValue Name="EFI Boot Service Driver" Switch="SUBSYSTEM:EFI_BOOT_SERVICE_DRIVER" DisplayName="EFI 启动服务驱动程序" Description="EFI 启动服务驱动程序。">
+    </EnumValue>
+    <EnumValue Name="EFI ROM" Switch="SUBSYSTEM:EFI_ROM" DisplayName="EFI ROM" Description="EFI ROM。">
+    </EnumValue>
+    <EnumValue Name="EFI Runtime" Switch="SUBSYSTEM:EFI_RUNTIME_DRIVER" DisplayName="EFI 运行时" Description="EFI 运行时。">
+    </EnumValue>
+    <EnumValue Name="WindowsCE" Switch="SUBSYSTEM:WINDOWSCE" DisplayName="WindowsCE" Description="在 Windows CE 设备上运行的应用程序。">
+    </EnumValue>
+    <EnumValue Name="POSIX" Switch="SUBSYSTEM:POSIX" DisplayName="POSIX" Description="与 Windows NT 中的 POSIX 子系统一起运行的应用程序。">
+    </EnumValue>
+  </EnumProperty>
+  <StringProperty Name="MinimumRequiredVersion" DisplayName="所需的最低版本" Description="指定所需的子系统的最低版本。参数是介于 0 至 65,535 范围内的十进制数。" Category="General" Separator=",">
+  </StringProperty>
+  <StringListProperty Subtype="file" Name="RemoveObjects" DisplayName="移除对象" Description="从输出库中省略指定的对象。LIB 会通过组合所有对象(无论是在对象文件中还是在库中)，然后使用 /REMOVE 删除指定的任何对象，创建一个输出库。" Category="General" Switch="REMOVE:" F1Keyword="VC.Project.VCLibrarianTool.RemoveObjects">
+  </StringListProperty>
+  <BoolProperty Name="Verbose" DisplayName="详细" Description="详细" Category="General" Switch="VERBOSE" F1Keyword="VC.Project.VCLibrarianTool.Verbose">
+  </BoolProperty>
+  <StringProperty Subtype="file" Name="Name" DisplayName="名称" Description="当生成导入库时，指定正在为其生成导入库的 DLL 的名称。" Category="General" Switch="NAME:" F1Keyword="VC.Project.VCLibrarianTool.Name">
+  </StringProperty>
+  <BoolProperty Name="LinkTimeCodeGeneration" DisplayName="链接时间代码生成" Description="指定链接时间代码生成。" Category="General" Switch="LTCG" F1Keyword="VC.Project.VCLibrarianTool.LinkTimeCodeGeneration">
+  </BoolProperty>
+  <StringProperty Name="AdditionalOptions" DisplayName="附加选项" Description="附加选项。" Category="Command Line" F1Keyword="vc.project.AdditionalOptionsPage">
+  </StringProperty>
+  <StringProperty Subtype="folder" Name="TrackerLogDirectory" DisplayName="跟踪器日志目录" Description="跟踪器日志目录。" IncludeInCommandLine="false" Visible="false">
+  </StringProperty>
+  <BoolProperty Name="BuildingInIde" Visible="false">
+  </BoolProperty>
+</Rule>

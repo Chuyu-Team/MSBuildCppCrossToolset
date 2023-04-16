@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+    <AvailableItemName Include="LicxCompiler">
+      <Targets>_LicxCompiler</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+      $(ComputeLinkInputsTargets);
+      ComputeLicxCompilerOutput;
+    </ComputeLinkInputsTargets>
+  </PropertyGroup>
+  <UsingTask
+    TaskName="LicxCompiler"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+
+  <Target Name="_WriteLicxCompilerTlogs"
+          Condition="'@(LicxCompiler)' != '' and '@(SelectedFiles)' == ''">
+    <ItemGroup>
+      <_LicxCompilerReadTlog Include="^%(LicxCompiler.FullPath);%(LicxCompiler.AdditionalDependencies)" 
+                     Condition="'%(LicxCompiler.ExcludedFromBuild)' != 'true' and '%(LicxCompiler.Outputs)' != ''"/>
+      <_LicxCompilerWriteTlog Include="^%(LicxCompiler.FullPath);$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '%(LicxCompiler.Outputs)'))" 
+                      Condition="'%(LicxCompiler.ExcludedFromBuild)' != 'true' and '%(LicxCompiler.Outputs)' != ''"/>
+    </ItemGroup>
+
+    <WriteLinesToFile
+      Condition="'@(_LicxCompilerReadTlog)' != ''"
+      File="$(TLogLocation)LicxCompiler.read.1u.tlog"
+      Lines="@(_LicxCompilerReadTlog->MetaData('Identity')->ToUpperInvariant());"
+      Overwrite="true"
+      Encoding="Unicode"/>
+    <WriteLinesToFile
+      Condition="'@(_LicxCompilerWriteTlog)' != ''"
+      File="$(TLogLocation)LicxCompiler.write.1u.tlog"
+      Lines="@(_LicxCompilerWriteTlog->MetaData('Identity')->ToUpperInvariant());"
+      Overwrite="true"
+      Encoding="Unicode"/>
+    
+    <ItemGroup>
+      <_LicxCompilerReadTlog Remove="@(_LicxCompilerReadTlog)" />
+      <_LicxCompilerWriteTlog Remove="@(_LicxCompilerWriteTlog)" />
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="_LicxCompiler"
+    BeforeTargets="$(LicxCompilerBeforeTargets)"
+    AfterTargets="$(LicxCompilerAfterTargets)"
+    Condition="'@(LicxCompiler)' != ''"
+    Outputs="@(LicxCompiler-&gt;'%(Outputs)')"
+    Inputs="@(LicxCompiler);@(LicxCompiler->'%(AdditionalDependencies)');$(MSBuildProjectFile)"
+    DependsOnTargets="_WriteLicxCompilerTlogs;$(LicxCompilerDependsOn)">
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <LicxCompiler Remove="@(LicxCompiler)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <ItemGroup>
+      <LicxCompiler_ComponentModules Include="@(ReferencePath)" Condition="'%(LicxCompiler.UseDefaultComponentModules)' == 'true'" />
+      <LicxCompiler_ComponentModules Include="%(LicxCompiler.ComponentModules)" />
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(LicxCompiler.ExecutionDescription)" />
+    <LicxCompiler
+      Condition="'@(LicxCompiler)' != '' and '%(LicxCompiler.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(LicxCompiler.CommandLineTemplate)"
+      NoLogo="%(LicxCompiler.NoLogo)"
+      VerboseOutput="%(LicxCompiler.VerboseOutput)"
+      TargetAssembly="%(LicxCompiler.TargetAssembly)"
+      OutputDirectory="%(LicxCompiler.OutputDirectory)"
+      ComponentModules="@(LicxCompiler_ComponentModules)"
+      AdditionalOptions="%(LicxCompiler.AdditionalOptions)"
+      Inputs="@(LicxCompiler)" />
+    <ItemGroup>
+      <LicxCompiler_ComponentModules Remove="@(LicxCompiler_ComponentModules)" />
+    </ItemGroup>
+  </Target>
+  <Target
+    Name="ComputeLicxCompilerOutput"
+    Condition="'@(LicxCompiler)' != ''">
+    <ItemGroup>
+      <_EmbedManagedResourceFile Include="@(LicxCompiler->Metadata('Outputs')->Distinct()->ClearMetadata())" Condition="'%(LicxCompiler.ExcludedFromBuild)' != 'true'"/>
+    </ItemGroup>
+  </Target>
+</Project>

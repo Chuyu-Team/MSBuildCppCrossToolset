@@ -1,0 +1,44 @@
+<!--
+***********************************************************************************************
+Microsoft.Cpp.UnitTest.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Include UnitTest headers & static libraries & copy debug cpp runtime to output directory by default -->
+  <PropertyGroup Condition="'$(AppContainerApplication)' != 'true' and '$(ApplicationType)' == '' and ('$(ProjectSubType)' == 'NativeUnitTestProject' or '$(VCProjectVersion)' == '')">
+    <VC_IncludePath>$(VC_IncludePath);$(VCInstallDir)Auxiliary\VS\UnitTest\include</VC_IncludePath>
+    
+    <VC_LibraryPath_x86>$(VC_LibraryPath_x86);$(VCInstallDir)Auxiliary\VS\UnitTest\lib</VC_LibraryPath_x86>
+    <VC_LibraryPath_x64>$(VC_LibraryPath_x64);$(VCInstallDir)Auxiliary\VS\UnitTest\lib</VC_LibraryPath_x64>
+    <VC_LibraryPath_ARM>$(VC_LibraryPath_ARM);$(VCInstallDir)Auxiliary\VS\UnitTest\lib</VC_LibraryPath_ARM>
+    <VC_LibraryPath_ARM64>$(VC_LibraryPath_ARM64);$(VCInstallDir)Auxiliary\VS\UnitTest\lib</VC_LibraryPath_ARM64>
+
+    <CopyCppRuntimeToOutputDir Condition="'$(UseDebugLibraries)'=='true' and '$(BuildingInsideVisualStudio)'=='true' and Exists('$(SolutionDir)\testenvironments.json')">true</CopyCppRuntimeToOutputDir>
+  </PropertyGroup>
+  
+  <!-- Include UnitTest headers & static libraries for UWP -->
+  <PropertyGroup Condition="'$(AppContainerApplication)' == 'true' and ('$(ProjectSubType)' == 'NativeUnitTestProject' or '$(UnitTestPlatformVersion)' != '')">
+    <VC_IncludePath>$(VC_IncludePath);$(VCInstallDir)Auxiliary\VS\UnitTest\include\UWP</VC_IncludePath>
+    
+    <VC_LibraryPath_x86>$(VC_LibraryPath_x86);$(VCInstallDir)Auxiliary\VS\UnitTest\lib\UWP</VC_LibraryPath_x86>
+    <VC_LibraryPath_x64>$(VC_LibraryPath_x64);$(VCInstallDir)Auxiliary\VS\UnitTest\lib\UWP</VC_LibraryPath_x64>
+    <VC_LibraryPath_ARM>$(VC_LibraryPath_ARM);$(VCInstallDir)Auxiliary\VS\UnitTest\lib\UWP</VC_LibraryPath_ARM>
+    <VC_LibraryPath_ARM64>$(VC_LibraryPath_ARM64);$(VCInstallDir)Auxiliary\VS\UnitTest\lib\UWP</VC_LibraryPath_ARM64>
+    
+    <UnitTestPlatformVersion Condition="'$(UnitTestPlatformVersion)' == '14.0'">15.0</UnitTestPlatformVersion>
+    <UnitTestPlatformNetVersion Condition="'$(UnitTestPlatformNetVersion)' == '' and '$(VisualStudioVersion)' == '17.0'">17.1</UnitTestPlatformNetVersion>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(ProjectSubType)' == 'NativeUnitTestProject'">
+    <CopyAsanBinariesToOutDir>true</CopyAsanBinariesToOutDir>
+  </PropertyGroup>
+  
+</Project>

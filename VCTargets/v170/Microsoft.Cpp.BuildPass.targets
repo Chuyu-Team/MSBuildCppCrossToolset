@@ -1,0 +1,82 @@
+<!--
+***********************************************************************************************
+Microsoft.Cpp.BuildPass.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file defines the steps in the standard build process for C++ projects.  It
+contains all the steps that are specific to building Visual C++ projects.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <BuildPassReferences>true</BuildPassReferences>
+  </PropertyGroup>
+
+  <!--
+    ============================================================
+                                        BuildGenerateSources
+    ============================================================
+    -->
+
+  <Target Name="BuildGenerateSources" DependsOnTargets="$(BuildGenerateSourcesAction)" />
+
+  <Target Name="BuildGenerateSourcesTraverse" DependsOnTargets="PrepareProjectReferences" Condition="'$(BuildPassReferences)' == 'true'">
+    <MSBuild
+        Projects="@(_MSBuildProjectReferenceExistent)"
+        Targets="BuildGenerateSourcesTraverse;BuildGenerateSources"
+        BuildInParallel="$(BuildInParallel)"
+        Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform); %(_MSBuildProjectReferenceExistent.SetTargetFramework);"
+        Condition="'$(BuildPassReferences)' == 'true' and '@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != '' and '%(_MSBuildProjectReferenceExistent.BuildReference)' == 'true'"
+        ContinueOnError="!$(BuildingProject)"
+        RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+    </MSBuild>
+  </Target>
+
+  <!--
+    ============================================================
+                                        BuildCompile
+    ============================================================
+    -->
+
+  <Target Name="BuildCompile" DependsOnTargets="BuildGenerateSourcesTraverse;$(BuildCompileAction)" />
+
+  <Target Name="BuildCompileTraverse" DependsOnTargets="PrepareProjectReferences" Condition="'$(BuildPassReferences)' == 'true'">
+    <MSBuild
+        Projects="@(_MSBuildProjectReferenceExistent)"
+        Targets="BuildCompileTraverse;BuildCompile"
+        BuildInParallel="$(BuildInParallel)"
+        Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform); %(_MSBuildProjectReferenceExistent.SetTargetFramework)"
+        Condition="'$(BuildPassReferences)' == 'true' and '@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''  and '%(_MSBuildProjectReferenceExistent.BuildReference)' == 'true'"
+        ContinueOnError="!$(BuildingProject)"
+        RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+    </MSBuild>
+  </Target>
+
+  <!--
+    ============================================================
+                                        BuildLink
+    ============================================================
+    -->
+
+  <Target Name="BuildLink" DependsOnTargets="BuildCompileTraverse;$(BuildLinkAction)" />
+
+  <Target Name="BuildLinkTraverse" DependsOnTargets="PrepareProjectReferences" Condition="'$(BuildPassReferences)' == 'true'">
+    <MSBuild
+        Projects="@(_MSBuildProjectReferenceExistent)"
+        Targets="BuildLinkTraverse;BuildLink"
+        BuildInParallel="$(BuildInParallel)"
+        Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform); %(_MSBuildProjectReferenceExistent.SetTargetFramework)"
+        Condition="'$(BuildPassReferences)' == 'true' and '@(ProjectReferenceWithConfiguration)' != '' and '@(_MSBuildProjectReferenceExistent)' != ''  and '%(_MSBuildProjectReferenceExistent.BuildReference)' == 'true'"
+        ContinueOnError="!$(BuildingProject)"
+        RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+    </MSBuild>
+  </Target>
+
+</Project>

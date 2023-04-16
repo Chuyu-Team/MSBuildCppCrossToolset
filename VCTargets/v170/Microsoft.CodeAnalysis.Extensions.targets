@@ -1,0 +1,53 @@
+<!--
+***********************************************************************************************
+Microsoft.CodeAnalysis.Extensions.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<!-- NOTE: this file is published to the VCTargets folder and so is implicitly versioned
+     with the rest of the Cpp targets files. Keep that in mind when modifying -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- If any extension is enabled, determine the EspXEngine path -->
+  <PropertyGroup Condition="'$(RunMsvcAnalysis)' == 'true' and '$(EspXtensions)' != ''">
+    <AfterBuildCompileTargets>
+      $(AfterBuildCompileTargets)
+    </AfterBuildCompileTargets>
+    <EspXEnginePath>$(VC_ExecutablePath_x86_x86)\EspXEngine.dll</EspXEnginePath>
+    <EspXEnginePath Condition="'$(VCToolArchitecture)' == 'Native64Bit'">$(VC_ExecutablePath_x64_x64)\EspXEngine.dll</EspXEnginePath>
+    <EspXEnginePath Condition="'$(VCToolArchitecture)' == 'NativeARM64'">$(VC_ExecutablePath_ARM64_ARM64)\EspXEngine.dll</EspXEnginePath>
+    <EspXEnginePath Condition="'$(_CodeAnalysisExtensions)' == 'true'">$(MsvcAnalysisPluginPath)\EspXEngine.dll</EspXEnginePath>
+  </PropertyGroup>
+
+  <!-- If any EspX extensions are enabled, include EspXEngine plugin -->
+  <ItemDefinitionGroup Condition="'$(RunMsvcAnalysis)' == 'true' and '$(EspXtensions)' != ''">
+    <ClCompile>
+      <!-- Only enable the EspX plugin if prefast is enabled and the project is not a managed code project -->
+      <PREfastAdditionalPlugins Condition="'%(ClCompile.EnablePREfast)' == 'true' and ('%(ClCompile.CompileAsManaged)' == 'false' or '%(ClCompile.CompileAsManaged)' == '') and '%(ClCompile.CompileAsWinRT)' != 'true'">
+        $(EspXEnginePath);%(ClCompile.PREfastAdditionalPlugins)
+      </PREfastAdditionalPlugins>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- Set the Esp_Extensions environment variable with the list of extensions -->
+  <ItemGroup Condition="'$(RunMsvcAnalysis)' == 'true' and '$(EspXtensions)' != ''">
+    <BuildMacro Include="Esp_Extensions">
+      <EnvironmentVariable>true</EnvironmentVariable>
+      <Value>$(EspXtensions)</Value>
+    </BuildMacro>
+  </ItemGroup>
+
+  <!-- Set Esp_AnnotationBuildLevel environment variable to ignore if ConcurrencyCheck is disabled -->
+  <ItemGroup Condition="'$(RunMsvcAnalysis)' == 'true' and '$(EspXtensions)' != '' and (!Exists('$(ConcurrencyCheckPath)') or '$(EnableConcurrencyCheck)'=='false')">
+    <BuildMacro Include="Esp_AnnotationBuildLevel">
+      <EnvironmentVariable>true</EnvironmentVariable>
+      <Value>Ignore</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

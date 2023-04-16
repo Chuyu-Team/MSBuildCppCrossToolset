@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule Name="FXC" PageTemplate="tool" DisplayName="HLSL 编译器" SwitchPrefix="/" Order="300">
+
+    <Rule.Categories>
+      <Category Name="General" DisplayName="常规"/>
+      <Category Name="Advanced" DisplayName="高级"/>
+      <Category Name="Output Files" DisplayName="输出文件"/>
+      <Category Name="All Options" DisplayName="所有选项" Subtype="Search"/>
+      <Category Name="Command Line" DisplayName="命令行" Subtype="CommandLine"/>
+    </Rule.Categories>
+
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="FxCompile" Label="" HasConfigurationCondition="true"/>
+    </Rule.DataSource>
+
+    <StringListProperty Subtype="folder" Name="AdditionalIncludeDirectories" DisplayName="附加包含目录" Description="指定一个或多个要添加到包含路径中的目录；当目录不止一个时，请用分号分隔。(/I[路径])" Category="General" Switch="I" F1Keyword="VC.Project.FXCompilerTool.AdditionalIncludeDirectories">
+    </StringListProperty>
+
+    <BoolProperty Name="SuppressStartupBanner" DisplayName="取消显示启动版权标志" Description="取消显示启动版权标志和信息消息。(/nologo)" Category="Advanced" Switch="nologo" F1Keyword="VC.Project.FXCompilerTool.SuppressStartupBanner">
+    </BoolProperty>
+
+    <StringProperty Name="EntryPointName" DisplayName="入口点名称" Description="为着色器指定入口点名称(/E[名称])" Category="General" Switch="E" F1Keyword="VC.Project.FXCompilerTool.EntryPointName">
+    </StringProperty>
+
+    <BoolProperty Name="TreatWarningAsError" DisplayName="将警告视为错误" Description="将所有编译器警告都视为错误。对于新项目，最好在所有编译中使用 /WX；对所有警告进行解析可确保将可能难以发现的代码缺陷减至最少。" Category="Advanced" Switch="WX" F1Keyword="VC.Project.FXCompilerTool.TreatWarningAsError">
+    </BoolProperty>
+
+    <BoolProperty Name="DisableOptimizations" DisplayName="禁用优化" Description="禁用优化。/Od 表示 /Gfp，但输出可能与 /Od /Gfp 不同。" Category="General" Switch="Od" F1Keyword="VC.Project.FXCompilerTool.DisableOptimizations">
+    </BoolProperty>
+
+    <BoolProperty Name="EnableDebuggingInformation" DisplayName="启用调试信息" Description="启用调试信息。" Category="General" Switch="Zi" F1Keyword="VC.Project.FXCompilerTool.EnableDebuggingInformation">
+    </BoolProperty>
+
+    <EnumProperty Name="ShaderType" DisplayName="着色器类型" Description="指定着色器类型。    (/T [类型]_[模型])" Category="General" Switch="T" F1Keyword="VC.Project.FXCompilerTool.ShaderType">
+      <EnumValue Name="Effect" Switch="fx" DisplayName="效果">
+        <Argument Property="ShaderModel" IsRequired="true" Separator="_"/>
+      </EnumValue>
+      <EnumValue Name="Vertex" Switch="vs" DisplayName="顶点着色器">
+        <Argument Property="ShaderModel" IsRequired="true" Separator="_"/>
+      </EnumValue>
+      <EnumValue Name="Pixel" Switch="ps" DisplayName="像素着色器">
+        <Argument Property="ShaderModel" IsRequired="true" Separator="_"/>
+      </EnumValue>
+      <EnumValue Name="Geometry" Switch="gs" DisplayName="几何着色器">
+        <Argument Property="ShaderModel" IsRequired="true" Separator="_"/>
+      </EnumValue>
+      <EnumValue Name="Hull" Switch="hs" DisplayName="外壳着色器">
+        <Argument Property="ShaderModel" IsRequired="true" Separator="_"/>
+      </EnumValue>
+      <EnumValue Name="Domain" Switch="ds" DisplayName="域着色器">
+        <Argument Property="ShaderModel" IsRequired="true" Separator="_"/>
+      </EnumValue>
+      <EnumValue Name="Compute" Switch="cs" DisplayName="计算着色器">
+        <Argument Property="ShaderModel" IsRequired="true" Separator="_"/>
+      </EnumValue>
+      <EnumValue Name="Library" Switch="lib" DisplayName="库">
+        <Argument Property="ShaderModel" IsRequired="true" Separator="_"/>
+      </EnumValue>
+      <EnumValue Name="Mesh" Switch="ms" DisplayName="网格着色器">
+        <Argument Property="ShaderModel" IsRequired="true" Separator="_"/>
+      </EnumValue>
+      <EnumValue Name="Amplification" Switch="as" DisplayName="放大着色器">
+        <Argument Property="ShaderModel" IsRequired="true" Separator="_"/>
+      </EnumValue>
+      <EnumValue Name="RootSignature" Switch="" DisplayName="生成根签名对象">
+        <Argument Property="ShaderModel" IsRequired="true" Separator=" "/>
+      </EnumValue>
+    </EnumProperty>
+
+    <DynamicEnumProperty Name="ShaderModel" DisplayName="着色器模型" Description="指定着色器模型。某些着色器类型只能与最新的着色器模型一起使用 (/T [类型]_[模型])" Category="General" F1Keyword="VC.Project.FXCompilerTool.ShaderModel" EnumProvider="ShaderModelEnumProvider"/>
+
+    <BoolProperty Name="AllResourcesBound" DisplayName="所有资源已绑定" Description="编译器假设着色器可引用的所有资源已绑定，并且在着色器执行期间处于良好状态 (/all_resources_bound)。可用于 Shader Model 5.1 及更高版本。" Category="General" Switch="all_resources_bound" F1Keyword="VC.Project.FXCompilerTool.AllResourcesBound">
+    </BoolProperty>
+
+    <BoolProperty Name="EnableUnboundedDescriptorTables" DisplayName="启用无边界的描述符表" Description="通知编译器着色器可以包含具有开区间的资源数组声明 (/enable_unbounded_descriptor_tables)。可用于 Shader Model 5.1 及更高版本。" Category="General" Switch="enable_unbounded_descriptor_tables" F1Keyword="VC.Project.FXCompilerTool.EnableUnboundedDescriptorTables">
+    </BoolProperty>
+
+    <StringProperty Name="SetRootSignature" DisplayName="设置根签名" Description="将根签名附加到着色器字节码 (/setrootsignature)。可用于 Shader Model 5.0 及更高版本。" Category="General" Switch="setrootsignature" F1Keyword="VC.Project.FXCompilerTool.SetRootSignature">
+    </StringProperty>
+
+    <StringListProperty Name="PreprocessorDefinitions" DisplayName="预处理器定义" Description="定义源文件的预处理符号。" Category="General" Switch="D " F1Keyword="VC.Project.FXCompilerTool.PreprocessorDefinitions">
+    </StringListProperty>
+
+    <StringProperty Name="AdditionalOptions" DisplayName="附加选项" Description="附加选项" Category="Command Line" F1Keyword="VC.Project.FXCompilerTool.AdditionalOptionsPage">
+    </StringProperty>
+
+    <StringProperty Name="VariableName" DisplayName="标头变量名称" Description="为头文件中的变量名称指定名称(/Vn [名称])" Category="Output Files" Switch="Vn" F1Keyword="VC.Project.FXCompilerTool.VariableName">
+    </StringProperty>
+
+    <StringProperty Subtype="file" Name="HeaderFileOutput" DisplayName="头文件名称" Description="为包含对象代码的头文件指定名称。(/Fh [名称])" Category="Output Files" Switch="Fh" F1Keyword="VC.Project.FXCompilerTool.HeaderFileOutput">
+    </StringProperty>
+
+    <StringProperty Subtype="file" Name="ObjectFileOutput" DisplayName="对象文件名" Description="指定对象文件的名称。(/Fo [名称])" Category="Output Files" Switch="Fo" F1Keyword="VC.Project.FXCompilerTool.ObjectFileOutput">
+    </StringProperty>
+
+    <EnumProperty Name="AssemblerOutput" DisplayName="汇编程序输出" Description="指定汇编语言输出文件的内容。(/Fc, /Fx)" Category="Output Files" F1Keyword="VC.Project.FXCompilerTool.AssemblerOutput">
+      <EnumValue Name="NoListing" Switch="" DisplayName="无列表" Description="无列表。">
+      </EnumValue>
+      <EnumValue Name="AssemblyCode" Switch="Fc" DisplayName="仅有程序集的列表" Description="程序集代码文件">
+        <Argument Property="AssemblerOutputFile" IsRequired="true" Separator=" "/>
+      </EnumValue>
+      <EnumValue Name="AssemblyCodeAndHex" Switch="Fx" DisplayName="程序集代码和十六进制" Description="程序集代码和十六进制列表文件">
+        <Argument Property="AssemblerOutputFile" IsRequired="true" Separator=" "/>
+      </EnumValue>
+    </EnumProperty>
+
+    <StringProperty Name="AssemblerOutputFile" Subtype="file" DisplayName="汇编程序输出文件" Description="指定程序集代码清单文件的文件名" Category="Output Files" F1Keyword="VC.Project.FXCompilerTool.AssemblerOutputFile">
+    </StringProperty>
+
+    <BoolProperty Name="CompileD2DCustomEffect" DisplayName="编译 Direct2D 自定义像素着色器效果" Description="编译包含像素着色器的 Direct2D 自定义效果。不要用于顶点或计算自定义效果。" Category="General" Switch="" F1Keyword="VC.Project.FXCompilerTool.CompileD2DCustomEffect">
+    </BoolProperty>
+
+    <BoolProperty Name="MultiProcFXC" DisplayName="多处理器编译" Description="同时运行多个实例。" Category="General" F1Keyword="VC.Project.FXCompilerTool.MultiProcFXC">
+      <BoolProperty.DataSource>
+        <DataSource ItemType=""/>
+      </BoolProperty.DataSource>
+    </BoolProperty>
+  </Rule>
+
+</ProjectSchemaDefinitions>

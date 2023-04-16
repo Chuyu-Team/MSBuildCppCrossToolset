@@ -1,0 +1,108 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.ToolsetLocation.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" TreatAsLocalProperty="PreferredToolArchitecture">
+
+  <!-- set VCTargetsPath and VsInstallRoot to where the toolset is found -->
+  <PropertyGroup>
+    <VCTargetsPath>$(_VCTargetsPathForToolset)</VCTargetsPath>
+    <VsInstallRoot Condition="'$(_VsInstallRootForToolset)' != ''">$(_VsInstallRootForToolset)</VsInstallRoot>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VcpkgInstalledVCTargets)' != 'true' and '$(_ToolsetVCTargetsVersion)'!= '$(CurrentVCTargetsVersion)'">
+    <_OldApplicationTypeDefaultProps Condition="'$(_RelativeApplicationTypeFolder)' != '' and '$(_ApplicationTypeDefaultPropsFound)' != 'true'">$(_VCTargetsPathForToolset)\$(_RelativeApplicationTypeFolder)Default.props</_OldApplicationTypeDefaultProps>
+    <_OldApplicationTypeRevisionDefaultProps Condition="'$(_RelativeApplicationTypeRevisionFolder)' != ''  and '$(_ApplicationTypeRevisionDefaultPropsFound)' != 'true'">$(_VCTargetsPathForToolset)\$(_RelativeApplicationTypeRevisionFolder)Default.props</_OldApplicationTypeRevisionDefaultProps>
+    <_OldPlatformDefaultProps Condition="'$(_PlatformDefaultPropsFound)' != 'true'">$(_VCTargetsPathForToolset)\$(_RelativePlatformDefaultProps)</_OldPlatformDefaultProps>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VcpkgInstalledVCTargets)' == 'true' and '$(ApplicationType)' != ''">
+    <_OldApplicationTypeDefaultProps Condition="'$(ApplicationTypeDirectory)' != ''">$([MSBuild]::NormalizePath('$(ApplicationTypeDirectory)', "Default.props))</_OldApplicationTypeDefaultProps>
+    <_OldApplicationTypeRevisionDefaultProps Condition="'$(ApplicationTypeRevisionDirectory)' != ''">$([MSBuild]::NormalizePath('$(ApplicationTypeRevisionDirectory)', "Default.props))</_OldApplicationTypeRevisionDefaultProps>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VcpkgInstalledVCTargets)' == 'true'">
+    <_PlatformFolder>$([MSBuild]::NormalizePath('$(PlatformDirectory)'))</_PlatformFolder>
+    <_ToolsetFolder>$([MSBuild]::NormalizePath('$(ToolsetDirectory)'))</_ToolsetFolder>
+
+    <_OldPlatformDefaultProps>$(_PlatformFolder)\Platform.default.props</_OldPlatformDefaultProps>
+    <_PlatformProps>$(_PlatformFolder)\Platform.props</_PlatformProps>
+    <_PlatformTargets>$(_PlatformFolder)\Platform.targets</_PlatformTargets>
+    <_ToolsetPropsPath>$(_ToolsetFolder)\Toolset.props</_ToolsetPropsPath>
+    <_ToolsetTargetsPath>$(_ToolsetFolder)\Toolset.targets</_ToolsetTargetsPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VcpkgInstalledVCTargets)' != 'true'">
+    <_PlatformFolder>$(_VCTargetsPathForToolset)$(_RelativePlatformFolder)</_PlatformFolder>
+    <_ToolsetFolder>$(_VCTargetsPathForToolset)$(_RelativeToolsetFolder)</_ToolsetFolder>
+    <_PlatformProps>$(_VCTargetsPathForToolset)$(_RelativePlatformProps)</_PlatformProps>
+    <_PlatformTargets>$(_VCTargetsPathForToolset)$(_RelativePlatformTargets)</_PlatformTargets>
+    <_ToolsetPropsPath>$(_VCTargetsPathForToolset)$(_RelativeToolsetProps)</_ToolsetPropsPath>
+    <_ToolsetTargetsPath>$(_VCTargetsPathForToolset)$(_RelativeToolsetTargets)</_ToolsetTargetsPath>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <VCTargetsPathEffective>$(_VCTargetsPathForToolset)</VCTargetsPathEffective>
+    <!-- The following properties are not directly used now, but we'll define them for compatibility with older versions-->
+    <ToolsetPropsFound>true</ToolsetPropsFound>
+    <ToolsetTargetsFound>true</ToolsetTargetsFound>
+    <PlatformPropsFound>true</PlatformPropsFound>
+    <PlatformTargetsFound>true</PlatformTargetsFound>
+  </PropertyGroup>
+    
+  <!-- import defaults from old versions if they were not found in the current one -->
+  <Import Condition="'$(_OldApplicationTypeDefaultProps)' != '' and Exists('$(_OldApplicationTypeDefaultProps)')"
+         Project="$(_OldApplicationTypeDefaultProps)" />
+  <Import Condition="'$(_OldApplicationTypeRevisionDefaultProps)' != '' and Exists('$(_OldApplicationTypeRevisionDefaultProps)')"
+          Project="$(_OldApplicationTypeRevisionDefaultProps)" />
+  <Import Condition="'$(_OldPlatformDefaultProps)' != '' and Exists('$(_OldPlatformDefaultProps)')" Project="$(_OldPlatformDefaultProps)"/>
+
+  <PropertyGroup>
+    <!-- UseNativeEnvironment and _IsNativeEnvironment was used in prev versions to define if we want to use 64-bit tools when building for x64 platform. -->
+    <PreferredToolArchitecture Condition="'$(PreferredToolArchitecture)' == '' and ('$(UseNativeEnvironment)' == 'true' or '$(_IsNativeEnvironment)' == 'true')">x64</PreferredToolArchitecture>
+
+    <!-- By default we use the same bitness as the hosting platform -->
+    <PreferredToolArchitecture Condition="'$(PreferredToolArchitecture)' == '' and ('$(PROCESSOR_ARCHITECTURE)' == 'AMD64' and '$(Platform)' == 'x64')">x64</PreferredToolArchitecture>
+    <!-- prefer arm64 tools when on arm64 -->
+    <PreferredToolArchitecture Condition="'$(PreferredToolArchitecture)' == '' and '$(PROCESSOR_ARCHITECTURE)' == 'ARM64' and '$(HostARM64Suported)' != 'false'">arm64</PreferredToolArchitecture>
+
+    <PreferredToolArchitecture Condition="'$(PreferredToolArchitecture)' == ''">x86</PreferredToolArchitecture>
+
+    <!-- If OS is not x64, we cannot use x64 tools even if preferred -->
+    <PreferredToolArchitecture Condition="'$(PreferredToolArchitecture)' == 'x64' and ('$(PROCESSOR_ARCHITECTURE)' != 'AMD64' and '$(PROCESSOR_ARCHITEW6432)' != 'AMD64' and '$(PROCESSOR_ARCHITECTURE)' != 'ARM64')">x86</PreferredToolArchitecture>
+
+    <!-- If OS is not arm64, we cannot use arm64 tools even if preferred -->
+    <PreferredToolArchitecture Condition="'$(PreferredToolArchitecture)' == 'arm64' and '$(PROCESSOR_ARCHITECTURE)' != 'ARM64'">x86</PreferredToolArchitecture>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VcpkgManifestDirectory)' != ''">
+    <VcpkgTargetOS Condition="'$(VcpkgTargetOS)' == ''">windows</VcpkgTargetOS>
+    <VcpkgActivationOptions Condition="'$(UseDefaultVcpkgActivationOptions)' != 'false'">$(VcpkgTargetOS)=;$(PreferredToolArchitecture)=;target=$(PlatformTarget);$(VcpkgActivationOptions)</VcpkgActivationOptions>
+  </PropertyGroup>
+
+  <Import Condition="'$(VcpkgManifestDirectory)' != '' and '$(VcpkgActivationOptions)' != ''" Project="vcpkg-artifacts.props" Sdk="vcpkg:ManifestDirectory=$(VcpkgManifestDirectory);VcpkgRoot=$(VcpkgRoot);$(VcpkgActivationOptions)" />
+
+  <!-- Generate props/targets if any of the msbuild packages downloaded by vcpkg specified that it has custom props/targets to import -->
+  <Import Condition="'$(VcpkgManifestDirectory)' != '' and '$(ImportBeforeCppProps)' != ''" Project="Imports.props"
+        Sdk="vcpkg:ManifestDirectory=$(VcpkgManifestDirectory);ImportFiles=$(ImportBeforeCppProps)" />
+
+  <!-- import platform.props which will import the toolset props -->
+  <Import Condition="'$(_VCTargetsPathForToolset)' != '$(VCTargetsPath10)'" Project="$(_PlatformProps)" />
+  <!-- In VS2010 most of the settings are located in the Microsoft.Cpp.props, so we have to import it. -->
+  <Import Condition="'$(_VCTargetsPathForToolset)' == '$(VCTargetsPath10)'" Project="$(VCTargetsPath10)\Microsoft.Cpp.props" />
+
+  <!-- restore VCTargetsPath and VsInstallRoot to point to the current version -->
+  <PropertyGroup>
+    <VCTargetsPath>$(CurrentVCTargetsPath)</VCTargetsPath>
+    <VsInstallRoot>$(CurrentVsInstallRoot)</VsInstallRoot>
+  </PropertyGroup>
+
+</Project>

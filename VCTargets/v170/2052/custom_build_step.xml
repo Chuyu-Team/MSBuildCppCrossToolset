@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationCustomBuildStep" DisplayName="自定义生成步骤" Order="100" PageTemplate="tool" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="CustomBuildStep" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+  </Rule.Categories>
+  <StringProperty Name="Command" Category="General" DisplayName="命令行" Description="指定用于自定义生成步骤的命令行。" F1Keyword="VC.Project.VCCustomBuildStep.Command">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <StringProperty Name="Message" Category="General" DisplayName="说明" Description="指定自定义生成步骤的说明。" F1Keyword="VC.Project.VCCustomBuildStep.Message"/>
+  <StringListProperty Name="Outputs" Category="General" DisplayName="输出" Description="指定自定义生成步骤生成的输出文件。" F1Keyword="VC.Project.VCCustomBuildStep.Outputs"/>
+  <StringListProperty Name="Inputs" Category="General" DisplayName="附加依赖项" Description="指定用于自定义生成步骤的任何附加输入文件。" F1Keyword="VC.Project.VCCustomBuildStep.AdditionalInputs"/>
+  <BoolProperty Name="TreatOutputAsContent" Category="General" DisplayName="将输出视为内容" F1Keyword="VC.Project.VCCustomBuildStep.TreatOutputAsContent" Description="指定输出文件是否为可部署内容。">
+  </BoolProperty>
+  <StringProperty Name="RootFolder" DisplayName="内容根文件夹" Description="要用于打包的内容根文件夹。" Category="General" Subtype="folder">
+  </StringProperty>
+  <DynamicEnumProperty Name="CustomBuildAfterTargets" Category="General" DisplayName="在以下操作之后执行" Description="指定自定义生成步骤和工具要在其后面运行的目标。" F1Keyword="VC.Project.VCCustomBuildStep.CustomBuildAfterTargets" EnumProvider="Targets">
+    <DynamicEnumProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType=""/>
+    </DynamicEnumProperty.DataSource>
+    <DynamicEnumProperty.ProviderSettings>
+      <NameValuePair Name="Exclude" Value="^CustomBuild|^Compute"/>
+    </DynamicEnumProperty.ProviderSettings>
+  </DynamicEnumProperty>
+  <DynamicEnumProperty Name="CustomBuildBeforeTargets" Category="General" DisplayName="在以下操作之前执行" Description="指定自定义生成步骤和工具要在其前面运行的目标。" F1Keyword="VC.Project.VCCustomBuildStep.CustomBuildBeforeTargets" EnumProvider="Targets">
+    <DynamicEnumProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType=""/>
+    </DynamicEnumProperty.DataSource>
+    <DynamicEnumProperty.ProviderSettings>
+      <NameValuePair Name="Exclude" Value="^CustomBuild|^Compute"/>
+    </DynamicEnumProperty.ProviderSettings>
+  </DynamicEnumProperty>
+</Rule>

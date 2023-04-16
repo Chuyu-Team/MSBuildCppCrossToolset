@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule Name="ImageContentTask" PageTemplate="tool" DisplayName="图像内容管道" SwitchPrefix="" Order="300">
+
+    <Rule.Categories>
+      <Category Name="General" DisplayName="常规"/>
+    </Rule.Categories>
+
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="ImageContentTask" Label="" HasConfigurationCondition="true"/>
+    </Rule.DataSource>
+
+    <EnumProperty Name="Compress" DisplayName="压缩" Description="指定用于图像的压缩类型。压缩仅适用于图像。(/compress:[type])" Category="General" F1Keyword="VC.Project.ImageContentTask.Compress">
+      <EnumValue Name="None" Switch="" DisplayName="无压缩" Description="无压缩"/>
+      <EnumValue Name="BC1_UNORM" Switch="/compress:BC1_UNORM" DisplayName="BC1_UNORM 压缩" Description="BC1_UNORM 压缩"/>
+      <EnumValue Name="BC1_UNORM_SRGB" Switch="/compress:BC1_UNORM_SRGB" DisplayName="BC1_UNORM_SRGB 压缩" Description="BC1_UNORM_SRGB 压缩"/>
+      <EnumValue Name="BC2_UNORM" Switch="/compress:BC2_UNORM" DisplayName="BC2_UNORM 压缩" Description="BC2_UNORM 压缩"/>
+      <EnumValue Name="BC2_UNORM_SRGB" Switch="/compress:BC2_UNORM_SRGB" DisplayName="BC2_UNORM_SRGB 压缩" Description="BC2_UNORM_SRGB 压缩"/>
+      <EnumValue Name="BC3_UNORM" Switch="/compress:BC3_UNORM" DisplayName="BC3_UNORM 压缩" Description="BC3_UNORM 压缩"/>
+      <EnumValue Name="BC3_UNORM_SRGB" Switch="/compress:BC3_UNORM_SRGB" DisplayName="BC3_UNORM_SRGB 压缩" Description="BC3_UNORM_SRGB 压缩"/>
+      <EnumValue Name="BC4_UNORM" Switch="/compress:BC4_UNORM" DisplayName="BC4_UNORM 压缩" Description="BC4_UNORM 压缩"/>
+      <EnumValue Name="BC4_SNORM" Switch="/compress:BC4_SNORM" DisplayName="BC4_SNORM 压缩" Description="BC4_SNORM 压缩"/>
+      <EnumValue Name="BC5_UNORM" Switch="/compress:BC5_UNORM" DisplayName="BC5_UNORM 压缩" Description="BC5_UNORM 压缩"/>
+      <EnumValue Name="BC5_SNORM" Switch="/compress:BC5_SNORM" DisplayName="BC5_SNORM 压缩" Description="BC5_SNORM 压缩"/>
+      <EnumValue Name="BC6H_UF16" Switch="/compress:BC6H_UF16" DisplayName="BC6H_UF16 压缩" Description="BC6H_UF16 压缩"/>
+      <EnumValue Name="BC6H_SF16" Switch="/compress:BC6H_SF16" DisplayName="BC6H_SF16 压缩" Description="BC6H_SF16 压缩"/>
+      <EnumValue Name="BC7_UNORM" Switch="/compress:BC7_UNORM" DisplayName="BC7_UNORM 压缩" Description="BC7_UNORM 压缩"/>
+      <EnumValue Name="BC7_UNORM_SRGB" Switch="/compress:BC7_UNORM_SRGB" DisplayName="BC7_UNORM_SRGB 压缩" Description="BC7_UNORM_SRGB 压缩"/>
+    </EnumProperty>
+
+    <BoolProperty Name="GeneratePremultipliedAlpha" DisplayName="转换为预乘 alpha 格式" Description="指定是否应将图像转换为预乘 alpha 格式。(/generatepremultipliedalpha)" Category="General" Switch="/generatepremultipliedalpha" F1Keyword="VC.Project.ImageContentTask.GeneratePremultipliedAlpha">
+    </BoolProperty>
+
+    <BoolProperty Name="GenerateMips" DisplayName="生成 Mip" Description="指定是否应为图像创建完整的 mipmap 链。Mipmapping 仅适用于图像。(/generatemips)" Category="General" Switch="/generatemips" F1Keyword="VC.Project.ImageContentTask.GenerateMips">
+    </BoolProperty>
+
+    <StringProperty Subtype="file" Name="ContentOutput" DisplayName="内容输出" Description="内容的输出文件。" Category="General" Switch="" F1Keyword="VC.Project.ImageContentTask.ContentOutput">
+    </StringProperty>
+
+  </Rule>
+
+  <ItemType Name="ImageContentTask" DisplayName="图像内容管道"/>
+  <ContentType Name="ImageContentTask" DisplayName="图像内容管道" ItemType="ImageContentTask"/>
+   
+  
+
+
+
+  
+</ProjectSchemaDefinitions>

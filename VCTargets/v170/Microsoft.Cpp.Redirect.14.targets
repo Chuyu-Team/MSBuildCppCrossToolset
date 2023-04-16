@@ -1,0 +1,113 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.14.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file is used to build Visual C++ projects with the VS2010 toolset.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- This target is used in designtime targets, add it here in case some old toolsets did not import vc common targets -->
+  <Target Name="_PrepareForReferenceResolution" >
+    <!-- Determine if a project is native/managed-->
+    <PropertyGroup>
+      <!-- Do note that there is no seni-colon between @(ClCompile)@(Midl).  This will allow it correctly compare to an empty string.  -->
+      <WinMDAssembly Condition="('$(TargetPlatformIdentifier)' == 'Windows' or '$(TargetPlatformIdentifier)' == 'UAP') and '$(TargetPlatformVersion)' != '7.0' and ('@(ClCompile->WithMetadataValue('CompileAsWinRT', 'true'))@(Midl->WithMetadataValue('EnableWindowsRuntime', 'true'))' != '' or ('@(ClCompile)@(Midl)' == '' and '$(WindowsAppContainer)' == 'true'))">true</WinMDAssembly>
+      <ManagedAssembly Condition="'$(TargetRuntime)' != 'Native' and (('$(CLRSupport)'!='' and '$(CLRSupport)'!='false') or ('%(ClCompile.CompileAsManaged)' != 'false' and '%(ClCompile.CompileAsManaged)' != ''))">true</ManagedAssembly>
+    </PropertyGroup>
+
+    <!-- Clear the target framework for Native projects -->
+    <PropertyGroup>
+      <TargetFrameworkMoniker Condition="'$(ManagedAssembly)' != 'true'"></TargetFrameworkMoniker>
+
+      <!-- Setting _FindDependencies to false will disable ResolveAssemblyReference from searching for managed dependencies.
+        ResolveAssemblyReference is used to resolve both WinMD and managed components and without this flag, RAR will parse
+        the WinMD for managed components.  -->
+      <_FindDependencies Condition="'$(ManagedAssembly)' != 'true'">false</_FindDependencies>
+    </PropertyGroup>
+
+    <!-- Add/remove additional implict references for reference resolution -->
+    <PropertyGroup>
+      <AdditionalExplicitAssemblyReferences Condition="'$(ManagedAssembly)' == 'true' and '$(CLRSupport)' != 'NetCore'">mscorlib</AdditionalExplicitAssemblyReferences>
+      <!-- Filter out System.Core added by: Microsoft.NETFramework.props  -->
+      <AdditionalExplicitAssemblyReferences Condition="'$(ManagedAssembly)' != 'true' or '$(CLRSupport)' == 'NetCore'"></AdditionalExplicitAssemblyReferences>
+    </PropertyGroup>
+
+    <!-- Add all windowsSDK's winmd files to the references -->
+    <ItemGroup Condition="'$(WinMDAssembly)' == 'true' and '$(TargetPlatformWinMDLocation)' != ''">
+      <Reference Include="$([Microsoft.Build.Utilities.ToolLocationHelper]::GetTargetPlatformReferences($(SDKIdentifier), $(SDKVersion), $(TargetPlatformIdentifier), $(TargetPlatformMinVersion), $(TargetPlatformVersion)))">
+        <IsWinMDFile>true</IsWinMDFile>
+        <CopyLocal>false</CopyLocal>
+        <IsSystemReference>True</IsSystemReference>
+        <Implicit>true</Implicit>
+      </Reference>
+    </ItemGroup>
+
+    <!-- Add implicit to all references coming from a .targets file, post resolution -->
+    <ItemGroup>
+      <Reference>
+        <Implicit Condition="'%(Reference.DefiningProjectExtension)' == '.targets'">true</Implicit>
+      </Reference>
+    </ItemGroup>
+
+    <Message Condition="'$(_REFERENCE_DEBUG)'=='true'" Importance="High" Text="ReferencePath=@(ReferencePath)"/>
+  </Target>
+
+  <PropertyGroup>
+    <!-- targets which define WinMDAssembly and/or ManagedAssembly properties -->
+    <DetermineProjectTypeTargets>_PrepareForReferenceResolution;$(DetermineProjectTypeTargets)</DetermineProjectTypeTargets>
+  </PropertyGroup>
+
+  <Import Condition="'$(_ToolsetVCTargetsVersion)' == 'v140'" Project="$(VCTargetsPath)\Microsoft.Cpp.ToolsetLocation.targets"/>
+  <Import Condition="'$(_ToolsetVCTargetsVersion)' != 'v140'" Project="$(VCTargetsPath)\Microsoft.Cpp.Redirect.12.targets"/>
+  
+  <!-- targets modification required for Dev15 from Dev14 -->
+
+  <PropertyGroup>
+    <RequiredBundles />
+  </PropertyGroup>
+  
+  <UsingTask TaskName="CustomBuildStepMessage" AssemblyFile="$(MSBuildThisFileDirectory)Microsoft.Build.CppTasks.Common.dll"/>
+  
+  <!-- overriding CustomBuildStep so it produces correct tlogs required by Dev15 and later up-to-date check -->
+  <Target Name="CustomBuildStep"
+          Condition="'@(CustomBuildStep)' != '' and '$(SelectedFiles)'==''"
+          Inputs="%(CustomBuildStep.Inputs);$(ProjectFileName)"
+          Outputs="%(CustomBuildStep.Outputs)"
+          DependsOnTargets="ComputeCustomBuildOutput"
+          BeforeTargets="$(CustomBuildBeforeTargets)"
+          AfterTargets="$(CustomBuildAfterTargets)"
+          >
+    <CustomBuildStepMessage Text="%(CustomBuildStep.Message)" />
+
+    <!-- write tlogs to track custom build step inputs and outputs -->
+    <ItemGroup>
+      <_CustomBuildStepInput Include="@(CustomBuildStep->MetaData('Inputs')->FullPath()->ToUpperInvariant()->Distinct())" />
+    </ItemGroup>
+    <ItemGroup>
+      <_CustomBuildStepInputForOutput Include="@(_CustomBuildStepInput, '|')" />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(TLogLocation)CustomBuildStep.read.1u.tlog"
+                      Lines="@(_CustomBuildStepInput->'^%(Identity)');"
+                      Encoding="Unicode"
+                      Overwrite="true"/>
+    <WriteLinesToFile File="$(TLogLocation)CustomBuildStep.write.1u.tlog"
+                      Lines="@(_CustomBuildStepInputForOutput->'^%(Identity)');@(CustomBuildStep->MetaData('Outputs')->FullPath()->ToUpperInvariant()->Distinct())"
+                      Encoding="Unicode"
+                      Overwrite="true"/>
+
+    <Exec Command="%(CustomBuildStep.Command)$(_BuildSuffix)" />
+
+    <ItemGroup>
+      <_CustomBuildStepInput Remove="@(_CustomBuildStepInput)" />
+      <_CustomBuildStepInputForOutput Remove="@(_CustomBuildStepInputForOutput)" />
+    </ItemGroup>
+  </Target>
+</Project>

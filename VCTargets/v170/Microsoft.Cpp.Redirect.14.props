@@ -1,0 +1,41 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.14.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+      created a backup copy.  Incorrect changes to this file will make it
+      impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_VCTargetsPathForToolset Condition="'$(VCTargetsPath14)' != ''">$([MSBuild]::Unescape($([Microsoft.Build.Utilities.ToolLocationHelper]::FindRootFolderWhereAllFilesExist($(VCTargetsPath14), $(_RelativeToolsetFiles)))))</_VCTargetsPathForToolset>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(_VCTargetsPathForToolset)' != ''">
+    <_ToolsetFound>true</_ToolsetFound>
+    <_ToolsetVCTargetsVersion>v140</_ToolsetVCTargetsVersion>
+  </PropertyGroup>
+
+  <Import Condition="'$(_ToolsetFound)' == 'true'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.ToolsetLocation.props" />
+
+  <!-- try older VS versions if toolset is not found -->
+  <Import Condition="'$(_ToolsetFound)' != 'true'  and '$(MinSupportedVCTargetsVersion)' != 'v140'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.Redirect.12.props" />
+ 
+  <PropertyGroup Condition="'$(_ToolsetFound)' == 'true'">
+    <!-- fix the upgrader - it should be always the default one now -->
+    <VCProjectUpgraderObjectName Condition="'$(VCProjectUpgraderObjectName)' == 'WindowsSDKVersionUpgrader'"></VCProjectUpgraderObjectName>
+    <!-- exclude files in the system folder from up-to-date check -->
+    <ExcludePath>$(ExcludePath);$(SystemRoot)</ExcludePath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(_ToolsetFound)' == 'true' and '$(VCInstallDir)' != '' and '$(VC_PGO_RunTime_Dir)' == ''">
+    <VC_PGO_RunTime_Dir Condition="'$(Platform)'=='Win32'">$(VCInstallDir)bin</VC_PGO_RunTime_Dir>
+    <VC_PGO_RunTime_Dir Condition="'$(Platform)'=='X64'">$(VCInstallDir)bin\amd64</VC_PGO_RunTime_Dir>
+    <CppRuntimeFilesPath Condition="'$(CppRuntimeFilesPath)' == ''">$(VCInstallDir)redist\$(PlatformShortName)</CppRuntimeFilesPath>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,33 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Unity.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Unity build support
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- *******************************************************************************************
+        CLCompile
+       ******************************************************************************************* -->
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <IncludeInUnityFile                Condition="'%(ClCompile.IncludeInUnityFile)'                == ''">true</IncludeInUnityFile>
+      <UnityFilesDirectory               Condition="'%(ClCompile.UnityFilesDirectory)'               == ''">$(IntDir)</UnityFilesDirectory>
+      <OrderInUnityFile                  Condition="'%(ClCompile.OrderInUnityFile)'                  == ''">100</OrderInUnityFile>
+      <CombineFilesOnlyFromTheSameFolder Condition="'%(ClCompile.CombineFilesOnlyFromTheSameFolder)' == ''">false</CombineFilesOnlyFromTheSameFolder>
+      <MinFilesInUnityFile               Condition="'%(ClCompile.MinFilesInUnityFile)'               == ''">2</MinFilesInUnityFile>
+      <MaxFilesInUnityFile               Condition="'%(ClCompile.MaxFilesInUnityFile)'               == ''">0</MaxFilesInUnityFile>
+      <MinUnityFiles                     Condition="'%(ClCompile.MinUnityFiles)'                     == ''">1</MinUnityFiles>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+</Project>

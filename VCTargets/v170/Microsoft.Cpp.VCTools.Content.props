@@ -1,0 +1,194 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.VCTools.Content.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- This property should not be used, but needs to be defined for backward compatibility -->
+  <PropertyGroup>
+    <VCLibDirMod Condition="'$(VCLibDirMod)' == '' and '$(SpectreMitigation)' != '' and '$(SpectreMitigation)' != 'false'">Spectre\</VCLibDirMod>
+  </PropertyGroup>
+
+  <!--Auxiliary VS Dir in VC root-->
+  <PropertyGroup>
+    <VC_VS_IncludePath Condition="'$(VC_VS_IncludePath)' == ''">$(VCInstallDir)Auxiliary\VS\include;</VC_VS_IncludePath>
+    <VC_VS_SourcePath Condition="'$(VC_VS_SourcePath)' == ''">$(VCInstallDir)Auxiliary\VS\src;</VC_VS_SourcePath>
+    <VC_VS_LibraryPath_VC_VS_x86 Condition="'$(VC_VS_LibraryPath_VC_VS_x86)' == ''">$(VCInstallDir)Auxiliary\VS\lib\x86;</VC_VS_LibraryPath_VC_VS_x86>
+    <VC_VS_LibraryPath_VC_VS_x64 Condition="'$(VC_VS_LibraryPath_VC_VS_x64)' == ''">$(VCInstallDir)Auxiliary\VS\lib\x64;</VC_VS_LibraryPath_VC_VS_x64>
+    <VC_VS_LibraryPath_VC_VS_ARM Condition="'$(VC_VS_LibraryPath_VC_VS_ARM)' == ''">$(VCInstallDir)Auxiliary\VS\lib\ARM;</VC_VS_LibraryPath_VC_VS_ARM>
+  </PropertyGroup>
+
+  <!-- VC directories -->
+
+  <PropertyGroup>
+    <VC_ExecutablePath_x86_x86 Condition="'$(VC_ExecutablePath_x86_x86)' == ''">$(VCToolsInstallDir)bin\HostX86\x86</VC_ExecutablePath_x86_x86>
+    <VC_ExecutablePath_x86_x64 Condition="'$(VC_ExecutablePath_x86_x64)' == ''">$(VCToolsInstallDir)bin\HostX86\x64</VC_ExecutablePath_x86_x64>
+    <VC_ExecutablePath_x86_ARM Condition="'$(VC_ExecutablePath_x86_ARM)' == ''">$(VCToolsInstallDir)bin\HostX86\arm</VC_ExecutablePath_x86_ARM>
+    <VC_ExecutablePath_x86_ARM64 Condition="'$(VC_ExecutablePath_x86_ARM64)' == ''">$(VCToolsInstallDir)bin\HostX86\arm64</VC_ExecutablePath_x86_ARM64>
+    <VC_ExecutablePath_x64_x86 Condition="'$(VC_ExecutablePath_x64_x86)' == ''">$(VCToolsInstallDir)bin\HostX64\x86</VC_ExecutablePath_x64_x86>
+    <VC_ExecutablePath_x64_x64 Condition="'$(VC_ExecutablePath_x64_x64)' == ''">$(VCToolsInstallDir)bin\HostX64\x64</VC_ExecutablePath_x64_x64>
+    <VC_ExecutablePath_x64_ARM Condition="'$(VC_ExecutablePath_x64_ARM)' == ''">$(VCToolsInstallDir)bin\HostX64\arm</VC_ExecutablePath_x64_ARM>
+    <VC_ExecutablePath_x64_ARM64 Condition="'$(VC_ExecutablePath_x64_ARM64)' == ''">$(VCToolsInstallDir)bin\HostX64\arm64</VC_ExecutablePath_x64_ARM64>
+    <VC_ExecutablePath_arm64_x86 Condition="'$(VC_ExecutablePath_arm64_x86)' == ''">$(VCToolsInstallDir)bin\HostArm64\x86</VC_ExecutablePath_arm64_x86>
+    <VC_ExecutablePath_arm64_x64 Condition="'$(VC_ExecutablePath_arm64_x64)' == ''">$(VCToolsInstallDir)bin\HostArm64\x64</VC_ExecutablePath_arm64_x64>
+    <VC_ExecutablePath_arm64_ARM Condition="'$(VC_ExecutablePath_arm64_ARM)' == ''">$(VCToolsInstallDir)bin\HostArm64\arm</VC_ExecutablePath_arm64_ARM>
+    <VC_ExecutablePath_arm64_ARM64 Condition="'$(VC_ExecutablePath_arm64_ARM64)' == ''">$(VCToolsInstallDir)bin\HostArm64\arm64</VC_ExecutablePath_arm64_ARM64>
+
+    <VC_ReferencesPath_VC_x86 Condition="'$(VC_ReferencesPath_VC_x86)' == ''">$(VCToolsInstallDir)lib\x86</VC_ReferencesPath_VC_x86>
+    <VC_ReferencesPath_ATL_x86 Condition="'$(VC_ReferencesPath_ATL_x86)' == ''">$(VCToolsInstallDir)atlmfc\lib\x86;</VC_ReferencesPath_ATL_x86>
+    <VC_ReferencesPath_VC_x86_spectre Condition="'$(VC_ReferencesPath_VC_x86_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\x86</VC_ReferencesPath_VC_x86_spectre>
+    <VC_ReferencesPath_ATL_x86_spectre Condition="'$(VC_ReferencesPath_ATL_x86_spectre)' == ''">$(VCToolsInstallDir)atlmfc\lib\spectre\x86;</VC_ReferencesPath_ATL_x86_spectre>
+
+    <VC_ReferencesPath_VC_x64 Condition="'$(VC_ReferencesPath_VC_x64)' == ''">$(VCToolsInstallDir)lib\x64</VC_ReferencesPath_VC_x64>
+    <VC_ReferencesPath_ATL_x64 Condition="'$(VC_ReferencesPath_ATL_x64)' == ''">$(VCToolsInstallDir)atlmfc\lib\x64;</VC_ReferencesPath_ATL_x64>
+    <VC_ReferencesPath_VC_x64_spectre Condition="'$(VC_ReferencesPath_VC_x64_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\x64</VC_ReferencesPath_VC_x64_spectre>
+    <VC_ReferencesPath_ATL_x64_spectre Condition="'$(VC_ReferencesPath_ATL_x64_spectre)' == ''">$(VCToolsInstallDir)atlmfc\lib\spectre\x64;</VC_ReferencesPath_ATL_x64_spectre>
+
+    <VC_ReferencesPath_VC_ARM Condition="'$(VC_ReferencesPath_VC_ARM)' == ''">$(VCToolsInstallDir)lib\ARM</VC_ReferencesPath_VC_ARM>
+    <VC_ReferencesPath_ATL_ARM Condition="'$(VC_ReferencesPath_ATL_ARM)' == ''">$(VCToolsInstallDir)atlmfc\lib\ARM;</VC_ReferencesPath_ATL_ARM>
+    <VC_ReferencesPath_VC_ARM_spectre Condition="'$(VC_ReferencesPath_VC_ARM_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\ARM</VC_ReferencesPath_VC_ARM_spectre>
+    <VC_ReferencesPath_ATL_ARM_spectre Condition="'$(VC_ReferencesPath_ATL_ARM_spectre)' == ''">$(VCToolsInstallDir)atlmfc\lib\spectre\ARM;</VC_ReferencesPath_ATL_ARM_spectre>
+
+    <VC_ReferencesPath_VC_ARM64 Condition="'$(VC_ReferencesPath_VC_ARM64)' == ''">$(VCToolsInstallDir)lib\ARM64</VC_ReferencesPath_VC_ARM64>
+    <VC_ReferencesPath_ATL_ARM64 Condition="'$(VC_ReferencesPath_ATL_ARM64)' == ''">$(VCToolsInstallDir)atlmfc\lib\ARM64;</VC_ReferencesPath_ATL_ARM64>
+    <VC_ReferencesPath_VC_ARM64_spectre Condition="'$(VC_ReferencesPath_VC_ARM64_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\ARM64</VC_ReferencesPath_VC_ARM64_spectre>
+    <VC_ReferencesPath_ATL_ARM64_spectre Condition="'$(VC_ReferencesPath_ATL_ARM64_spectre)' == ''">$(VCToolsInstallDir)atlmfc\lib\spectre\ARM64;</VC_ReferencesPath_ATL_ARM64_spectre>
+
+    <LibrariesArchitecture Condition="'$(LibrariesArchitecture)' == ''">$(PlatformTarget)</LibrariesArchitecture>
+  
+    <VC_LibraryPath_VC_x86_Desktop Condition="'$(VC_LibraryPath_VC_x86_Desktop)' == ''">$(VCToolsInstallDir)lib\x86</VC_LibraryPath_VC_x86_Desktop>
+    <VC_LibraryPath_VC_x64_Desktop Condition="'$(VC_LibraryPath_VC_x64_Desktop)' == ''">$(VCToolsInstallDir)lib\x64</VC_LibraryPath_VC_x64_Desktop>
+    <VC_LibraryPath_VC_ARM_Desktop Condition="'$(VC_LibraryPath_VC_ARM_Desktop)' == ''">$(VCToolsInstallDir)lib\ARM</VC_LibraryPath_VC_ARM_Desktop>
+    <VC_LibraryPath_VC_ARM64_Desktop Condition="'$(VC_LibraryPath_VC_ARM64_Desktop)' == ''">$(VCToolsInstallDir)lib\ARM64</VC_LibraryPath_VC_ARM64_Desktop>
+    <VC_LibraryPath_VC_x86_Desktop_spectre Condition="'$(VC_LibraryPath_VC_x86_Desktop_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\x86</VC_LibraryPath_VC_x86_Desktop_spectre>
+    <VC_LibraryPath_VC_x64_Desktop_spectre Condition="'$(VC_LibraryPath_VC_x64_Desktop_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\x64</VC_LibraryPath_VC_x64_Desktop_spectre>
+    <VC_LibraryPath_VC_ARM_Desktop_spectre Condition="'$(VC_LibraryPath_VC_ARM_Desktop_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\ARM</VC_LibraryPath_VC_ARM_Desktop_spectre>
+    <VC_LibraryPath_VC_ARM64_Desktop_spectre Condition="'$(VC_LibraryPath_VC_ARM64_Desktop_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\ARM64</VC_LibraryPath_VC_ARM64_Desktop_spectre>
+
+    <VC_LibraryPath_VC_Desktop_CurrentPlatform_spectre>$(VCToolsInstallDir)lib\spectre\$(LibrariesArchitecture)</VC_LibraryPath_VC_Desktop_CurrentPlatform_spectre>
+
+    <VC_LibraryPath_VC_x86_Store Condition="'$(VC_LibraryPath_VC_x86_Store)' == ''">$(VCToolsInstallDir)lib\x86\store</VC_LibraryPath_VC_x86_Store>
+    <VC_LibraryPath_VC_x64_Store Condition="'$(VC_LibraryPath_VC_x64_Store)' == ''">$(VCToolsInstallDir)lib\x64\store</VC_LibraryPath_VC_x64_Store>
+    <VC_LibraryPath_VC_ARM_Store Condition="'$(VC_LibraryPath_VC_ARM_Store)' == ''">$(VCToolsInstallDir)lib\ARM\store</VC_LibraryPath_VC_ARM_Store>
+    <VC_LibraryPath_VC_ARM64_Store Condition="'$(VC_LibraryPath_VC_ARM64_Store)' == ''">$(VCToolsInstallDir)lib\ARM64\store</VC_LibraryPath_VC_ARM64_Store>
+
+    <VC_LibraryPath_VC_x86_UWP Condition="'$(VC_LibraryPath_VC_x86_UWP)' == ''">$(VCToolsInstallDir)lib\x86\uwp</VC_LibraryPath_VC_x86_UWP>
+    <VC_LibraryPath_VC_x64_UWP Condition="'$(VC_LibraryPath_VC_x64_UWP)' == ''">$(VCToolsInstallDir)lib\x64\uwp</VC_LibraryPath_VC_x64_UWP>
+    <VC_LibraryPath_VC_ARM_UWP Condition="'$(VC_LibraryPath_VC_ARM_UWP)' == ''">$(VCToolsInstallDir)lib\ARM\uwp</VC_LibraryPath_VC_ARM_UWP>
+    <VC_LibraryPath_VC_ARM64_UWP Condition="'$(VC_LibraryPath_VC_ARM64_UWP)' == ''">$(VCToolsInstallDir)lib\ARM64\uwp</VC_LibraryPath_VC_ARM64_UWP>
+
+    <VC_LibraryPath_VC_x86_OneCore Condition="'$(VC_LibraryPath_VC_x86_OneCore)' == ''">$(VCToolsInstallDir)lib\onecore\x86</VC_LibraryPath_VC_x86_OneCore>
+    <VC_LibraryPath_VC_x64_OneCore Condition="'$(VC_LibraryPath_VC_x64_OneCore)' == ''">$(VCToolsInstallDir)lib\onecore\x64</VC_LibraryPath_VC_x64_OneCore>
+    <VC_LibraryPath_VC_ARM_OneCore Condition="'$(VC_LibraryPath_VC_ARM_OneCore)' == ''">$(VCToolsInstallDir)lib\onecore\ARM</VC_LibraryPath_VC_ARM_OneCore>
+    <VC_LibraryPath_VC_ARM64_OneCore Condition="'$(VC_LibraryPath_VC_ARM64_OneCore)' == ''">$(VCToolsInstallDir)lib\onecore\ARM64</VC_LibraryPath_VC_ARM64_OneCore>
+    <VC_LibraryPath_VC_x86_OneCore_spectre Condition="'$(VC_LibraryPath_VC_x86_OneCore_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\onecore\x86</VC_LibraryPath_VC_x86_OneCore_spectre>
+    <VC_LibraryPath_VC_x64_OneCore_spectre Condition="'$(VC_LibraryPath_VC_x64_OneCore_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\onecore\x64</VC_LibraryPath_VC_x64_OneCore_spectre>
+    <VC_LibraryPath_VC_ARM_OneCore_spectre Condition="'$(VC_LibraryPath_VC_ARM_OneCore_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\onecore\ARM</VC_LibraryPath_VC_ARM_OneCore_spectre>
+    <VC_LibraryPath_VC_ARM64_OneCore_spectre Condition="'$(VC_LibraryPath_VC_ARM64_OneCore_spectre)' == ''">$(VCToolsInstallDir)lib\spectre\onecore\ARM64</VC_LibraryPath_VC_ARM64_OneCore_spectre>
+
+    <VC_LibraryPath_VC_OneCore_CurrentPlatform_spectre>$(VCToolsInstallDir)lib\spectre\onecore\$(LibrariesArchitecture)</VC_LibraryPath_VC_OneCore_CurrentPlatform_spectre>
+
+
+    <VC_LibraryPath_ATL_x86 Condition="'$(VC_LibraryPath_ATL_x86)' == ''">$(VCToolsInstallDir)atlmfc\lib\x86;</VC_LibraryPath_ATL_x86>
+    <VC_LibraryPath_ATL_x64 Condition="'$(VC_LibraryPath_ATL_x64)' == ''">$(VCToolsInstallDir)atlmfc\lib\x64;</VC_LibraryPath_ATL_x64>
+    <VC_LibraryPath_ATL_ARM Condition="'$(VC_LibraryPath_ATL_ARM)' == ''">$(VCToolsInstallDir)atlmfc\lib\ARM;</VC_LibraryPath_ATL_ARM>
+    <VC_LibraryPath_ATL_ARM64 Condition="'$(VC_LibraryPath_ATL_ARM64)' == ''">$(VCToolsInstallDir)atlmfc\lib\ARM64;</VC_LibraryPath_ATL_ARM64>
+    <VC_LibraryPath_ATL_x86_spectre Condition="'$(VC_LibraryPath_ATL_x86_spectre)' == ''">$(VCToolsInstallDir)atlmfc\lib\spectre\x86;</VC_LibraryPath_ATL_x86_spectre>
+    <VC_LibraryPath_ATL_x64_spectre Condition="'$(VC_LibraryPath_ATL_x64_spectre)' == ''">$(VCToolsInstallDir)atlmfc\lib\spectre\x64;</VC_LibraryPath_ATL_x64_spectre>
+    <VC_LibraryPath_ATL_ARM_spectre Condition="'$(VC_LibraryPath_ATL_ARM_spectre)' == ''">$(VCToolsInstallDir)atlmfc\lib\spectre\ARM;</VC_LibraryPath_ATL_ARM_spectre>
+    <VC_LibraryPath_ATL_ARM64_spectre Condition="'$(VC_LibraryPath_ATL_ARM64_spectre)' == ''">$(VCToolsInstallDir)atlmfc\lib\spectre\ARM64;</VC_LibraryPath_ATL_ARM64_spectre>
+
+    <VC_LibraryPath_ATL_CurrentPlatform_spectre>$(VCToolsInstallDir)atlmfc\lib\spectre\$(LibrariesArchitecture)</VC_LibraryPath_ATL_CurrentPlatform_spectre>
+
+    <VC_VC_IncludePath Condition="'$(VC_VC_IncludePath)' == ''">$(VCToolsInstallDir)include;</VC_VC_IncludePath>
+    <VC_ATLMFC_IncludePath Condition="'$(VC_ATLMFC_IncludePath)' == ''">$(VCToolsInstallDir)atlmfc\include;</VC_ATLMFC_IncludePath>
+    <VC_IncludePath>$(VC_VC_IncludePath);$(VC_ATLMFC_IncludePath);$(VC_VS_IncludePath);$(UniversalCRT_IncludePath);</VC_IncludePath>
+
+    <VC_CRT_SourcePath Condition="'$(VC_CRT_SourcePath)' == ''">$(VCToolsInstallDir)crt\src;</VC_CRT_SourcePath>
+    <VC_ATLMFC_SourcePath Condition="'$(VC_ATLMFC_SourcePath)' == ''">$(VCToolsInstallDir)atlmfc\src\mfc;$(VCToolsInstallDir)atlmfc\src\mfcm;$(VCToolsInstallDir)atlmfc\src\atl;</VC_ATLMFC_SourcePath>
+    <VC_SourcePath>$(VC_ATLMFC_SourcePath);$(VC_CRT_SourcePath);$(VC_VS_SourcePath);$(UniversalCRT_SourcePath);</VC_SourcePath>
+
+    <VC_IFCPath Condition="'$(VC_IFCPath)' == ''">$(VCToolsInstallDir)ifc\$(PlatformTarget)</VC_IFCPath>
+</PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(SpectreMitigation)' != '' and '$(SpectreMitigation)' != 'false'">
+      <PropertyGroup>
+        <_VC_LibraryPath_VC_x86_Desktop>$(VC_LibraryPath_VC_x86_Desktop_spectre)</_VC_LibraryPath_VC_x86_Desktop>
+        <_VC_LibraryPath_VC_x64_Desktop>$(VC_LibraryPath_VC_x64_Desktop_spectre)</_VC_LibraryPath_VC_x64_Desktop>
+        <_VC_LibraryPath_VC_ARM_Desktop>$(VC_LibraryPath_VC_ARM_Desktop_spectre)</_VC_LibraryPath_VC_ARM_Desktop>
+        <_VC_LibraryPath_VC_ARM64_Desktop>$(VC_LibraryPath_VC_ARM64_Desktop_spectre)</_VC_LibraryPath_VC_ARM64_Desktop>
+
+        <_VC_LibraryPath_VC_x86_OneCore>$(VC_LibraryPath_VC_x86_OneCore_spectre)</_VC_LibraryPath_VC_x86_OneCore>
+        <_VC_LibraryPath_VC_x64_OneCore>$(VC_LibraryPath_VC_x64_OneCore_spectre)</_VC_LibraryPath_VC_x64_OneCore>
+        <_VC_LibraryPath_VC_ARM_OneCore>$(VC_LibraryPath_VC_ARM_OneCore_spectre)</_VC_LibraryPath_VC_ARM_OneCore>
+        <_VC_LibraryPath_VC_ARM64_OneCore>$(VC_LibraryPath_VC_ARM64_OneCore_spectre)</_VC_LibraryPath_VC_ARM64_OneCore>
+
+        <_VC_LibraryPath_ATL_x86>$(VC_LibraryPath_ATL_x86_spectre)</_VC_LibraryPath_ATL_x86>
+        <_VC_LibraryPath_ATL_x64>$(VC_LibraryPath_ATL_x64_spectre)</_VC_LibraryPath_ATL_x64>
+        <_VC_LibraryPath_ATL_ARM>$(VC_LibraryPath_ATL_ARM_spectre)</_VC_LibraryPath_ATL_ARM>
+        <_VC_LibraryPath_ATL_ARM64>$(VC_LibraryPath_ATL_ARM64_spectre)</_VC_LibraryPath_ATL_ARM64>
+
+        <VC_ReferencesPath_x86>$(VC_ReferencesPath_ATL_x86_spectre);$(VC_ReferencesPath_VC_x86_spectre)</VC_ReferencesPath_x86>
+        <VC_ReferencesPath_x64>$(VC_ReferencesPath_ATL_x64_spectre);$(VC_ReferencesPath_VC_x64_spectre)</VC_ReferencesPath_x64>
+        <VC_ReferencesPath_ARM>$(VC_ReferencesPath_ATL_ARM_spectre);$(VC_ReferencesPath_VC_ARM_spectre)</VC_ReferencesPath_ARM>
+        <VC_ReferencesPath_ARM64>$(VC_ReferencesPath_ATL_ARM64_spectre);$(VC_ReferencesPath_VC_ARM64_spectre)</VC_ReferencesPath_ARM64>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <_VC_LibraryPath_VC_x86_Desktop>$(VC_LibraryPath_VC_x86_Desktop)</_VC_LibraryPath_VC_x86_Desktop>
+        <_VC_LibraryPath_VC_x64_Desktop>$(VC_LibraryPath_VC_x64_Desktop)</_VC_LibraryPath_VC_x64_Desktop>
+        <_VC_LibraryPath_VC_ARM_Desktop>$(VC_LibraryPath_VC_ARM_Desktop)</_VC_LibraryPath_VC_ARM_Desktop>
+        <_VC_LibraryPath_VC_ARM64_Desktop>$(VC_LibraryPath_VC_ARM64_Desktop)</_VC_LibraryPath_VC_ARM64_Desktop>
+
+        <_VC_LibraryPath_VC_x86_Store>$(VC_LibraryPath_VC_x86_Store)</_VC_LibraryPath_VC_x86_Store>
+        <_VC_LibraryPath_VC_x64_Store>$(VC_LibraryPath_VC_x64_Store)</_VC_LibraryPath_VC_x64_Store>
+        <_VC_LibraryPath_VC_ARM_Store>$(VC_LibraryPath_VC_ARM_Store)</_VC_LibraryPath_VC_ARM_Store>
+        <_VC_LibraryPath_VC_ARM64_Store>$(VC_LibraryPath_VC_ARM64_Store)</_VC_LibraryPath_VC_ARM64_Store>
+
+        <_VC_LibraryPath_VC_x86_UWP>$(VC_LibraryPath_VC_x86_UWP)</_VC_LibraryPath_VC_x86_UWP>
+        <_VC_LibraryPath_VC_x64_UWP>$(VC_LibraryPath_VC_x64_UWP)</_VC_LibraryPath_VC_x64_UWP>
+        <_VC_LibraryPath_VC_ARM_UWP>$(VC_LibraryPath_VC_ARM_UWP)</_VC_LibraryPath_VC_ARM_UWP>
+        <_VC_LibraryPath_VC_ARM64_UWP>$(VC_LibraryPath_VC_ARM64_UWP)</_VC_LibraryPath_VC_ARM64_UWP>
+
+        <_VC_LibraryPath_VC_x86_OneCore>$(VC_LibraryPath_VC_x86_OneCore)</_VC_LibraryPath_VC_x86_OneCore>
+        <_VC_LibraryPath_VC_x64_OneCore>$(VC_LibraryPath_VC_x64_OneCore)</_VC_LibraryPath_VC_x64_OneCore>
+        <_VC_LibraryPath_VC_ARM_OneCore>$(VC_LibraryPath_VC_ARM_OneCore)</_VC_LibraryPath_VC_ARM_OneCore>
+        <_VC_LibraryPath_VC_ARM64_OneCore>$(VC_LibraryPath_VC_ARM64_OneCore)</_VC_LibraryPath_VC_ARM64_OneCore>
+
+        <_VC_LibraryPath_ATL_x86>$(VC_LibraryPath_ATL_x86)</_VC_LibraryPath_ATL_x86>
+        <_VC_LibraryPath_ATL_x64>$(VC_LibraryPath_ATL_x64)</_VC_LibraryPath_ATL_x64>
+        <_VC_LibraryPath_ATL_ARM>$(VC_LibraryPath_ATL_ARM)</_VC_LibraryPath_ATL_ARM>
+        <_VC_LibraryPath_ATL_ARM64>$(VC_LibraryPath_ATL_ARM64)</_VC_LibraryPath_ATL_ARM64>
+
+        <VC_ReferencesPath_x86>$(VC_ReferencesPath_ATL_x86);$(VC_ReferencesPath_VC_x86)</VC_ReferencesPath_x86>
+        <VC_ReferencesPath_x64>$(VC_ReferencesPath_ATL_x64);$(VC_ReferencesPath_VC_x64)</VC_ReferencesPath_x64>
+        <VC_ReferencesPath_ARM>$(VC_ReferencesPath_ATL_ARM);$(VC_ReferencesPath_VC_ARM)</VC_ReferencesPath_ARM>
+        <VC_ReferencesPath_ARM64>$(VC_ReferencesPath_ATL_ARM64);$(VC_ReferencesPath_VC_ARM64)</VC_ReferencesPath_ARM64>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <PropertyGroup Condition="'$(PlatformShortName)' != ''">
+    <_SpectreLibsDir Condition="'$(SpectreMitigation)' != '' and '$(SpectreMitigation)' != 'false'">spectre\</_SpectreLibsDir>
+    <!-- the file to check in $(_VC_LibraryPath_ATL_*) folders to figure out if MFC was installed -->
+    <MFC_KeyFile>$(VCToolsInstallDir)atlmfc\lib\$(_SpectreLibsDir)$(PlatformShortName)\mfcs140.lib</MFC_KeyFile>
+    <!-- the file to check in $(_VC_LibraryPath_ATL_*) folders to figure out if ATL was installed -->
+    <ATL_KeyFile>$(VCToolsInstallDir)atlmfc\lib\$(_SpectreLibsDir)$(PlatformShortName)\atls.lib</ATL_KeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_VC_x64_ToolsInstalled Condition="'$(_VC_x64_ToolsInstalled)' == '' and Exists('$(VCToolsInstallDir)bin\HostX64')">true</_VC_x64_ToolsInstalled>
+    <_VC_arm64_ToolsInstalled Condition="'$(_VC_arm64_ToolsInstalled)' == '' and Exists('$(VCToolsInstallDir)bin\HostArm64')">true</_VC_arm64_ToolsInstalled>
+  </PropertyGroup>
+
+</Project>

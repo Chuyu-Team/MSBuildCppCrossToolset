@@ -1,0 +1,92 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file is used to build Visual C++ projects with the VS2010 toolset.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(_ToolsetVCTargetsVersion)' == 'v110'">
+    <_Dev11TrackerInstalled Condition="!Exists('$(WindowsSdkDir_80A)bin\NETFX 4.0 Tools\Tracker.exe')">false</_Dev11TrackerInstalled>
+  </PropertyGroup>
+  
+  <!-- Set the latest MSBuild tools bin folder as the tracker, if tracker.exe is not found in dev11 location -->
+  <PropertyGroup Condition="'$(_Dev11TrackerInstalled)' == 'false'">
+    <ModifiedTrackerPath Condition="'$(ModifiedTrackerPath)' == ''">$(MSBuildToolsPath)\</ModifiedTrackerPath>
+    <CLTrackerSdkPath>$(ModifiedTrackerPath)</CLTrackerSdkPath>
+    <LinkTrackerSdkPath>$(ModifiedTrackerPath)</LinkTrackerSdkPath>
+    <LibTrackerSdkPath>$(ModifiedTrackerPath)</LibTrackerSdkPath>
+    <MidlTrackerSdkPath>$(ModifiedTrackerPath)</MidlTrackerSdkPath>
+    <RCTrackerSdkPath>$(ModifiedTrackerPath)</RCTrackerSdkPath>
+    <ManifestTrackerSdkPath>$(ModifiedTrackerPath)</ManifestTrackerSdkPath>
+    <XDCMakeTrackerSdkPath>$(ModifiedTrackerPath)</XDCMakeTrackerSdkPath>
+    <BSCMakeTrackerSdkPath>$(ModifiedTrackerPath)</BSCMakeTrackerSdkPath>
+    <XSDTrackerSdkPath>$(ModifiedTrackerPath)</XSDTrackerSdkPath>
+    <FXTrackerSdkPath>$(ModifiedTrackerPath)</FXTrackerSdkPath>
+  </PropertyGroup>
+
+  <Import Condition="'$(_ToolsetVCTargetsVersion)' == 'v110'" Project="$(VCTargetsPath)\Microsoft.Cpp.ToolsetLocation.targets"/>
+  <Import Condition="'$(_ToolsetVCTargetsVersion)' == 'v100'" Project="$(VCTargetsPath)\Microsoft.Cpp.Redirect.10.targets"/>
+
+  <!-- targets modification required for Dev11 from Dev10 -->
+  
+  <Target
+    Name="FxCompile"
+    BeforeTargets="$(FxCompileBeforeTargets)"
+    AfterTargets="$(FxCompileAfterTargets)"
+    Condition="'@(FxCompile)' != ''"
+    DependsOnTargets="_SelectedFiles;MakeDirsForFxc">
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <FxCompile Remove="@(FxCompile)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <FxCompile Condition="'@(FxCompile)' != ''">
+        <MinimalRebuildFromTracking Condition="'$(_BuildActionType)' != 'Build' or '$(ForceRebuild)' == 'true'">false</MinimalRebuildFromTracking>
+      </FxCompile>
+    </ItemGroup>
+
+    <FXC
+        Condition                    = "'@(FxCompile)' != '' and '%(FxCompile.ExcludedFromBuild)'!='true'"
+        Source                       = "%(FxCompile.Identity)"
+        ToolPath                     = "$(FXCToolPath)"
+        AdditionalIncludeDirectories = "%(FxCompile.AdditionalIncludeDirectories)"
+        SuppressStartupBanner        = "%(FxCompile.SuppressStartupBanner)"
+        EntryPointName               = "%(FxCompile.EntryPointName)"
+        TreatWarningAsError          = "%(FxCompile.TreatWarningAsError)"
+        ShaderType                   = "%(FxCompile.ShaderType)"
+        ShaderModel                  = "%(FxCompile.ShaderModel)"
+        PreprocessorDefinitions      = "%(FxCompile.PreprocessorDefinitions)"
+        HeaderFileOutput             = "%(FxCompile.HeaderFileOutput)"
+        ObjectFileOutput             = "%(FxCompile.ObjectFileOutput)"
+        AssemblerOutput              = "%(FxCompile.AssemblerOutput)"
+        AssemblerOutputFile          = "%(FxCompile.AssemblerOutputFile)"
+        VariableName                 = "%(FxCompile.VariableName)"
+        AdditionalOptions            = "%(FxCompile.AdditionalOptions)"
+        DisableOptimizations         = "%(FxCompile.DisableOptimizations)"
+        EnableDebuggingInformation   = "%(FxCompile.EnableDebuggingInformation)"
+        TrackerLogDirectory          = "%(FxCompile.TrackerLogDirectory)"
+        TrackedInputFilesToIgnore    = "@(FxCompileNoDependencies)"
+        TrackedOutputFilesToIgnore   = "@(FxTrackedOutputFilesToIgnore)"
+        TrackFileAccess              = "$(TrackFileAccess)"
+        MinimalRebuildFromTracking   = "%(FxCompile.MinimalRebuildFromTracking)"
+        TrackerSdkPath               = "$(FXTrackerSdkPath)"
+      />
+
+    <WriteLinesToFile File="$(TLogLocation)$(ProjectName).write.1.tlog" Lines="@(FxCompile->'^%(Identity)');@(FxCompile->MetaData('HeaderFileOutput')->FullPath()->Distinct());@(FxCompile->MetaData('ObjectFileOutput')->FullPath()->Distinct());@(FxCompile->MetaData('AssemblerOutputFile')->FullPath()->Distinct())"/>
+  </Target>
+    <!-- override config general xml for V110 AppStore projects -->
+  <ItemGroup Condition="'$(PlatformToolset)'=='v110' and '$(AppContainerApplication)' == 'true'">
+    <PropertyPageSchema Include="$(CurrentVCTargetsPath)$(LangID)\general_appcontainerapplication.xml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+  </ItemGroup>
+  
+</Project>

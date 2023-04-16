@@ -1,0 +1,113 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.11.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+      created a backup copy.  Incorrect changes to this file will make it
+      impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Win8 store projects did not define ApplicationType* in the project file-->
+    <Win8AppStoreProject Condition="'$(ApplicationType)' == '' and ('$(AppContainerApplication)' == 'true' or '$(WindowsAppContainer)' == 'true')">true</Win8AppStoreProject>
+    <AddItemTemplateGuid Condition="'$(Win8AppStoreProject)' == 'true'">{8C3FFDCC-9A63-43F2-9A3E-C45FB2ABF450}</AddItemTemplateGuid>
+    
+    <!-- WinPhone Silverlight doesn't define ApplicaitonType in the project file, condition for PlatformToolset.
+    Launchable projects are not launchable in 8.1 so exclude them from upgrade. -->
+    <WinPhone80Project Condition="'$(PlatformToolset)' == 'v110_wp80'">true</WinPhone80Project>
+  </PropertyGroup>
+  
+  <!-- Upgrade -->
+  <PropertyGroup Condition="'$(WinPhone80Project)' == 'true'">
+    <_UpgradePlatformToolsetFor_v110_wp80 Condition="'$(_UpgradePlatformToolsetFor_v110_wp80)' == ''">v120</_UpgradePlatformToolsetFor_v110_wp80>
+    <ApplicationType>Windows Phone Silverlight</ApplicationType>
+    <ApplicationTypeRevision>8.0</ApplicationTypeRevision>
+    <TargetOSAndVersion>Windows Phone 8.0</TargetOSAndVersion>
+    <CanReferenceWinRT>true</CanReferenceWinRT>
+    <VCProjectUpgraderObjectName Condition="'$(VCProjectUpgraderObjectName)' == '' and '$(XapOutputs)' == 'true' and '$(TestApplication)' != 'true'">NoUpgrade</VCProjectUpgraderObjectName>
+    <_OldSupportedPlatforms>Win32;ARM</_OldSupportedPlatforms>
+  </PropertyGroup>
+  
+  <!-- windows 8.0 projects need to upgrade to windows 8.1 even in VS2015 -->
+  <PropertyGroup Condition="'$(Win8AppStoreProject)' == 'true'">
+    <ApplicationType>Windows Store</ApplicationType>
+    <ApplicationTypeRevision>8.0</ApplicationTypeRevision>
+    <TargetOSAndVersion>Windows 8</TargetOSAndVersion>
+    <_PlatformToolsetShortNameFor_v110>$(TargetOSAndVersion)</_PlatformToolsetShortNameFor_v110>
+    <_OldSupportedPlatforms>ARM;Win32;x64</_OldSupportedPlatforms>
+    <_UpgradePlatformToolsetFor_v110>v120</_UpgradePlatformToolsetFor_v110>
+  </PropertyGroup>
+
+  <!-- Platform and Toolset props/targets file names were different in Dev11 and Dev10-->
+  <PropertyGroup>
+    <_RelativePlatformDefaultProps>$(_RelativePlatformFolder)\Microsoft.Cpp.$(Platform).default.props</_RelativePlatformDefaultProps>
+    <_RelativePlatformProps>$(_RelativePlatformFolder)Microsoft.Cpp.$(Platform).props</_RelativePlatformProps>
+    <_RelativePlatformTargets>$(_RelativePlatformFolder)Microsoft.Cpp.$(Platform).targets</_RelativePlatformTargets>
+    <_RelativeToolsetProps>$(_RelativeToolsetFolder)Microsoft.Cpp.$(Platform).$(PlatformToolset).props</_RelativeToolsetProps>
+    <_RelativeToolsetTargets>$(_RelativeToolsetFolder)Microsoft.Cpp.$(Platform).$(PlatformToolset).targets</_RelativeToolsetTargets>
+
+    <_RelativeToolsetFiles>$(_RelativeToolsetProps);$(_RelativeToolsetTargets);$(_RelativePlatformProps);$(_RelativePlatformTargets)</_RelativeToolsetFiles>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_VCTargetsPathForToolset Condition="'$(VCTargetsPath11)' != ''">$([MSBuild]::Unescape($([Microsoft.Build.Utilities.ToolLocationHelper]::FindRootFolderWhereAllFilesExist($(VCTargetsPath11), $(_RelativeToolsetFiles)))))</_VCTargetsPathForToolset>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(_VCTargetsPathForToolset)' != ''">
+    <_ToolsetFound>true</_ToolsetFound>
+    <_ToolsetVCTargetsVersion>v110</_ToolsetVCTargetsVersion>
+  </PropertyGroup>
+
+  <!-- determine which dev11 toolsets to ignore -->
+  <PropertyGroup>
+     <_CheckDev11ToolsInstalled Condition="'$(_CheckDev11ToolsInstalled)' == ''">true</_CheckDev11ToolsInstalled>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(_CheckDev11ToolsInstalled)' == 'true'">
+    <_Dev11Installed Condition="'$(_Dev11Installed)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DevDiv\vs\Servicing\11.0\professional@Version)</_Dev11Installed>
+    <_Dev11Installed Condition="'$(_Dev11Installed)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\DevDiv\vs\Servicing\11.0\professional@Version)</_Dev11Installed>
+    <_Dev11DesktopToolsInstalled  Condition="'$(_Dev11Installed)' != ''">true</_Dev11DesktopToolsInstalled>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(_CheckDev11ToolsInstalled)' == 'true' and '$(_Dev11DesktopToolsInstalled)' == ''">
+    <!-- check if WDExpress is installed -->
+    <_Dev11WDExpressInstalled Condition="'$(_Dev11WDExpressInstalled)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DevDiv\wdexpress\Servicing\11.0\coremsi@Version)</_Dev11WDExpressInstalled>
+    <_Dev11WDExpressInstalled Condition="'$(_Dev11WDExpressInstalled)' == ''">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\DevDiv\wdexpress\Servicing\11.0\coremsi@Version)</_Dev11WDExpressInstalled>
+    <_Dev11DesktopToolsInstalled Condition="'$(_Dev11WDExpressInstalled)' != ''">true</_Dev11DesktopToolsInstalled>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(AppContainerApplication)' == 'true' or '$(WinPhone80Project)' == 'true' or '$(_Dev11DesktopToolsInstalled)' != 'true'">
+    <_IgnoreInstalledPlatformToolset_v110>true</_IgnoreInstalledPlatformToolset_v110>
+    <_IgnoreInstalledPlatformToolset_v110_xp>true</_IgnoreInstalledPlatformToolset_v110_xp>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(WinPhone80Project)' != 'true'">
+    <_IgnoreInstalledPlatformToolset_v110_wp80>true</_IgnoreInstalledPlatformToolset_v110_wp80>
+  </PropertyGroup>
+  
+  <Import Condition="'$(_ToolsetFound)' == 'true'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.ToolsetLocation.props" />
+  
+  <!-- try older VS versions if toolset is not found -->
+  <Import Condition="'$(_ToolsetFound)' != 'true'  and '$(MinSupportedVCTargetsVersion)' != 'v110'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.Redirect.10.props" />
+ 
+  <PropertyGroup>
+    <!-- Windows Phone 8.0 can't load correctly without TargetPlatformVersion set because of an import in the project file.  
+      Detect this case and set to the current TargetPlatformVersion. 
+      <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsPhone\v$(TargetPlatformVersion)\Microsoft.Cpp.WindowsPhone.$(TargetPlatformVersion).targets" />
+    -->
+    <TargetPlatformVersion Condition="'$(_ToolsetFound)' != 'true' and '$(TargetPlatformVersion)' == '' and '$(PlatformToolset)' == 'v110_wp80'">8.1</TargetPlatformVersion>
+  </PropertyGroup>
+
+  <!-- MSBuildToolsPath* is not the same as .NET Framework location for MSBuild 12.0, but it was used as such in prev versions of Visual Studio -->
+  <!-- WindowsMinSDKDir is not set during dev11 redirection due to absence of a registry - So adding windowsKits bin path to ExecutablePath -->
+  <PropertyGroup Condition="'$(_ToolsetFound)' == 'true'">
+    <ExecutablePath Condition="'$(ExecutablePath)' != ''">$(ExecutablePath);$(MSBuildFrameworkToolsPath32);$(MSBuildProgramFiles32)\Windows Kits\8.0\bin\x86</ExecutablePath>
+    <ExcludePath Condition="'$(ExcludePath)' != ''">$(ExcludePath);$(MSBuildFrameworkToolsPath);$(MSBuildFrameworkToolsPath32);$(SystemRoot)</ExcludePath>
+    <NativeExecutablePath Condition="'$(NativeExecutablePath)' != ''">$(NativeExecutablePath);$(MSBuildFrameworkToolsPath);</NativeExecutablePath> 
+  </PropertyGroup>
+
+</Project>

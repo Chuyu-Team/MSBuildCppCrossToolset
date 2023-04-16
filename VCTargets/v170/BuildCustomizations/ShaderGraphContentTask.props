@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup Condition="'$(ShaderGraphContentTaskBeforeTargets)' == '' and '$(ShaderGraphContentTaskAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <ShaderGraphContentTaskBeforeTargets>Midl</ShaderGraphContentTaskBeforeTargets>
+    <ShaderGraphContentTaskAfterTargets>CustomBuild</ShaderGraphContentTaskAfterTargets>
+  </PropertyGroup>
+
+
+  <ItemDefinitionGroup>
+    <ShaderGraphContentTask>
+      <!--Enter Defaults Here-->
+      <ContentOutput Condition="'%(ShaderGraphContentTask.ContentOutput)' == ''">$(OutDir)%(Filename).cso</ContentOutput>
+    </ShaderGraphContentTask>
+  </ItemDefinitionGroup>
+
+</Project>

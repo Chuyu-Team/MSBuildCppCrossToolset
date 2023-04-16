@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationGeneral" DisplayName="常规" PageTemplate="generic" Description="常规" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" Label="Configuration"/>
+  </Rule.DataSource>
+  <StringProperty Name="OutDir" DisplayName="输出目录" Description="指定输出文件目录的相对路径；可以包含环境变量。" Category="General" Default="$(SolutionDir)$(ConfigurationName)" Subtype="folder" F1Keyword="VC.Project.VCConfiguration.OutputDirectory">
+                  <StringProperty.DataSource>
+                     <DataSource Persistence="ProjectFile" Label=""/>
+                  </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="IntDir" DisplayName="中间目录" Description="指定中间文件目录的相对路径；可以包含环境变量。" Category="General" Default="$(ConfigurationName)" Subtype="folder" F1Keyword="VC.Project.VCConfiguration.IntermediateDirectory">
+                  <StringProperty.DataSource>
+                     <DataSource Persistence="ProjectFile" Label=""/>
+                  </StringProperty.DataSource>
+  </StringProperty>
+  <EnumProperty Name="CLRSupport" DisplayName="公共语言运行时支持" Description="选择您的代码所使用的公共语言运行时支持。" Category="General" F1Keyword="VC.Project.VCConfiguration.ManagedExtensions">
+    <EnumValue Name="false" DisplayName="无公共语言运行时支持" Description="无公共语言运行时支持"/>
+    <EnumValue Name="true" Switch="clr" DisplayName="公共语言运行时支持" Description="为您的应用程序创建可供其他 CLR 应用程序使用的元数据，并允许您的应用程序使用其他 CLR 组件的元数据中的类型和数据。"/>
+    <EnumValue Name="Pure" Switch="clr:pure" DisplayName="纯 MSIL 公共语言运行时支持" Description="生成只包含 MSIL 的输出文件(没有本机可执行代码)，尽管该文件可以包含编译为 MSIL 的本机类型。"/>
+    <EnumValue Name="Safe" Switch="clr:safe" DisplayName="安全 MSIL 公共语言运行时支持" Description="生成只包含 MSIL (没有本机可执行代码)的可验证输出文件。"/>
+  </EnumProperty>
+  <StringProperty Name="BuildLogFile" DisplayName="生成日志文件" Description="指定启用生成记录时要写入的生成日志文件。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="General" Default="$(ProjectDir)\$(MSBuildProjectName).log" Subtype="file">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="BuildLog" PersistedName="Path"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="_ProjectFileVersion" DisplayName="项目文件版本" Description="指定用于创建此项目文件的转换工具的版本。" Category="General" Visible="false">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <DynamicEnumProperty Name="TargetFrameworkMoniker" DisplayName="目标框架名字对象" EnumProvider="TargetFrameworkMoniker" Visible="false"/>
+</Rule>

@@ -1,0 +1,230 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.MakeFile.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file defines the steps/targets required to build Visual C++ MakeFile projects.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="VCMessage" AssemblyFile="$(MSBuildThisFileDirectory)Microsoft.Build.CppTasks.Common.dll" />
+
+  <PropertyGroup>
+    <!-- Assign back VC IntDir to match the common.targets intdir. -->
+    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)'==''">$(IntDir)</IntermediateOutputPath>
+    <TargetPath Condition="'$(NMakeOutput)' != ''">$([MSBuild]::NormalizePath('$(ProjectDir)', '$(NMakeOutput)'))</TargetPath>
+    <TargetFileName Condition="'$(TargetFileName)' == '' and '$(TargetPath)' != ''">$([System.IO.Path]::GetFileName('$(TargetPath)'))</TargetFileName>
+    <TargetDir Condition="'$(TargetDir)' == '' and '$(TargetPath)' != ''">$([System.IO.Path]::GetDirectoryName('$(TargetPath)'))</TargetDir>
+    <LocalDebuggerCommand Condition="'$(LocalDebuggerCommand)' == ''">$(TargetPath)</LocalDebuggerCommand>
+    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)' == ''">$(IntDir)</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.Targets" />
+
+  <Target Name="PrepareForNMakeBuild" DependsOnTargets="SetBuildDefaultEnvironmentVariables;SetUserMacroEnvironmentVariables">
+    <!-- Create the directories for intermediate and final build products, and any other arbitrary directories. -->
+    <MakeDir Directories="$(OutDir);$(IntDir);$(TargetDir)"/>
+  </Target>
+
+  <Target Name="CoreClean" DependsOnTargets="PrepareForNMakeBuild">
+    <VCMessage Code="MSB8005" Type="Warning" Arguments="NMakeCleanCommandLine" Condition="'$(NMakeCleanCommandLine)'==''"/>
+    <Exec Command="$(NMakeCleanCommandLine)" Condition="'$(NMakeUseOemCodePage)' == 'true' and '$(NMakeCleanCommandLine)'!=''"/>
+    <Exec Command="$(NMakeCleanCommandLine)" UseUtf8Encoding="Always" StdErrEncoding="UTF-8" StdOutEncoding="UTF-8" Condition="'$(NMakeUseOemCodePage)' != 'true' and '$(NMakeCleanCommandLine)'!=''"/>
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="PrepareForNMakeBuild;ResolveReferences;GetTargetPath;$(PreNMakeBuildTarget)" Returns="$(NMakeManagedOutput)">
+    <VCMessage Code="MSB8005" Type="Warning" Arguments="NMakeBuildCommandLine" Condition="'$(NMakeBuildCommandLine)'==''"/>
+    <Exec Command="$(NMakeBuildCommandLine)" Condition="'$(NMakeUseOemCodePage)' == 'true' and '$(NMakeBuildCommandLine)'!=''"/>
+    <Exec Command="$(NMakeBuildCommandLine)" UseUtf8Encoding="Always" StdErrEncoding="UTF-8" StdOutEncoding="UTF-8" Condition="'$(NMakeUseOemCodePage)' != 'true' and '$(NMakeBuildCommandLine)'!=''"/>
+  </Target>
+
+  <Target Name="Rebuild" DependsOnTargets="PrepareForNMakeBuild;_SetRebuildReferences;ResolveReferences;GetTargetPath;$(PreNMakeBuildTarget)" Returns="$(NMakeManagedOutput)">
+    <VCMessage Code="MSB8005" Type="Warning" Arguments="NMakeReBuildCommandLine" Condition="'$(NMakeReBuildCommandLine)'=='' and ('$(NMakeCleanCommandLine)'=='' or '$(NMakeBuildCommandLine)'=='')"/>
+    <Exec Command="$(NMakeReBuildCommandLine)" Condition="'$(NMakeUseOemCodePage)' == 'true' and '$(NMakeReBuildCommandLine)'!=''"/>
+    <Exec Command="$(NMakeCleanCommandLine)" Condition="'$(NMakeUseOemCodePage)' == 'true' and '$(NMakeReBuildCommandLine)'=='' and '$(NMakeCleanCommandLine)'!='' and '$(NMakeBuildCommandLine)'!=''" />
+    <Exec Command="$(NMakeBuildCommandLine)" Condition="'$(NMakeUseOemCodePage)' == 'true' and '$(NMakeReBuildCommandLine)'=='' and '$(NMakeCleanCommandLine)'!='' and '$(NMakeBuildCommandLine)'!=''" />
+    <Exec Command="$(NMakeReBuildCommandLine)" UseUtf8Encoding="Always" StdErrEncoding="UTF-8" StdOutEncoding="UTF-8" Condition="'$(NMakeUseOemCodePage)' != 'true' and '$(NMakeReBuildCommandLine)'!=''"/>
+    <Exec Command="$(NMakeCleanCommandLine)" UseUtf8Encoding="Always" StdErrEncoding="UTF-8" StdOutEncoding="UTF-8" Condition="'$(NMakeUseOemCodePage)' != 'true' and '$(NMakeReBuildCommandLine)'=='' and '$(NMakeCleanCommandLine)'!='' and '$(NMakeBuildCommandLine)'!=''" />
+    <Exec Command="$(NMakeBuildCommandLine)" UseUtf8Encoding="Always" StdErrEncoding="UTF-8" StdOutEncoding="UTF-8" Condition="'$(NMakeUseOemCodePage)' != 'true' and '$(NMakeReBuildCommandLine)'=='' and '$(NMakeCleanCommandLine)'!='' and '$(NMakeBuildCommandLine)'!=''" />
+  </Target>
+
+  <!-- *******************************************************************************************
+        GetResolved Native Targets
+        Since Makefile doesn't import Microsoft.common.targets or microsoft.cppbuild.targets,
+        it needs to have its own set of project to project reference targets.
+       ******************************************************************************************* -->
+
+  <Target Name="GetResolvedLinkObjs" DependsOnTargets="GetNativeTargetPath" Returns="@(NMakeNativeOutput)" />
+  <Target Name="GetResolvedLinkLibs" DependsOnTargets="GetNativeTargetPath" Returns="@(NMakeNativeOutput)" />
+  <Target Name="GetResolvedXDCMake" DependsOnTargets="GetNativeTargetPath" Returns="@(NMakeNativeOutput)" />
+  <Target Name="GetCopyToOutputDirectoryItems" />
+
+  <PropertyGroup>
+    <GetProjectInfoForReferenceDependsOn Condition="'$(DesignTimeBuild)' != 'true'">
+      $(GetProjectInfoForReferenceDependsOn);
+      AddOutputsToProjectsInfoForReference;
+    </GetProjectInfoForReferenceDependsOn>
+    <GetProjectInfoForReferenceDependsOn>
+      $(GetProjectInfoForReferenceDependsOn);
+      AddPublicIncludeDirectoriesToProjectsInfoForReference;
+    </GetProjectInfoForReferenceDependsOn>
+    <GetClCommandLineForReferenceDependsOn>
+      GetPublicIncludeDirectories;
+      $(GetClCommandLineForReferenceDependsOn);
+    </GetClCommandLineForReferenceDependsOn>
+  </PropertyGroup>
+  
+  <Target Name="GetProjectInfoForReference" Returns="@(ProjectInfoForReference)" DependsOnTargets="$(GetProjectInfoForReferenceDependsOn)" />
+
+  <Target Name="AddPublicIncludeDirectoriesToProjectsInfoForReference" DependsOnTargets="GetPublicIncludeDirectories">
+    <ItemGroup>
+      <ProjectInfoForReference Include="@(PublicIncludeDirectories)">
+        <FileType>IncludeDirectory</FileType>
+      </ProjectInfoForReference>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="AddOutputsToProjectsInfoForReference" DependsOnTargets="GetNativeTargetPath">
+    <ItemGroup>
+      <ProjectInfoForReference Include="@(NMakeNativeOutput)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- public include directories -->
+  <Target Name="GetPublicIncludeDirectories" DependsOnTargets="$(ComputeCompileInputsTargets)">
+    <ItemGroup>
+      <_PublicIncludeDeirectories Include="$(PublicIncludeDirectories)"/>
+    </ItemGroup>
+    <ItemGroup>
+      <PublicIncludeDirectories Condition="'@(_PublicIncludeDeirectories)' != ''" Include="%(_PublicIncludeDirectories.FullPath)"/>
+      <PublicIncludeDirectories Condition="'$(AllProjectIncludesArePublic)' == 'true'" Include="@(CLInclude->Metadata('FullPath')->DirectoryName()->Distinct()->ClearMetadata())" />
+    </ItemGroup>
+    <ItemGroup>
+      <_PublicIncludeDeirectories Remove="@(_PublicIncludeDeirectories)"/>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GetNativeTargetPath" Returns="@(NMakeNativeOutput)">
+    <ItemGroup>
+      <NMakeNativeOutput Condition="'$(CLRSupport)' == '' or '$(CLRSupport)' == 'false'" Include="$(TargetPath)" />
+    </ItemGroup>
+    <ItemGroup>
+      <NMakeNativeOutput Condition="'@(NMakeNativeOutput)' != ''" >
+        <FileType Condition="'%(NMakeNativeOutput.Extension)' == '.obj'">obj</FileType>
+        <FileType Condition="'%(NMakeNativeOutput.Extension)' == '.lib'">lib</FileType>
+        <FileType Condition="'%(NMakeNativeOutput.Extension)' == '.a'">lib</FileType>
+        <FileType Condition="'%(NMakeNativeOutput.Extension)' == '.so'">dll</FileType>
+        <FileType Condition="'%(NMakeNativeOutput.Extension)' == '.dll'">dll</FileType>
+        <FileType Condition="'%(NMakeNativeOutput.Extension)' == '.xdc'">xdc</FileType>
+      </NMakeNativeOutput>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GetTargetPath" DependsOnTargets="$(GetTargetPathDependsOn)" Returns="@(TargetPathWithTargetPlatformMoniker)" >
+    <PropertyGroup>
+      <TargetPath Condition="'$(TargetPath)' == ''">Undefined</TargetPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMoniker Include="$(TargetPath)">
+        <ResolveableAssembly Condition="'$(TargetPath)' != 'Undefined'">$(ManagedAssembly)</ResolveableAssembly>
+        <TargetPlatformMoniker>$(TargetPlatformMoniker)</TargetPlatformMoniker>
+        <TargetPlatformIdentifier>$(TargetPlatformIdentifier)</TargetPlatformIdentifier>
+      </TargetPathWithTargetPlatformMoniker>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GetNativeManifest" />
+
+  <Target Name="BuiltProjectOutputGroup" Returns="@(BuiltProjectOutputGroupOutput)" DependsOnTargets="$(BuiltProjectOutputGroupDependsOn)">
+    <ItemGroup>
+      <_BuiltProjectOutputGroupOutputIntermediate Include="$(TargetPath)">
+        <FinalOutputPath>$(TargetPath)</FinalOutputPath>
+      </_BuiltProjectOutputGroupOutputIntermediate>
+    </ItemGroup>
+    <!-- This item represents the app.config file -->
+    <ItemGroup>
+      <_BuiltProjectOutputGroupOutputIntermediate Include="$(AppConfig)" Condition="'$(AddAppConfigToBuildOutputs)'=='true'">
+        <FinalOutputPath>$(TargetDir)$(TargetFileName).config</FinalOutputPath>
+        <TargetPath>$(TargetFileName).config</TargetPath>
+        <!-- For compatibility with 2.0 -->
+        <OriginalItemSpec>$(AppConfig)</OriginalItemSpec>
+      </_BuiltProjectOutputGroupOutputIntermediate>
+    </ItemGroup>
+    <ItemGroup>
+      <_IsolatedComReference Include="@(COMReference)" Condition=" '%(COMReference.Isolated)' == 'true' " />
+      <_IsolatedComReference Include="@(COMFileReference)" Condition=" '%(COMFileReference.Isolated)' == 'true' " />
+    </ItemGroup>
+    <!-- This item represents the native manifest, example: WindowsApplication1.exe.manifest or Native.ClassLibrary1.manifest -->
+    <ItemGroup>
+      <_BuiltProjectOutputGroupOutputIntermediate Include="$(OutDir)$(_DeploymentTargetApplicationManifestFileName)" Condition="'@(NativeReference)'!='' or '@(_IsolatedComReference)'!=''">
+        <TargetPath>$(_DeploymentTargetApplicationManifestFileName)</TargetPath>
+        <!-- For compatibility with 2.0 -->
+        <OriginalItemSpec>$(OutDir)$(_DeploymentTargetApplicationManifestFileName)</OriginalItemSpec>
+      </_BuiltProjectOutputGroupOutputIntermediate>
+    </ItemGroup>
+    <!-- Convert intermediate items into final items; this way we can get the full path for each item -->
+    <ItemGroup>
+      <BuiltProjectOutputGroupOutput Include="@(_BuiltProjectOutputGroupOutputIntermediate->'%(FullPath)')" Condition="$(ConfigurationType) != 'StaticLibrary'">
+        <!-- For compatibility with 2.0 -->
+        <OriginalItemSpec Condition="'%(_BuiltProjectOutputGroupOutputIntermediate.OriginalItemSpec)' == ''">%(_BuiltProjectOutputGroupOutputIntermediate.FullPath)</OriginalItemSpec>
+      </BuiltProjectOutputGroupOutput>
+    </ItemGroup>
+  </Target>
+
+  <!-- Set rebuild as the target instead of default -->
+  <Target Name="_SetRebuildReferences">
+    <ItemGroup>
+      <ProjectReference>
+        <Targets>%(Targets);Rebuild</Targets>
+      </ProjectReference>
+    </ItemGroup>
+  </Target>
+
+  <Target
+     Name="ResolveProjectReferencesDesignTime"
+     Returns="@(ReferencePath);@(ProjectReferenceToLink)"
+     DependsOnTargets="ResolveReferences;ResolveAssemblyReferences" />
+
+  <!-- *******************************************************************************************
+	     Property pages
+       ******************************************************************************************* -->
+  <ItemGroup Condition="'$(UseDefaultPropertyPageSchemas)' != 'false'">
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\ProjectItemsSchema.xml" />
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\directories.xml" />
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\debugger_*.xml" />
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\nmake.xml" />
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\cl_nmake.xml" >
+      <Context>File</Context>
+    </PropertyPageSchema>
+
+    <!-- project only rules -->
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\general_makefile.xml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+
+    <!-- Property sheet only rules -->
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\general_makefile_ps.xml;$(VCTargetsPath)$(LangID)\usermacros.xml">
+      <Context>PropertySheet</Context>
+    </PropertyPageSchema>
+
+    <!-- File only rules -->
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\general_file.xml">
+      <Context>File</Context>
+    </PropertyPageSchema>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <AppTypeMakefileTarget Condition="'$(AppTypeMakefileTarget)' == ''">$(VCTargetsPath)\Application Type\$(ApplicationType)\$(ApplicationTypeRevision)\$(ApplicationType).Makefile.Targets</AppTypeMakefileTarget>
+  </PropertyGroup>
+
+  <Import Condition="Exists('$(AppTypeMakefileTarget)')" Project="$(AppTypeMakefileTarget)" />
+
+</Project>

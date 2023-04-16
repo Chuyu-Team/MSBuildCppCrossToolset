@@ -1,0 +1,35 @@
+﻿<!--
+***********************************************************************************************
+Default.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Import Before -->
+  <Import Condition="Exists('$(MSBuildThisFileDirectory)ImportBefore\Default')" Project="$(MSBuildThisFileDirectory)ImportBefore\Default\*.props" />
+  
+  <PropertyGroup>
+    <LinuxCommonTargetsPath>$(VCTargetsPath)\Application Type\$(ApplicationType)\$(ApplicationTypeRevision)\</LinuxCommonTargetsPath>
+    <!-- PlatformToolset when none is provided. -->
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">Remote_GCC_1_0</PlatformToolset>
+    <!-- Fallback PlatformToolset to use when a given toolset is not installed -->
+    <DefaultPlatformToolset>Remote_GCC_1_0</DefaultPlatformToolset>
+    <UseOfStl Condition="'$(UseOfStl)' == ''">libstdc++_shared</UseOfStl>
+    <ConfigurationType Condition="'$(ConfigurationType)' == ''">Application</ConfigurationType>
+    <TargetOSAndVersion Condition="'$(TargetLinuxPlatform)' != 'Raspberry'">Linux</TargetOSAndVersion>
+    <TargetOSAndVersion Condition="'$(TargetLinuxPlatform)' == 'Raspberry'">Raspberry</TargetOSAndVersion>
+    <ProjectName Condition="'$(ProjectName)' == ''">$(MSBuildProjectName)</ProjectName>
+    <RemoteRootDir Condition="'$(RemoteRootDir)' == ''">~/projects</RemoteRootDir>
+    <RemoteProjectRelDir Condition="'$(RemoteProjectRelDir)' == ''">$(ProjectName)</RemoteProjectRelDir>
+  </PropertyGroup>
+
+  <!-- Import After -->
+  <Import Condition="Exists('$(MSBuildThisFileDirectory)ImportAfter\Default')" Project="$(MSBuildThisFileDirectory)ImportAfter\Default\*.props" />
+</Project>

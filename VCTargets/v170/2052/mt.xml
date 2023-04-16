@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="Mt" PageTemplate="tool" DisplayName="清单工具" SwitchPrefix="/" Order="30" xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规"/>
+    <Category Name="Input and Output" DisplayName="输入和输出"/>
+    <Category Name="Isolated COM" DisplayName="独立 COM"/>
+    <Category Name="Advanced" DisplayName="高级"/>
+    <Category Name="All Options" DisplayName="所有选项" Subtype="Search"/>
+    <Category Name="Command Line" DisplayName="命令行" Subtype="CommandLine"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="Manifest" Label="" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <BoolProperty Name="SuppressStartupBanner" DisplayName="取消显示启动版权标志" Description="运行时不显示标准 Microsoft 版权数据。(-nologo)" Category="General" Switch="nologo" F1Keyword="VC.Project.VCManifestTool.SuppressStartupBanner">
+  </BoolProperty>
+  <BoolProperty Name="VerboseOutput" DisplayName="详细输出" Description="在清单生成期间显示附加信息。(-verbose)" Category="General" Switch="verbose" F1Keyword="VC.Project.VCManifestTool.VerboseOutput">
+  </BoolProperty>
+  <StringProperty Name="AssemblyIdentity" DisplayName="程序集标识" Description="标识字符串包含 assemblyIdentity 元素的特性。(-identity:[标识字符串])" Category="General" Switch="identity:" F1Keyword="VC.Project.VCManifestTool.AssemblyIdentity">
+  </StringProperty>
+  <StringListProperty CommandLineValueSeparator=" " Subtype="file" Name="AdditionalManifestFiles" DisplayName="附加清单文件" Description="用于指定需要处理的清单。(-manifest [清单 1] [清单 2] ...)" Category="Input and Output" Switch="manifest" Separator=" " F1Keyword="VC.Project.VCManifestTool.AdditionalManifestFiles">
+  </StringListProperty>
+  <StringProperty Name="InputResourceManifests" DisplayName="输入资源清单" Description="从具有指定 ID 的 RT_MANIFEST 类型的资源中输入清单。(-inputresource:[文件];#[资源 ID])" Category="Input and Output" Switch="inputresource:" F1Keyword="VC.Project.VCManifestTool.InputResourceManifests">
+  </StringProperty>
+  <BoolProperty Name="EmbedManifest" DisplayName="嵌入清单" Description="指定是将清单文件嵌入程序集中还是将其创建为独立的文件。" Category="Input and Output" IncludeInCommandLine="false" F1Keyword="VC.Project.VCManifestTool.EmbedManifest">
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="" Label="" HasConfigurationCondition="true"/>
+    </BoolProperty.DataSource>
+  </BoolProperty>
+  <StringProperty Subtype="file" Name="OutputManifestFile" DisplayName="输出清单文件" Description="将清单输出到具有指定 ID 的 RT_MANIFEST 类型的资源中。(-out:[文件];#[资源 ID])" Category="Input and Output" Switch="out:" F1Keyword="VC.Project.VCManifestTool.OutputManifestFile">
+  </StringProperty>
+  <StringProperty Subtype="file" Name="ResourceOutputFileName" DisplayName="清单资源文件" Description="指定用于将清单嵌入项目输出的输出资源文件。" Category="Input and Output" F1Keyword="VC.Project.VCManifestTool.ResourceOutputFileName">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="ManifestResourceCompile" Label="" HasConfigurationCondition="true"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="GenerateCatalogFiles" DisplayName="生成目录文件" Description="生成用于制作目录的 .cdf 文件。(/makecdfs)" Category="Input and Output" Switch="makecdfs" F1Keyword="VC.Project.VCManifestTool.GenerateCatalogFiles">
+  </BoolProperty>
+  <StringProperty Subtype="file" Name="DependencyInformationFile" DisplayName="依赖项信息文件" Description="指定 Visual Studio 用来跟踪清单工具的生成依赖项信息的依赖项信息文件。" Category="Input and Output" Visible="false" F1Keyword="VC.Project.VCManifestTool.DependencyInformationFile">
+  </StringProperty>
+  <StringProperty Name="OutputResourceManifests" DisplayName="输出资源清单" Description="将清单输出到具有指定 ID 的 RT_MANIFEST 类型的资源中。resource_id 限制为非负的 16 位数。(-outputresource:file[;[#]resource_id])" Category="Input and Output" Switch="outputresource:" Visible="false" F1Keyword="VC.Project.VCManifestTool.OutputResourceManifest">
+  </StringProperty>
+  <StringProperty Subtype="file" Name="ManifestFromManagedAssembly" DisplayName="从 ManagedAssembly 生成清单" Description="从 ManagedAssembly 生成清单。(-managedassemblyname:[文件])" Category="Input and Output" Switch="managedassemblyname:" F1Keyword="VC.Project.VCManifestTool.ManifestFromManagedAssembly">
+  </StringProperty>
+  <BoolProperty Name="SuppressDependencyElement" DisplayName="取消依赖元素" Description="与 -managedassembly 一起使用。取消在最终清单中生成依赖元素。(-nodependency)" Category="Input and Output" Switch="nodependency" F1Keyword="VC.Project.VCManifestTool.SuppressDependencyElement">
+  </BoolProperty>
+  <BoolProperty Name="GenerateCategoryTags" DisplayName="生成类别标记" Description="与 -managedassembly 一起使用。-category 指示生成类别标记。(-category)" Category="Input and Output" Switch="category" F1Keyword="VC.Project.VCManifestTool.GenerateCategoryTags">
+  </BoolProperty>
+  <EnumProperty Name="EnableDpiAwareness" DisplayName="DPI 识别功能" Description="将信息添加到将应用程序标记为识别 DPI 的清单中。" Category="Input and Output" F1Keyword="VC.Project.VCManifestTool.EnableDPIAwareness">
+    <EnumValue Name="false" Switch="" DisplayName="无" Description="">
+    </EnumValue>
+    <EnumValue Name="true" Switch="" DisplayName="高 DPI 识别" Description="">
+    </EnumValue>
+    <EnumValue Name="PerMonitorHighDPIAware" Switch="" DisplayName="每个监视器高 DPI 识别" Description="">
+    </EnumValue>
+  </EnumProperty>
+  <StringProperty Subtype="file" Name="TypeLibraryFile" DisplayName="类型库文件" Description="指定用于 RegFree COM 清单支持的类型库。(-tlb:[文件])" Category="Isolated COM" Switch="tlb:" F1Keyword="VC.Project.VCManifestTool.TypeLibraryFile">
+  </StringProperty>
+  <StringProperty Subtype="file" Name="RegistrarScriptFile" DisplayName="注册器脚本文件" Description="指定用于 RegFree COM 清单支持的注册器脚本文件。(-rgs:[文件])" Category="Isolated COM" Switch="rgs:" F1Keyword="VC.Project.VCManifestTool.RegistrarScriptFile">
+  </StringProperty>
+  <StringProperty Subtype="file" Name="ComponentFileName" DisplayName="组件文件名" Description="指定从指定的 .tlb 或 .rgs 生成的组件的文件名。(-dll:[文件])" Category="Isolated COM" Switch="dll:" F1Keyword="VC.Project.VCManifestTool.ComponentFileName">
+  </StringProperty>
+  <StringProperty Subtype="file" Name="ReplacementsFile" DisplayName="替换文件" Description="指定包含 RGS 文件中的可替换字符串的值的文件。(replacements:[文件])" Category="Isolated COM" Switch="replacements:" F1Keyword="VC.Project.VCManifestTool.ReplacementsFile">
+  </StringProperty>
+  <BoolProperty Name="UpdateFileHashes" DisplayName="更新文件哈希" Description="计算文件元素中指定的文件的哈希并用计算的值更新哈希特性。(hashupdate:[路径])" Category="Advanced" Switch="hashupdate" F1Keyword="VC.Project.VCManifestTool.UpdateFileHashes">
+    <Argument Property="UpdateFileHashesSearchPath" IsRequired="false"/>
+  </BoolProperty>
+  <StringProperty Subtype="file" Name="UpdateFileHashesSearchPath" DisplayName="更新文件哈希搜索路径" Description="指定更新文件哈希时使用的搜索路径。" Category="Advanced" Separator=":" F1Keyword="VC.Project.VCManifestTool.UpdateFileHashesSearchPath">
+  </StringProperty>
+  <StringProperty Name="AdditionalOptions" DisplayName="附加选项" Description="附加选项" Category="Command Line" F1Keyword="vc.project.AdditionalOptionsPage">
+  </StringProperty>
+  <StringProperty Subtype="folder" Name="TrackerLogDirectory" DisplayName="跟踪器日志目录" Description="跟踪器日志目录。" IncludeInCommandLine="false" Visible="false">
+  </StringProperty>
+</Rule>

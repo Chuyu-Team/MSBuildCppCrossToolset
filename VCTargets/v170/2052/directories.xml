@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationDirectories" DisplayName="VC++ 目录" Order="8" PageTemplate="generic" Description="工具搜索目录" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="VC++" DisplayName="常规" Description="Visual C++ 目录"/>
+    <Category Name="References" DisplayName="公共项目内容" Description="要在引用项目中使用的目录"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile"/>
+  </Rule.DataSource>
+  <StringListProperty Name="ExecutablePath" DisplayName="可执行文件目录" Description="生成 VC++ 项目期间，搜索可执行文件时使用的路径。  与环境变量 PATH 相对应。" F1Keyword="VC.Project.VCDirectories.ExecutablePath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="IncludePath" DisplayName="包含目录" Description="生成 VC++ 项目期间，搜索包含文件时使用的路径。  与环境变量 INCLUDE 相对应。" F1Keyword="VC.Project.VCDirectories.IncludePath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="ExternalIncludePath" DisplayName="外部包含目录" Description="在编译期间被视为 external/system 并在生成最新状态检查时跳过的路径。" F1Keyword="VC.Project.VCDirectories.ExternalIncludePath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="ReferencePath" DisplayName="引用目录" Description="生成 VC++ 项目期间，搜索元数据文件时使用的路径。与环境变量 LIBPATH 相对应。" F1Keyword="VC.Project.VCDirectories.ReferencePath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="LibraryPath" DisplayName="库目录" Description="生成 VC++ 项目期间，搜索库文件时使用的路径。  与环境变量 LIB 相对应。" F1Keyword="VC.Project.VCDirectories.LibraryPath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="LibraryWPath" DisplayName="Windows 运行库目录" Description="生成 VC++ 项目期间，搜索 winmd 元数据文件时使用的路径。将“引用目录”串联到 LIBPATH。" F1Keyword="VC.Project.VCDirectories.LibraryWPath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="SourcePath" DisplayName="源目录" Description="搜索用于 Intellisense 的源文件时使用的路径。" F1Keyword="VC.Project.VCDirectories.SourcePath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="ExcludePath" DisplayName="排除目录" Description="搜索扫描依赖项时要跳过的路径。" F1Keyword="VC.Project.VCDirectories.ExcludePath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="PublicIncludeDirectories" Separator=";" Subtype="folder" DisplayName="公共包含目录" Description="要自动添加到引用项目 include 路径的一个或多个目录。" Category="References" F1Keyword="VC.Project.VCConfiguration.PublicIncludeDirectories"/>
+  <BoolProperty Name="AllProjectIncludesArePublic" DisplayName="所有标头文件都是公共的" Description="指定是否应将目录或所有项目标头文件自动添加到引用项目的 include 路径中。" Category="References" F1Keyword="VC.Project.VCConfiguration.AllProjectIncludesArePublic"/>                
+  <StringListProperty Name="PublicModuleDirectories" Separator=";" Subtype="folder" DisplayName="公共 C++ 模块目录" Description="包含要在引用项目中自动可用的 C++ 模块和/或标头单元源的一个或多个此项目目录。" Category="References" F1Keyword="VC.Project.VCConfiguration.PublicModuleDirectories"/>
+  <BoolProperty Name="AllProjectBMIsArePublic" DisplayName="所有模块都是公共的" Description="指定所有项目模块和标头单元在引用项目中是否都应自动可用。" Category="References" F1Keyword="VC.Project.VCConfiguration.AllProjectBMIsArePublic"/>
+
+</Rule>

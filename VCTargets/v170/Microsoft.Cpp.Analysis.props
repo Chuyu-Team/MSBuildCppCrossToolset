@@ -1,0 +1,66 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Analysis.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <!-- Override these to determine what analysis tools will be run and when -->
+    <RunCodeAnalysis Condition="'$(RunCodeAnalysis)' == ''">false</RunCodeAnalysis>
+    <EnableMicrosoftCodeAnalysis Condition="'$(EnableMicrosoftCodeAnalysis)' == ''">true</EnableMicrosoftCodeAnalysis>
+    <EnableClangTidyCodeAnalysis Condition="'$(EnableClangTidyCodeAnalysis)' == ''">false</EnableClangTidyCodeAnalysis>
+    <EnableMicrosoftCodeAnalysis Condition="'$(ApplicationType)' == 'Linux'">false</EnableMicrosoftCodeAnalysis>
+
+    <!-- Default analysis tools to drive background analysis in the IDE -->
+    <MsvcAnalysisToolsPath>$(VC_ExecutablePath_x64_x64)</MsvcAnalysisToolsPath>
+    <MsvcAnalysisPluginPath>$(VC_ExecutablePath_x64_x64)</MsvcAnalysisPluginPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VCToolArchitecture)'=='Native32Bit'">
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='x86'">$(VC_ExecutablePath_x86_x86)</MsvcAnalysisToolsPath>
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='x64'">$(VC_ExecutablePath_x86_x64)</MsvcAnalysisToolsPath>
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='arm'">$(VC_ExecutablePath_X86_ARM)</MsvcAnalysisToolsPath>
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='arm64'">$(VC_ExecutablePath_X86_ARM64)</MsvcAnalysisToolsPath>
+
+    <MsvcAnalysisPluginPath>$(MsvcAnalysisToolsPath)</MsvcAnalysisPluginPath>
+    <MsvcAnalysisPluginPath Condition="'$(_CodeAnalysisExtensions)' != 'true'">$(VC_ExecutablePath_x86_x86)</MsvcAnalysisPluginPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VCToolArchitecture)'=='Native64Bit'">
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='x86'">$(VC_ExecutablePath_x64_x86)</MsvcAnalysisToolsPath>
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='x64'">$(VC_ExecutablePath_X64_x64)</MsvcAnalysisToolsPath>
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='arm'">$(VC_ExecutablePath_X64_ARM)</MsvcAnalysisToolsPath>
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='arm64'">$(VC_ExecutablePath_X64_ARM64)</MsvcAnalysisToolsPath>
+
+    <MsvcAnalysisPluginPath>$(MsvcAnalysisToolsPath)</MsvcAnalysisPluginPath>
+    <MsvcAnalysisPluginPath Condition="'$(_CodeAnalysisExtensions)' != 'true'">$(VC_ExecutablePath_x64_x64)</MsvcAnalysisPluginPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VCToolArchitecture)'=='NativeARM64'">
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='x86'">$(VC_ExecutablePath_ARM64_x86)</MsvcAnalysisToolsPath>
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='x64'">$(VC_ExecutablePath_ARM64_x64)</MsvcAnalysisToolsPath>
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='arm'">$(VC_ExecutablePath_ARM64_ARM)</MsvcAnalysisToolsPath>
+    <MsvcAnalysisToolsPath Condition="'$(PlatformTarget)'=='arm64'">$(VC_ExecutablePath_ARM64_ARM64)</MsvcAnalysisToolsPath>
+
+    <MsvcAnalysisPluginPath>$(MsvcAnalysisToolsPath)</MsvcAnalysisPluginPath>
+    <MsvcAnalysisPluginPath Condition="'$(_CodeAnalysisExtensions)' != 'true'">$(VC_ExecutablePath_ARM64_ARM64)</MsvcAnalysisPluginPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ClCompilerPath Condition="'$(ClCompilerPath)' == ''">$(MsvcAnalysisPluginPath)\cl.exe</ClCompilerPath>
+  </PropertyGroup>
+
+  <!-- Experimental tooling diagnostics. -->
+  <PropertyGroup>
+    <EnableExperimentalDiagnostics Condition="'$(EnableExperimentalDiagnostics)' == ''">false</EnableExperimentalDiagnostics>
+  </PropertyGroup>
+
+</Project>

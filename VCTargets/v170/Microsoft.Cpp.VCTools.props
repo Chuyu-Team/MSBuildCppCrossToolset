@@ -1,0 +1,136 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.VCTools.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup Condition="'$(DisableRegistryUse)' == 'true'">
+    <VCInstallDir_170 Condition="'$(VCInstallDir_170)' == ''">VCInstallDir_170_is_not_defined</VCInstallDir_170>
+    <VCToolsInstallDir_170 Condition="'$(VCToolsInstallDir_170)' == ''">VCToolsInstallDir_170_is_not_defined</VCToolsInstallDir_170>
+    <VCToolsVersion Condition="'$(VCToolsVersion)' == ''">VCToolsVersion_is_not_defined</VCToolsVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VCInstallDir_170 Condition="'$(VCInstallDir_170)' == ''">$(VSInstallDir)VC\</VCInstallDir_170>
+    <!-- default platform toolset -->
+    <PlatformToolsetVersion Condition="'$(PlatformToolsetVersion)' == ''">143</PlatformToolsetVersion>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <_VCToolsVersionProps Condition="'$(_VCToolsVersionProps)' == ''">$(VCInstallDir_170)Auxiliary\Build\Microsoft.VCToolsVersion.v$(PlatformToolsetVersion).default.props</_VCToolsVersionProps>
+    <_VCToolsVersionProps Condition="!Exists('$(_VCToolsVersionProps)')">$(VCInstallDir_170)Auxiliary\Build\Microsoft.VCToolsVersion.default.props</_VCToolsVersionProps>
+  </PropertyGroup>
+
+  <!-- this file defines default VCToolsVersion -->
+  <Import Project="$(_VCToolsVersionProps)" Condition="Exists('$(_VCToolsVersionProps)')" />
+
+  <PropertyGroup>
+    <VCToolsInstallDir_170 Condition="'$(VCToolsInstallDir_170)' == '' and '$(VCToolsVersion)' != ''">$(VCInstallDir_170)Tools\MSVC\$(VCToolsVersion)\</VCToolsInstallDir_170>
+    <VCToolsRedistInstallDir_170 Condition="'$(VCToolsRedistInstallDir_170)' == '' and '$(VCToolsRedistVersion)' != ''">$(VCInstallDir_170)Redist\MSVC\$(VCToolsRedistVersion)\</VCToolsRedistInstallDir_170>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VCInstallDir>$(VCInstallDir_170)</VCInstallDir>
+    <VCToolsInstallDir>$(VCToolsInstallDir_170)</VCToolsInstallDir>
+    <VCToolsetsDir>$(VCInstallDir_170)Tools\MSVC\</VCToolsetsDir>
+    <VCToolsRedistInstallDir>$(VCToolsRedistInstallDir_170)</VCToolsRedistInstallDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_VCToolsServicingVersionsProps Condition="'$(VCToolsInstallDir)' != ''">$(VCToolsInstallDir)Auxiliary\Microsoft.VC.ServicingVersion.props</_VCToolsServicingVersionsProps>
+    <_VCToolsInternalCLFeatureProps Condition="'$(VCToolsInstallDir)' != ''">$(VCToolsInstallDir)Auxiliary\Microsoft.VC.Internal.CL.Features.props</_VCToolsInternalCLFeatureProps>
+    <_VCToolsInternalLinkFeatureProps Condition="'$(VCToolsInstallDir)' != ''">$(VCToolsInstallDir)Auxiliary\Microsoft.VC.Internal.Link.Features.props</_VCToolsInternalLinkFeatureProps>
+  </PropertyGroup>
+
+  <!-- Import vc tools servicing versions props if available -->
+  <Import Condition="Exists($(_VCToolsServicingVersionsProps))" Project="$(_VCToolsServicingVersionsProps)"/>
+  
+  <!-- Import vc tools feature props if available -->
+  <Import Condition="Exists($(_VCToolsInternalCLFeatureProps))" Project="$(_VCToolsInternalCLFeatureProps)"/>
+  <Import Condition="Exists($(_VCToolsInternalLinkFeatureProps))" Project="$(_VCToolsInternalLinkFeatureProps)"/>
+  
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.VCTools.Content.props"/>
+
+  <!-- We want to use a "public" property, but  we need to keep _VC_Target_Library_Platform for backward compatibility -->
+  <PropertyGroup>
+    <VC_Target_Library_Platform Condition="$(VC_Target_Library_Platform) == '' and '$(_VC_Target_Library_Platform)' != ''">$(_VC_Target_Library_Platform)</VC_Target_Library_Platform>
+  </PropertyGroup>
+
+  <!-- Abstract the Target Library platform so users can easily pick OneCore that isn't currently supported in the IDE -->
+  <PropertyGroup  Condition="'$(VC_Target_Library_Platform)' == ''">
+    <VC_Target_Library_Platform Condition="'$(WindowsAppContainer)' != 'true'">Desktop</VC_Target_Library_Platform>
+    <VC_Target_Library_Platform Condition="'$(WindowsAppContainer)' == 'true' and '$(DesktopCompatible)' != 'true'">Store</VC_Target_Library_Platform>
+    <VC_Target_Library_Platform Condition="'$(WindowsAppContainer)' == 'true' and '$(DesktopCompatible)' == 'true'">UWP</VC_Target_Library_Platform>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_VC_Target_Library_Platform>$(VC_Target_Library_Platform)</_VC_Target_Library_Platform>
+  </PropertyGroup>
+
+
+  <PropertyGroup Condition="'$(VC_Target_Library_Platform)' == 'Desktop'">
+    <VC_LibraryPath_VC_x86 Condition="'$(VC_LibraryPath_VC_x86)' == ''">$(_VC_LibraryPath_VC_x86_Desktop);</VC_LibraryPath_VC_x86>
+    <VC_LibraryPath_VC_x64 Condition="'$(VC_LibraryPath_VC_x64)' == ''">$(_VC_LibraryPath_VC_x64_Desktop);</VC_LibraryPath_VC_x64>
+    <VC_LibraryPath_VC_ARM Condition="'$(VC_LibraryPath_VC_ARM)' == ''">$(_VC_LibraryPath_VC_ARM_Desktop);</VC_LibraryPath_VC_ARM>
+    <VC_LibraryPath_VC_ARM64 Condition="'$(VC_LibraryPath_VC_ARM64)' == ''">$(_VC_LibraryPath_VC_ARM64_Desktop);</VC_LibraryPath_VC_ARM64>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VC_Target_Library_Platform)' == 'Store'">
+    <VC_LibraryPath_VC_x86 Condition="'$(VC_LibraryPath_VC_x86)' == ''">$(_VC_LibraryPath_VC_x86_Store);</VC_LibraryPath_VC_x86>
+    <VC_LibraryPath_VC_x64 Condition="'$(VC_LibraryPath_VC_x64)' == ''">$(_VC_LibraryPath_VC_x64_Store);</VC_LibraryPath_VC_x64>
+    <VC_LibraryPath_VC_ARM Condition="'$(VC_LibraryPath_VC_ARM)' == ''">$(_VC_LibraryPath_VC_ARM_Store);</VC_LibraryPath_VC_ARM>
+    <VC_LibraryPath_VC_ARM64 Condition="'$(VC_LibraryPath_VC_ARM64)' == ''">$(_VC_LibraryPath_VC_ARM64_Store);</VC_LibraryPath_VC_ARM64>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VC_Target_Library_Platform)' == 'UWP'">
+    <VC_LibraryPath_VC_x86 Condition="'$(VC_LibraryPath_VC_x86)' == ''">$(_VC_LibraryPath_VC_x86_UWP);</VC_LibraryPath_VC_x86>
+    <VC_LibraryPath_VC_x64 Condition="'$(VC_LibraryPath_VC_x64)' == ''">$(_VC_LibraryPath_VC_x64_UWP);</VC_LibraryPath_VC_x64>
+    <VC_LibraryPath_VC_ARM Condition="'$(VC_LibraryPath_VC_ARM)' == ''">$(_VC_LibraryPath_VC_ARM_UWP);</VC_LibraryPath_VC_ARM>
+    <VC_LibraryPath_VC_ARM64 Condition="'$(VC_LibraryPath_VC_ARM64)' == ''">$(_VC_LibraryPath_VC_ARM64_UWP);</VC_LibraryPath_VC_ARM64>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(VC_Target_Library_Platform)' == 'OneCore'">
+    <!-- OneCore that is not currently supported in the IDE.
+         Setting _VC_Target_Library_Platform to OneCore in the build environment or command-line this can be enabled by the user-->
+    <VC_LibraryPath_VC_x86 Condition="'$(VC_LibraryPath_VC_x86)' == ''">$(_VC_LibraryPath_VC_x86_OneCore);</VC_LibraryPath_VC_x86>
+    <VC_LibraryPath_VC_x64 Condition="'$(VC_LibraryPath_VC_x64)' == ''">$(_VC_LibraryPath_VC_x64_OneCore);</VC_LibraryPath_VC_x64>
+    <VC_LibraryPath_VC_ARM Condition="'$(VC_LibraryPath_VC_ARM)' == ''">$(_VC_LibraryPath_VC_ARM_OneCore);</VC_LibraryPath_VC_ARM>
+    <VC_LibraryPath_VC_ARM64 Condition="'$(VC_LibraryPath_VC_ARM64)' == ''">$(_VC_LibraryPath_VC_ARM64_OneCore);</VC_LibraryPath_VC_ARM64>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VC_LibraryPath_x86>$(VC_LibraryPath_VC_x86);$(_VC_LibraryPath_ATL_x86);$(VC_VS_LibraryPath_VC_VS_x86);$(UniversalCRT_LibraryPath_x86);</VC_LibraryPath_x86>
+    <VC_LibraryPath_x64>$(VC_LibraryPath_VC_x64);$(_VC_LibraryPath_ATL_x64);$(VC_VS_LibraryPath_VC_VS_x64);$(UniversalCRT_LibraryPath_x64);</VC_LibraryPath_x64>
+    <VC_LibraryPath_ARM>$(VC_LibraryPath_VC_ARM);$(_VC_LibraryPath_ATL_ARM);$(VC_VS_LibraryPath_VC_VS_ARM);$(UniversalCRT_LibraryPath_ARM);</VC_LibraryPath_ARM>
+    <VC_LibraryPath_ARM64>$(VC_LibraryPath_VC_ARM64);$(_VC_LibraryPath_ATL_ARM64);$(VC_VS_LibraryPath_VC_VS_ARM64);$(UniversalCRT_LibraryPath_ARM64);</VC_LibraryPath_ARM64>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VC_PGO_RunTime_Dir>$(VCToolsInstallDir)bin\Host$(PreferredToolArchitecture)\$(PlatformTarget)</VC_PGO_RunTime_Dir>
+  </PropertyGroup>
+
+  <!-- VC redist location, used in deploy for remote debugging -->
+  <PropertyGroup>
+    <VC_DebugCppRuntimeFilesPath_x86>$(VCToolsRedistInstallDir)Debug_NonRedist\x86</VC_DebugCppRuntimeFilesPath_x86>
+    <VC_DebugCppRuntimeFilesPath_x64>$(VCToolsRedistInstallDir)Debug_NonRedist\x64</VC_DebugCppRuntimeFilesPath_x64>
+    <VC_DebugCppRuntimeFilesPath_ARM>$(VCToolsRedistInstallDir)Debug_NonRedist\ARM</VC_DebugCppRuntimeFilesPath_ARM>
+    <VC_DebugCppRuntimeFilesPath_ARM64>$(VCToolsRedistInstallDir)Debug_NonRedist\ARM64</VC_DebugCppRuntimeFilesPath_ARM64>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <VC_CppRuntimeFilesPath_x86>$(VCToolsRedistInstallDir)x86</VC_CppRuntimeFilesPath_x86>
+    <VC_CppRuntimeFilesPath_x64>$(VCToolsRedistInstallDir)x64</VC_CppRuntimeFilesPath_x64>
+    <VC_CppRuntimeFilesPath_ARM>$(VCToolsRedistInstallDir)ARM</VC_CppRuntimeFilesPath_ARM>
+    <VC_CppRuntimeFilesPath_ARM64>$(VCToolsRedistInstallDir)ARM64</VC_CppRuntimeFilesPath_ARM64>
+  </PropertyGroup>
+  
+</Project>
+

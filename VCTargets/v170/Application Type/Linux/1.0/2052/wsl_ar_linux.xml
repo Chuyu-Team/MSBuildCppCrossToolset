@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="LIB" PageTemplate="tool" DisplayName="文档管理程序" SwitchPrefix="-" Order="40" xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规"/>
+    <Category Name="Command Line" DisplayName="命令行" Subtype="CommandLine"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="Lib" Label="" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <EnumProperty Name="Command" DisplayName="命令" Description="对 AR. 的命令" Category="General" Visible="false" F1Keyword="VC.Project.Ar.Command">
+    <EnumProperty.Arguments>
+      <Argument Property="CreateIndex" IsRequired="false"/>
+      <Argument Property="CreateThinArchive" IsRequired="false"/>
+      <Argument Property="NoWarnOnCreate" IsRequired="false"/>
+      <Argument Property="TruncateTimestamp" IsRequired="false"/>
+      <Argument Property="SuppressStartupBanner" IsRequired="false"/>
+      <Argument Property="Verbose" IsRequired="false"/>
+    </EnumProperty.Arguments>
+    <EnumValue Name="Delete" Switch="d" DisplayName="删除" Description="从存档中删除文件"/>
+    <EnumValue Name="Move" Switch="m" DisplayName="移动" Description="移动存档中的文件。"/>
+    <EnumValue Name="Print" Switch="p" DisplayName="打印" Description="打印存档中找到的文件。"/>
+    <EnumValue Name="Quick" Switch="q" DisplayName="快速" Description="快速将文件追加到存档中。"/>
+    <EnumValue Name="Replacement" Switch="r" DisplayName="更换" Description="替换现有或插入新文件至存档文件中。"/>
+    <EnumValue Name="Table" Switch="t" DisplayName="表格" Description="显示存档的内容。"/>
+    <EnumValue Name="Extract" Switch="x" DisplayName="提取" Description="从存档中提取文件。"/>
+  </EnumProperty>
+  <BoolProperty Name="CreateIndex" DisplayName="创建存档索引" Description="创建存档索引(参见 ranlib)。  此举可提高链接速度，并减少其库中的依赖项。" SwitchPrefix="" Category="General" Switch="s" F1Keyword="VC.Project.Ar.CreateIndex"/>
+  <BoolProperty Name="CreateThinArchive" DisplayName="创建精简的归档文件" Description="创建一个精简存档。精简的存档文件包含对象的相关路径，而不是将对象嵌入其中。在精简客户端和正常客户端之间切换，则需要删除现有的库。" SwitchPrefix="" Category="General" Switch="T" F1Keyword="VC.Project.Ar.CreateThinArchive"/>
+  <BoolProperty Name="NoWarnOnCreate" DisplayName="Create 上无警告" Description="若库已创建，请勿发出警告。" SwitchPrefix="" Category="General" Switch="c" F1Keyword="VC.Project.Ar.NoWarnOnCreate"/>
+  <BoolProperty Name="TruncateTimestamp" DisplayName="截断时间戳" Description="时间戳和 uid/gid 使用为零。" SwitchPrefix="" Category="General" Switch="D" F1Keyword="VC.Project.Ar.TruncateTimestamp"/>
+  <BoolProperty ReverseSwitch="V" Name="SuppressStartupBanner" DisplayName="取消显示启动版权标志" Description="不显示版本号。" SwitchPrefix="" Category="General" F1Keyword="VC.Project.Ar.SuppressStartupBanner"/>
+  <BoolProperty Name="Verbose" DisplayName="详细" Description="详细" SwitchPrefix="" Category="General" Switch="v" F1Keyword="VC.Project.Ar.Verbose"/>
+  <StringProperty Name="AdditionalOptions" DisplayName="附加选项" Description="附加选项。" Category="Command Line" F1Keyword="vc.project.AdditionalOptionsPage"/>
+  <!--<StringProperty Subtype="file" Name="OutputFile" DisplayName="Output File" Description="The /OUT option overrides the default name and location of the program that the lib creates." SwitchPrefix="" Category="General" Separator=" " F1Keyword="VC.Project.Ar.OutputFile" />-->
+  <StringProperty Subtype="file" Name="OutputFile" DisplayName="输出文件" Description="该选项可重写链接器创建的程序的默认名称和位置。(-o)" Category="General" Switch="o" F1Keyword="VC.Project.VCLinkerTool.OutputFile">
+  </StringProperty>
+  <StringProperty Subtype="file" Name="RemoteTargetPath" DisplayName="输出文件" Description="/OUT 选项可重写 lib 创建的程序的默认名称和位置。" SwitchPrefix="" Category="General" Separator=" " F1Keyword="VC.Project.Ar.OutputFile">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" Label=""/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="RemoteArToolExe" DisplayName="存档程序" Description="指定链接静态对象期间要引用的程序，或远程系统上存档程序的路径。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="General" Default="">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" Label=""/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="RemoteArCommmandTimeout" DisplayName="存档程序超时" Description="远程存档程序超时(毫秒)。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="General" Default="">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" Label=""/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="RemoteLinkLocalCopyOutput" DisplayName="复制输出" Description="指定是否要将生成输出文件从远程系统复制到本地计算机。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="General" Default="">
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFile" Label=""/>
+    </BoolProperty.DataSource>
+  </BoolProperty>
+</Rule>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="CL" PageTemplate="generic" DisplayName="NMake" SwitchPrefix="/" Order="10" xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+  <Rule.Categories>
+    <Category Name="IntelliSense" DisplayName="IntelliSense" Description="IntelliSense"/>
+  </Rule.Categories>
+ 
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="ClCompile" Label="" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+
+  <StringListProperty Name="PreprocessorDefinitions" DisplayName="预处理器定义" Category="IntelliSense" Switch="D" Description="指定源文件使用的预处理器定义。" F1Keyword="VC.Project.VCNMakeTool.PreprocessorDefinitions"/>
+  <StringListProperty Name="AdditionalIncludeDirectories" DisplayName="包含搜索路径" Category="IntelliSense" Switch="I" Description="指定用于解析所包含文件的包含搜索路径。" Subtype="folder" F1Keyword="VC.Project.VCNMakeTool.IncludeSearchPath"/>
+  <StringListProperty Name="ForcedIncludeFiles" DisplayName="强制包含" Category="IntelliSense" Switch="FI" Description="指定要强制包含的文件。" Subtype="folder" F1Keyword="VC.Project.VCNMakeTool.ForcedIncludes"/>
+  <StringListProperty Name="AdditionalUsingDirectories" DisplayName="程序集搜索路径" Category="IntelliSense" Switch="AI" Description="指定用于解析所使用的 .NET 程序集的程序集搜索路径。" Subtype="folder" F1Keyword="VC.Project.VCNMakeTool.AssemblySearchPath"/>
+  <StringListProperty Name="ForcedUsingFiles" DisplayName="强制使用程序集" Category="IntelliSense" Switch="FU" Description="指定强制在源文件中使用的程序集。" F1Keyword="VC.Project.VCNMakeTool.ForcedUsingAssemblies"/>
+  <StringProperty Name="AdditionalOptions" DisplayName="附加选项" Category="IntelliSense" Description="指定分析 C++ 文件时 Intellisense 使用的附加编译器开关"/>
+</Rule>

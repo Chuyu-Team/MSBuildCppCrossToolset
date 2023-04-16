@@ -1,0 +1,77 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file defines the properties required to build Visual C++ projects.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" TreatAsLocalProperty="OutDir">
+
+  <PropertyGroup Condition="'$(DesignTimeBuild)' == 'true'">
+    <!-- Disable code analysis targets for designtime -->
+    <CodeAnalysisTargets Condition="'$(CodeAnalysisTargets)'==''">CodeAnalysisTargets_disabled</CodeAnalysisTargets>
+  </PropertyGroup>
+
+  <!-- determine TargetRuntime to avoid msbuild common targets setting TargetFrameworkVersion for native projects -->
+  <PropertyGroup Condition="'$(ManagedAssembly)' == ''">
+    <ManagedAssembly>false</ManagedAssembly>
+    <ManagedAssembly Condition="'$(CLRSupport)' != '' and '$(CLRSupport)' != 'false'">true</ManagedAssembly>
+  </PropertyGroup>
+
+  <!-- if a manged project does not define TargetFrameworkVersion set it to the current default -->
+  <PropertyGroup>
+    <TargetRuntime Condition="'$(TargetRuntime)' == '' and '$(ManagedAssembly)' == 'true'">Managed</TargetRuntime>
+    <TargetRuntime Condition="'$(TargetRuntime)' == '' and '$(ManagedAssembly)' != 'true'">Native</TargetRuntime>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetRuntime)' == 'Managed' and '$(CLRSupport)' != 'NetCore' and '$(TargetFrameworkVersion)' == ''">
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersionDefault>true</TargetFrameworkVersionDefault>
+  </PropertyGroup>
+
+  <Import Condition="'$(VcpkgManifestDirectory)' != '' and '$(ImportBeforeCppTargets)' != ''" Project="Imports.props"
+        Sdk="vcpkg:ManifestDirectory=$(VcpkgManifestDirectory);ImportFiles=$(ImportBeforeCppTargets)" />
+
+  <Import Condition="'$(_Redirect)' != 'true'" Project="$(VCTargetsPath)\Microsoft.Cpp.Current.targets" />
+ 
+  <!-- If (_Redirect) flag is set, redirect to older versions of VS -->
+  <Import Condition="'$(_Redirect)' == 'true'" Project="Microsoft.Cpp.Redirect.targets" />
+  
+  <PropertyGroup Condition="'$(VcpkgManifestDirectory)' != '' and '$(VcpkgActivationOptions)' != '' and '$(DesignTimeBuild)' != 'true'">
+    <InstallBuildTools>true</InstallBuildTools>
+    <SetBuildDefaultEnvironmentVariablesDependsOn>
+      InstallBuildTools;
+      $(SetBuildDefaultEnvironmentVariablesDependsOn)
+    </SetBuildDefaultEnvironmentVariablesDependsOn>
+  </PropertyGroup>
+
+  <Target Name="InstallBuildTools"
+          AfterTargets="_GenerateRestoreProjectPathWalk"
+          DependsOnTargets="$(InstallBuildToolsDependesOn)"
+          Condition="'$(InstallBuildTools)' == 'true'">
+    <CallVcpkg
+        VcpkgRoot="$(VcpkgRoot)"
+        ManifestDirectory="$(VcpkgManifestDirectory)"
+        Options="$(VcpkgActivationOptions)"
+        TlogLocation="$(TlogLocation)"
+        TrackFileAccess="$(TrackFileAccess)"
+      />
+  </Target>
+
+  <Import Condition="'$(VcpkgManifestDirectory)' != '' and '$(ImportAfterCppTargets)' != ''" Project="Imports.props"
+      Sdk="vcpkg:ManifestDirectory=$(VcpkgManifestDirectory);ImportFiles=$(ImportAfterCppTargets)" />
+
+  <!-- *******************************************************************************************
+        DesignTime targets, used by IDE only (not real build). 
+        They are VS version specific, not toolset specific.
+       ******************************************************************************************* -->
+  <Import Condition="'$(_ImportMicrosoftCppDesignTime)' != 'false'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.DesignTime.targets" />
+
+</Project>

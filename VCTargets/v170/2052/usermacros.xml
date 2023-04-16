@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule xmlns="http://schemas.microsoft.com/build/2009/properties" Name="UserMacros" PageTemplate="UserMacros" DisplayName="用户宏" Description="用户宏">
+    <Rule.Categories>
+      <Category Name="General" DisplayName="常规" Description="常规"/>
+    </Rule.Categories>
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile"/>
+    </Rule.DataSource>
+</Rule>

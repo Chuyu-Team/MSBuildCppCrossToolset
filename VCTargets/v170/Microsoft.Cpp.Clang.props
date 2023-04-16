@@ -1,0 +1,56 @@
+<!--
+***********************************************************************************************
+Microsoft.Cpp.Clang.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)ImportBefore\*.props" Condition="Exists('$(MSBuildThisFileDirectory)ImportBefore')" />
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <ClangMode>true</ClangMode>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <DebugInformationFormat Condition="'$(UseDebugLibraries)' == 'true'">FullDebug</DebugInformationFormat>
+      <DebugInformationFormat Condition="'$(UseDebugLibraries)' != 'true'">LineNumber</DebugInformationFormat>
+      <PreprocessorDefinitions Condition="'$(UseDebugLibraries)' != 'true'">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(UseDebugLibraries)' == 'true'">Disabled</Optimization>
+      <Optimization Condition="'$(UseDebugLibraries)' != 'true'">Full</Optimization>
+      <StrictAliasing>false</StrictAliasing>
+      <ProgramDatabaseFileName Condition="'$(ConfigurationType)' != 'StaticLibrary'">$(IntDir)</ProgramDatabaseFileName>
+      <ProgramDatabaseFileName Condition="'$(ConfigurationType)' == 'StaticLibrary'">$(OutDir)</ProgramDatabaseFileName>
+      <OmitFramePointers Condition="'$(UseDebugLibraries)' == 'true'">false</OmitFramePointers>
+      <OmitFramePointers Condition="'$(UseDebugLibraries)' != 'true'">true</OmitFramePointers>
+      <ExceptionHandling>Enabled</ExceptionHandling>
+      <FunctionLevelLinking Condition="'$(UseDebugLibraries)' == 'true'">false</FunctionLevelLinking>
+      <FunctionLevelLinking Condition="'$(UseDebugLibraries)' != 'true'">true</FunctionLevelLinking>
+      <DataLevelLinking Condition="'$(UseDebugLibraries)' == 'true'">false</DataLevelLinking>
+      <DataLevelLinking Condition="'$(UseDebugLibraries)' != 'true'">true</DataLevelLinking>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <PositionIndependentCode>true</PositionIndependentCode>
+      <UseShortEnums>false</UseShortEnums>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <CLanguageStandard>Default</CLanguageStandard>
+      <CppLanguageStandard>Default</CppLanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ObjectFileName>$(IntDir)%(filename).obj</ObjectFileName>
+      <CompileAs>Default</CompileAs>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <Verbose>false</Verbose>
+      <EnablePREfast Condition="'%(ClCompile.EnablePREfast)' == ''">false</EnablePREfast>
+      <OmitFramePointers Condition="'%(ClCompile.OmitFramePointers)' == ''">false</OmitFramePointers>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <PrecompiledHeaderOutputFileDirectory>$(IntDir)</PrecompiledHeaderOutputFileDirectory>
+      <PrecompiledHeaderOutputFile></PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderCompileAs>CompileAsCpp</PrecompiledHeaderCompileAs>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)ImportAfter\*.props" Condition="Exists('$(MSBuildThisFileDirectory)ImportAfter')" />
+</Project>

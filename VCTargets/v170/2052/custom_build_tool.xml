@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationCustomBuildTool" DisplayName="自定义生成工具" Order="110" PageTemplate="tool" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="CustomBuild" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+  </Rule.Categories>
+  <StringProperty Name="Command" Category="General" DisplayName="命令行" Description="指定用于自定义生成工具的命令行。" F1Keyword="VC.Project.VCCustomBuildTool.Command">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <StringProperty Name="Message" Category="General" DisplayName="说明" Description="指定自定义生成工具的说明。" F1Keyword="VC.Project.VCCustomBuildTool.Message"/>
+  <StringListProperty Name="Outputs" Category="General" DisplayName="输出" Description="指定自定义生成工具生成的输出文件。" F1Keyword="VC.Project.VCCustomBuildTool.Outputs"/>
+  <StringListProperty Name="AdditionalInputs" Category="General" DisplayName="附加依赖项" Description="指定用于自定义生成工具的任何附加输入文件。" F1Keyword="VC.Project.VCCustomBuildTool.AdditionalInputs"/>
+  <BoolProperty Name="VerifyInputsAndOutputsExist" Category="General" DisplayName="验证依赖项和输出是否存在" F1Keyword="VC.Project.VCCustomBuildTool.VerifyInputsAndOutputsExist" Description="指定生成是否应验证所有给定依赖项和输出是否存在，以及是否应在其不存在时发出警告。">
+  </BoolProperty>
+  <BoolProperty Name="LinkObjects" Category="General" DisplayName="链接对象" F1Keyword="VC.Project.VCCustomBuildTool.LinkObjects" Description="指定是否将带特定扩展名(.obj、.lib、.res、.rsc)的输入和输出文件传递给链接器。">
+  </BoolProperty>
+  <DynamicEnumProperty Name="OutputItemType" DisplayName="向项类型添加输出" Category="General" Description="指定要添加到输出文件以使其成为其他生成工具的源的项类型。" EnumProvider="ItemTypes" F1Keyword="VC.Project.VCCustomBuildTool.OutputsItemType">
+  </DynamicEnumProperty>
+  <BoolProperty Name="TreatOutputAsContent" Category="General" DisplayName="将输出视为内容" F1Keyword="VC.Project.VCCustomBuildTool.TreatOutputAsContent" Description="指定输出文件是否为可部署内容。">
+  </BoolProperty>
+  <StringProperty Name="RootFolder" DisplayName="内容根文件夹" Description="要用于打包的内容根文件夹。" Category="General" Subtype="folder">
+  </StringProperty>
+  <BoolProperty Name="BuildInParallel" Category="General" DisplayName="并行生成" F1Keyword="VC.Project.VCCustomBuildTool.BuildInParallel" Description="指定可以与其他自定义生成工具项并行生成此项。">
+  </BoolProperty>
+  <IntProperty Name="MaxProcesses" Category="General" DisplayName="最大进程数" F1Keyword="VC.Project.VCCustomBuildTool.MaxProcesses" Description="用于并行生成的最大 CPU 内核数。如果该值为 0，则利用所有可用处理器。">
+  </IntProperty>
+  <IntProperty Name="MaxItemsInBatch" Category="General" DisplayName="最大批大小" F1Keyword="VC.Project.VCCustomBuildTool.MaxProcesses" Description="并行生成过程中要同时执行最大项数。如果值为 0，则将各项平均分入各并行批。如果值为 1，则禁用批处理。如果自定义生成工具可快速处理项，较大的批可提高性能。">
+  </IntProperty>
+  <DynamicEnumProperty Name="CustomBuildAfterTargets" Category="General" DisplayName="在以下操作之后执行" Description="指定自定义生成步骤和工具要在其后面运行的目标。" F1Keyword="VC.Project.VCCustomBuildStep.CustomBuildAfterTargets" EnumProvider="Targets">
+    <DynamicEnumProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType=""/>
+    </DynamicEnumProperty.DataSource>
+    <DynamicEnumProperty.ProviderSettings>
+      <NameValuePair Name="Exclude" Value="^CustomBuild|^Compute"/>
+    </DynamicEnumProperty.ProviderSettings>
+  </DynamicEnumProperty>
+  <DynamicEnumProperty Name="CustomBuildBeforeTargets" Category="General" DisplayName="在以下操作之前执行" Description="指定自定义生成步骤和工具要在其前面运行的目标。" F1Keyword="VC.Project.VCCustomBuildStep.CustomBuildBeforeTargets" EnumProvider="Targets">
+    <DynamicEnumProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType=""/>
+    </DynamicEnumProperty.DataSource>
+    <DynamicEnumProperty.ProviderSettings>
+      <NameValuePair Name="Exclude" Value="^CustomBuild|^Compute"/>
+    </DynamicEnumProperty.ProviderSettings>
+  </DynamicEnumProperty>
+</Rule>

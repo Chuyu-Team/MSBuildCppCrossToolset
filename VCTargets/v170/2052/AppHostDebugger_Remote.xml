@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.
+    Remote debug properties for Windows UWP apps-->
+<Rule Name="UWPRemoteDebugger" DisplayName="远程计算机" PageTemplate="debugger" Order="400" Description="远程调试器选项" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  
+  <Rule.Metadata>
+    <sys:Guid x:Key="DebugTargetTypeCommandGuid">FEEA6E9D-77D8-423F-9EDE-3970CBB76125</sys:Guid>
+    <sys:UInt32 x:Key="DebugTargetTypeCommandId">0x400</sys:UInt32>
+  </Rule.Metadata>
+  <Rule.DataSource>
+    <DataSource Persistence="UserFile"/>
+  </Rule.DataSource>
+
+  <BoolProperty Name="DebuggerLaunchApplication" DisplayName="启动应用程序" F1Keyword="VC.Project.IVCAppHostRemoteDebugPageObject.LaunchApplication" Description="指定是立即启动我的应用程序还是在我的应用程序开始运行时等待对其进行调试。"/>
+  <BoolProperty Name="AllowLocalNetworkLoopback" DisplayName="允许本地网络环回" F1Keyword="VC.Project.IVCAppHostLocalDebugPageObject.AllowLocalNetworkLoopback" Description="在调试 Windows 应用商店应用时，您可以使用本地服务、调试网络通讯以及使用本地环回来与同一计算机上的组件进行通信。"/>
+  <EnumProperty Name="DebuggerType" DisplayName="调试器类型" F1Keyword="VC.Project.IVCAppHostRemoteDebugPageObject.DebuggerType" Description="指定要调试的代码类型。">
+    <EnumProperty.Metadata>
+      <NameValuePair Name="IsDebugType" Value="true"/>
+    </EnumProperty.Metadata>
+    <EnumValue Name="NativeOnly" DisplayName="仅限本机"/>
+    <EnumValue Name="ManagedCore" DisplayName="仅限托管"/>
+    <EnumValue Name="GPUOnly" DisplayName="仅限 GPU (C++ AMP)"/>
+    <EnumValue Name="Script" DisplayName="仅脚本"/>
+    <EnumValue Name="NativeWithManagedCore" DisplayName="托管和本机"/>
+    <EnumValue Name="NativeWithScript" DisplayName="脚本和本机"/>
+  </EnumProperty>
+  <StringProperty Name="DebuggerMachineName" DisplayName="计算机名" F1Keyword="VC.Project.IVCAppHostRemoteDebugPageObject.MachineName" Description="指定要在远程调试时使用的计算机的名称。">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="CppUniversalRemoteDebuggerPropertyEditor" DisplayName="&lt;Locate...&gt;">
+        <ValueEditor.Metadata>
+          <NameValuePair Name="AuthenticationPropertyName" Value="DebuggerRequireAuthentication"/>
+        </ValueEditor.Metadata>
+      </ValueEditor>
+    </StringProperty.ValueEditors>
+  </StringProperty> 
+  <EnumProperty Name="DebuggerRequireAuthentication" DisplayName="身份验证类型" F1Keyword="VC.Project.IVCAppHostRemoteDebugPageObject.Authentication" Description="指定在远程设备上进行调试时需要的身份验证种类。">
+    <EnumValue Name="True" DisplayName="Windows 身份验证"/>
+    <EnumValue Name="False" DisplayName="无需身份验证"/>
+    <EnumValue Name="Universal" DisplayName="通用(未加密的协议)"/>
+  </EnumProperty>
+  <DynamicEnumProperty Name="GPUDebuggerTargetType" DisplayName="调试加速器类型" EnumProvider="GPUTargets" F1Keyword="VC.Project.IVCAppHostRemoteDebugPageObject.GPUDebuggerTargetType" Description="要用于调试 GPU 代码的调试加速器类型。(GPU 调试器为活动状态时可用。)">
+    <DynamicEnumProperty.Metadata>
+      <NameValuePair Name="ParentPropertyName" Value="DebuggerType"/>
+      <NameValuePair Name="ParentPropertyValue" Value="GPUOnly"/>
+    </DynamicEnumProperty.Metadata>
+  </DynamicEnumProperty>
+  <EnumProperty Name="GPURefDebuggerBreakOnAllThreads" DisplayName="GPU 默认断点行为" Description="设置 GPU 调试器中断的频率。" F1Keyword="VC.Project.IVCAppHostRemoteDebugPageObject.BreakpointBehavior">
+    <EnumValue Name="GPURefBreakOncePerWarp" DisplayName="每次换行中断一次" Description="每次换行中断一次"/>
+    <EnumValue Name="GPURefBreakForCPUThread" DisplayName="对每个线程中断(类似 CPU 行为)" Description="对每个线程中断(类似 CPU 行为)"/>
+    <EnumProperty.Metadata>
+      <NameValuePair Name="ParentPropertyName" Value="DebuggerType"/>
+      <NameValuePair Name="ParentPropertyValue" Value="GPUOnly"/>
+    </EnumProperty.Metadata>
+  </EnumProperty>
+  <BoolProperty Name="RemoteDebuggerDeployDebugCppRuntime" DisplayName="部署 Visual C++ 调试运行库" Description="指定是否为活动平台(Win32、x64 或 ARM)部署调试运行库。" F1Keyword="VC.Project.IVCRemoteDebugPageObject.Remote"/>
+  <DynamicEnumProperty Name="DebuggerAmpDefaultAccelerator" DisplayName="Amp 默认快捷键" EnumProvider="AmpAccelerators" F1Keyword="VC.Project.IVCAppHostRemoteDebugPageObject.AmpDefaultAccelerator" Description="重写 C++ AMP 的默认快捷键选择。调试托管代码时不适用该属性。">
+  </DynamicEnumProperty>
+  <StringProperty Name="LayoutDir" DisplayName="包布局路径" Description="将在其中复制二进制输出的包布局位置。此位置可能还包含项目的非二进制资产。"/>
+  <EnumProperty Name="RemoteDeploymentType" DisplayName="高级远程部署类型" Description="指定远程部署的类型 - 选择“复制到设备”以将包布局物理复制到远程设备，或选择“从网络注册”以从网络共享注册布局。">
+    <EnumValue Name="CopyToDevice" DisplayName="复制到设备"/>
+    <EnumValue Name="RegisterFromNetwork" DisplayName="从网络注册"/>
+  </EnumProperty>
+  <StringProperty Name="PackageRegistrationPath" DisplayName="包注册路径" Description="对于“复制到设备”部署，这表示将在其中复制布局的远程设备上的物理位置是可选参数。对于“从网络注册”，
+则表示包布局的远程网络位置是必需参数。"/>
+  <BoolProperty Name="RemoveNonLayoutFiles" DisplayName="从设备中移除非布局文件" Description="指定部署过程中是否从目标设备移除不属于布局的文件 - 这仅可用于“复制到设备”部署。"/>
+  <StringProperty Name="CommandLineArgs" DisplayName="命令行参数" Description="传递给调试程序的命令行参数。"/>
+</Rule>

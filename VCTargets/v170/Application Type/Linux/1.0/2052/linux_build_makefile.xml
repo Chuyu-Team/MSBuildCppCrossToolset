@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="LinuxLocalBuild" DisplayName="生成" PageTemplate="generic" Description="生成" SwitchPrefix="/" Order="100" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile"/>
+  </Rule.DataSource>
+  <StringProperty Name="BuildCommandLine" DisplayName="“生成”命令行" Description="指定用于运行“生成”命令的命令行。" IncludeInCommandLine="false" Category="General" F1Keyword="VC.Project.VCNMakeTool.BuildCommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <StringProperty Name="ReBuildCommandLine" DisplayName="“全部重新生成”命令行" Description="指定用于运行“全部重新生成”命令的命令行。" IncludeInCommandLine="false" Category="General" F1Keyword="VC.Project.VCNMakeTool.ReBuildCommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <StringProperty Name="CleanCommandLine" DisplayName="“清除”命令行" Description="指定用于运行“清除”命令的命令行。" IncludeInCommandLine="false" Category="General" F1Keyword="VC.Project.VCNMakeTool.CleanCommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <StringListProperty Name="LocalBuildOutputs" DisplayName="输出" Description="指定由本地命令生成的、要部署到远程系统的输出。" Category="General" IncludeInCommandLine="false" F1Keyword="VC.Project.VCNMakeTool.LocalOutputs"/>
+</Rule>

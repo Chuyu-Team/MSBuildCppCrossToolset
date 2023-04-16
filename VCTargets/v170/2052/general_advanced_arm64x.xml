@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationGeneralAdvanced" OverrideMode="Extend" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  
+    <BoolProperty Name="BuildAsX" DisplayName="将项目生成为 ARM64X" Description="将此项目的 ARM64 和 ARM64EC 二进制输出合而为一。要求项目具有现有 ARM64 配置。" F1Keyword="VC.Project.VCConfiguration.BuildAsX">
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFile" Label=""/>
+    </BoolProperty.DataSource>
+  </BoolProperty>
+
+</Rule>

@@ -1,0 +1,260 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Default.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" TreatAsLocalProperty="Platform">
+
+  <PropertyGroup>
+    <VCTargetsPathActual>$(VCTargetsPath)</VCTargetsPathActual>
+    <CurrentVCTargetsPath>$(VCTargetsPath)</CurrentVCTargetsPath>
+    <CurrentVsInstallRoot>$(VsInstallRoot)</CurrentVsInstallRoot>
+    <ClearDevCommandPromptEnvVars Condition="'$(ClearDevCommandPromptEnvVars)' == '' and '$(VSCMD_VER)' != '' and '$(DisableRegistryUse)' != 'true' and '$(UseEnv)' != 'true'">true</ClearDevCommandPromptEnvVars>
+  </PropertyGroup>
+
+  <!-- ensure that IDE is always using current version of CLCommandLine task for designtime builds -->
+  <UsingTask TaskName="CLCommandLine" AssemblyFile="$(CurrentVCTargetsPath)\Microsoft.Build.CPPTasks.Common.dll"/>
+  <!-- ensure that build is always using current version of CallVcpkg task -->
+  <UsingTask TaskName="CallVcpkg" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+
+  <!-- clear out properties defined as env vars in dev command prompt and which interfere with the project settings -->
+  <PropertyGroup Condition = "'$(ClearDevCommandPromptEnvVars)' == 'true'">
+    <Framework40Version />
+    <FrameworkDir />
+    <FrameworkDIR32 />
+    <FrameworkVersion />
+    <FrameworkVersion32 />
+    <IFCPATH />
+    <NETFXSDKDir />
+    <UCRTVersion />
+    <UniversalCRTSdkDir />
+    <VCIDEInstallDir />
+    <VCINSTALLDIR />
+    <VCToolsInstallDir />
+    <VCToolsRedistDir />
+    <VCToolsVersion />
+    <WindowsLibPath />
+    <WindowsSdkBinPath />
+    <WindowsSdkDir />
+    <WindowsSDKLibVersion />
+    <WindowsSdkVerBinPath />
+    <WindowsSDKVersion />
+    <WindowsSDK_ExecutablePath_x64 />
+    <WindowsSDK_ExecutablePath_x86 />
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
+  <PropertyGroup Condition="'$(DisableInstalledVCTargetsUse)' == 'true'">
+    <DisableInstalledVCTargetsDefaultsUse Condition="'$(DisableInstalledVCTargetsDefaultsUse)' == ''">true</DisableInstalledVCTargetsDefaultsUse>
+    <VCTargetsPath17 Condition="'$(VCTargetsPath17)' != '' and !HasTrailingSlash('$(VCTargetsPath17)')">$(VCTargetsPath17)\</VCTargetsPath17>
+    <VCTargetsPath16 Condition="'$(VCTargetsPath16)' != '' and !HasTrailingSlash('$(VCTargetsPath16)')">$(VCTargetsPath16)\</VCTargetsPath16>
+    <VCTargetsPath15 Condition="'$(VCTargetsPath15)' != '' and !HasTrailingSlash('$(VCTargetsPath15)')">$(VCTargetsPath15)\</VCTargetsPath15>
+    <VCTargetsPath14 Condition="'$(VCTargetsPath14)' != '' and !HasTrailingSlash('$(VCTargetsPath14)')">$(VCTargetsPath14)\</VCTargetsPath14>
+    <VCTargetsPath12 Condition="'$(VCTargetsPath12)' != '' and !HasTrailingSlash('$(VCTargetsPath12)')">$(VCTargetsPath12)\</VCTargetsPath12>
+    <VCTargetsPath11 Condition="'$(VCTargetsPath11)' != '' and !HasTrailingSlash('$(VCTargetsPath11)')">$(VCTargetsPath11)\</VCTargetsPath11>
+    <VCTargetsPath10 Condition="'$(VCTargetsPath10)' != '' and !HasTrailingSlash('$(VCTargetsPath10)')">$(VCTargetsPath10)\</VCTargetsPath10>
+  </PropertyGroup>
+
+  <Import Condition="'$(DisableInstalledVCTargetsDefaultsUse)' != 'true' and Exists('$(VCTargetsPath)\ImportBefore\Default')" Project="$(VCTargetsPath)\ImportBefore\Default\*.props" />
+  <Import Condition="'$(DisableInstalledVCTargetsUse)' == 'true' and '$(VCTargetsPath17)' != '' and Exists('$(VCTargetsPath17)\ImportBefore\Default')" Project="$(VCTargetsPath17)\ImportBefore\Default\*.props" />
+
+  <PropertyGroup Condition="'$(DisableInstalledVCTargetsUse)' != 'true'">
+    <VCTargetsPath10 Condition="'$(VCTargetsPath10)' == '' or ('$(VCTargetsPath10)' != '' and !exists('$(VCTargetsPath10)'))">$(MSBuildProgramFiles32)\MSBuild\Microsoft.Cpp\v4.0\</VCTargetsPath10>
+    <VCTargetsPath11 Condition="'$(VCTargetsPath11)' == '' or ('$(VCTargetsPath11)' != '' and !exists('$(VCTargetsPath11)'))">$(MSBuildProgramFiles32)\MSBuild\Microsoft.Cpp\v4.0\V110\</VCTargetsPath11>
+    <VCTargetsPath12 Condition="'$(VCTargetsPath12)' == '' or ('$(VCTargetsPath12)' != '' and !exists('$(VCTargetsPath12)'))">$(MSBuildProgramFiles32)\MSBuild\Microsoft.Cpp\v4.0\V120\</VCTargetsPath12>
+    <VCTargetsPath14 Condition="'$(VCTargetsPath14)' == '' or ('$(VCTargetsPath14)' != '' and !exists('$(VCTargetsPath14)'))">$(MSBuildProgramFiles32)\MSBuild\Microsoft.Cpp\v4.0\V140\</VCTargetsPath14>
+    <VCTargetsPath15 Condition="'$(VCTargetsPath15)' == '' or ('$(VCTargetsPath15)' != '' and !exists('$(VCTargetsPath15)'))">$(MSBuildExtensionsPath32)\Microsoft\VC\v150\</VCTargetsPath15>
+    <VCTargetsPath16 Condition="'$(VCTargetsPath16)' == '' or ('$(VCTargetsPath16)' != '' and !exists('$(VCTargetsPath16)'))">$(MSBuildExtensionsPath32)\Microsoft\VC\v160\</VCTargetsPath16>
+    <VCTargetsPath17 Condition="'$(VCTargetsPath17)' == '' or ('$(VCTargetsPath17)' != '' and !exists('$(VCTargetsPath17)'))">$(MSBuildExtensionsPath32)\Microsoft\VC\v170\</VCTargetsPath17>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <MinSupportedVCTargetsVersion Condition="'$(MinimumVisualStudioVersion)' == '17.0'">v170</MinSupportedVCTargetsVersion>
+    <MinSupportedVCTargetsVersion Condition="'$(MinimumVisualStudioVersion)' == '16.0'">v160</MinSupportedVCTargetsVersion>
+    <MinSupportedVCTargetsVersion Condition="'$(MinimumVisualStudioVersion)' == '15.0'">v150</MinSupportedVCTargetsVersion>
+    <MinSupportedVCTargetsVersion Condition="'$(MinimumVisualStudioVersion)' == '14.0'">v140</MinSupportedVCTargetsVersion>
+    <MinSupportedVCTargetsVersion Condition="'$(MinimumVisualStudioVersion)' == '12.0'">v120</MinSupportedVCTargetsVersion>
+    <MinSupportedVCTargetsVersion Condition="'$(MinimumVisualStudioVersion)' == '11.0'">v110</MinSupportedVCTargetsVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Platform_Actual Condition="'$(Platform_Actual)' == ''">$(Platform)</Platform_Actual>
+    <Platform Condition="'$(Platform)' == ''">Win32</Platform>
+    <Platform Condition="'$(Platform)' == 'x86' or '$(Platform)' == 'Any CPU' or '$(Platform)' == 'AnyCPU'">Win32</Platform>
+
+    <_DefaultPlatform>win32</_DefaultPlatform>
+
+    <!-- ApplicationTypeRevision was changed from 8.2 to 10.0 for Dev14 Store projects - So alias 8.2 to 10.0 for compatibility of older projects -->
+    <ApplicationTypeRevision Condition="'$(ApplicationType)' == 'Windows Store' and '$(ApplicationTypeRevision)' == '8.2'">10.0</ApplicationTypeRevision>
+
+    <!-- When the Framework Version is <= 3.5, set PlatformToolset to use the 9.0 toolset.
+         When the Framework Version is >= 4.0, set PlatformToolset to use the 10.0 toolset.
+         If Targetframeworkversion does not exist, then leave the default toolset -->
+    <PlatformToolset Condition="'$(PlatformToolset)' == '' and
+                                 ('$(TargetFrameworkVersion)' == 'v3.5' or
+                                  '$(TargetFrameworkVersion)' == 'v3.0' or
+                                  '$(TargetFrameworkVersion)' == 'v2.0')">v90</PlatformToolset>
+
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_RelativeApplicationTypeFolder></_RelativeApplicationTypeFolder>
+    <_RelativeApplicationTypeRevisionFolder></_RelativeApplicationTypeRevisionFolder>
+    <_RelativeApplicationTypeFolder Condition="'$(ApplicationType)' != ''">Application Type\$(ApplicationType)\</_RelativeApplicationTypeFolder>
+    <_RelativeApplicationTypeRevisionFolder Condition="'$(ApplicationType)' != '' and '$(ApplicationTypeRevision)' != ''">$(_RelativeApplicationTypeFolder)$(ApplicationTypeRevision)\</_RelativeApplicationTypeRevisionFolder>
+
+    <_ApplicationTypeDefaultProps Condition="'$(_RelativeApplicationTypeFolder)' != ''">$(VCTargetsPath)\$(_RelativeApplicationTypeFolder)Default.props</_ApplicationTypeDefaultProps>
+    <_ApplicationTypeDefaultPropsFound Condition="'$(_ApplicationTypeDefaultProps)' != '' and Exists('$(_ApplicationTypeDefaultProps)')">true</_ApplicationTypeDefaultPropsFound>
+    <_ApplicationTypeRevisionDefaultProps Condition="'$(_RelativeApplicationTypeRevisionFolder)' != ''">$(VCTargetsPath)\$(_RelativeApplicationTypeRevisionFolder)Default.props</_ApplicationTypeRevisionDefaultProps>
+    <_ApplicationTypeRevisionDefaultPropsFound Condition="'$(_ApplicationTypeRevisionDefaultProps)' != '' and Exists('$(_ApplicationTypeRevisionDefaultProps)')">true</_ApplicationTypeRevisionDefaultPropsFound>
+  </PropertyGroup>
+
+  <!-- import Application Type default props. Note that they can change Platform value -->
+  <Import Condition="'$(_ApplicationTypeDefaultPropsFound)' == 'true'" Project="$(_ApplicationTypeDefaultProps)" />
+  <Import Condition="'$(_ApplicationTypeRevisionDefaultPropsFound)' == 'true'" Project="$(_ApplicationTypeRevisionDefaultProps)" />
+
+  <PropertyGroup>
+    <_RelativePlatformFolder>$(_RelativeApplicationTypeRevisionFolder)Platforms\$(Platform)\</_RelativePlatformFolder>
+    <_RelativePlatformDefaultProps>$(_RelativePlatformFolder)Platform.Default.props</_RelativePlatformDefaultProps>
+
+    <_PlatformDefaultProps>$(VCTargetsPath)\$(_RelativePlatformDefaultProps)</_PlatformDefaultProps>
+    <_PlatformDefaultPropsFound Condition="Exists('$(_PlatformDefaultProps)')">true</_PlatformDefaultPropsFound>
+
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <ConfigurationType Condition="'$(ConfigurationType)' == ''">Application</ConfigurationType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Short names for platform toolsets (added to project name in Solution Explorer) -->
+    <_PlatformToolsetShortNameFor_v142 Condition="'$(_PlatformToolsetShortNameFor_v142)' == ''">Visual Studio 2019</_PlatformToolsetShortNameFor_v142>
+    <_PlatformToolsetShortNameFor_v141 Condition="'$(_PlatformToolsetShortNameFor_v141)' == ''">Visual Studio 2017</_PlatformToolsetShortNameFor_v141>
+    <_PlatformToolsetShortNameFor_v140 Condition="'$(_PlatformToolsetShortNameFor_v140)' == ''">Visual Studio 2015</_PlatformToolsetShortNameFor_v140>
+    <_PlatformToolsetShortNameFor_v140_xp Condition="'$(_PlatformToolsetShortNameFor_v140_xp)' == ''">Visual Studio 2015 - Windows XP</_PlatformToolsetShortNameFor_v140_xp>
+    <_PlatformToolsetShortNameFor_v120 Condition="'$(_PlatformToolsetShortNameFor_v120)' == ''">Visual Studio 2013</_PlatformToolsetShortNameFor_v120>
+    <_PlatformToolsetShortNameFor_v120_xp Condition="'$(_PlatformToolsetShortNameFor_v120_xp)' == ''">Visual Studio 2013 - Windows XP</_PlatformToolsetShortNameFor_v120_xp>
+    <_PlatformToolsetShortNameFor_v110 Condition="'$(_PlatformToolsetShortNameFor_v110)' == ''">Visual Studio 2012</_PlatformToolsetShortNameFor_v110>
+    <_PlatformToolsetShortNameFor_v110_xp Condition="'$(_PlatformToolsetShortNameFor_v110_xp)' == ''">Visual Studio 2012 - Windows XP</_PlatformToolsetShortNameFor_v110_xp>
+    <_PlatformToolsetShortNameFor_v100 Condition="'$(_PlatformToolsetShortNameFor_v100)' == ''">Visual Studio 2010</_PlatformToolsetShortNameFor_v100>
+    <_PlatformToolsetShortNameFor_v90 Condition="'$(_PlatformToolsetShortNameFor_v90)' == ''">Visual Studio 2008</_PlatformToolsetShortNameFor_v90>
+
+    <!-- Friendly names added to the PlatformToolset in the property pages. -->
+    <_PlatformToolsetFriendlyNameFor_v143 Condition="'$(_PlatformToolsetFriendlyNameFor_v143)' == ''">Visual Studio 2022 (v143)</_PlatformToolsetFriendlyNameFor_v143>
+    <_PlatformToolsetFriendlyNameFor_v142 Condition="'$(_PlatformToolsetFriendlyNameFor_v142)' == ''">Visual Studio 2019 (v142)</_PlatformToolsetFriendlyNameFor_v142>
+    <_PlatformToolsetFriendlyNameFor_v141_xp Condition="'$(_PlatformToolsetFriendlyNameFor_v141_xp)' == ''">Visual Studio 2017 - Windows XP (v141_xp)</_PlatformToolsetFriendlyNameFor_v141_xp>
+    <_PlatformToolsetFriendlyNameFor_v141 Condition="'$(_PlatformToolsetFriendlyNameFor_v141)' == ''">Visual Studio 2017 (v141)</_PlatformToolsetFriendlyNameFor_v141>
+    <_PlatformToolsetFriendlyNameFor_v140_xp Condition="'$(_PlatformToolsetFriendlyNameFor_v140_xp)' == ''">Visual Studio 2015 - Windows XP (v140_xp)</_PlatformToolsetFriendlyNameFor_v140_xp>
+    <_PlatformToolsetFriendlyNameFor_v140 Condition="'$(_PlatformToolsetFriendlyNameFor_v140)' == ''">Visual Studio 2015 (v140)</_PlatformToolsetFriendlyNameFor_v140>
+    <_PlatformToolsetFriendlyNameFor_v140_clang_3_7 Condition="'$(_PlatformToolsetFriendlyNameFor_v140_clang_3_7)' == ''">Clang 3.7 with Microsoft CodeGen (v140_clang_3_7)</_PlatformToolsetFriendlyNameFor_v140_clang_3_7>
+    <_PlatformToolsetFriendlyNameFor_v140_clang_c2 Condition="'$(_PlatformToolsetFriendlyNameFor_v140_clang_c2)' == ''">Visual Studio 2015 - Clang with Microsoft CodeGen (v140_clang_c2)</_PlatformToolsetFriendlyNameFor_v140_clang_c2>
+    <_PlatformToolsetFriendlyNameFor_v120_xp Condition="'$(_PlatformToolsetFriendlyNameFor_v120_xp)' == ''">Visual Studio 2013 - Windows XP (v120_xp)</_PlatformToolsetFriendlyNameFor_v120_xp>
+    <_PlatformToolsetFriendlyNameFor_v120 Condition="'$(_PlatformToolsetFriendlyNameFor_v120)' == ''">Visual Studio 2013 (v120)</_PlatformToolsetFriendlyNameFor_v120>
+    <_PlatformToolsetFriendlyNameFor_v110_xp Condition="'$(_PlatformToolsetFriendlyNameFor_v110_xp)' == ''">Visual Studio 2012 - Windows XP (v110_xp)</_PlatformToolsetFriendlyNameFor_v110_xp>
+    <_PlatformToolsetFriendlyNameFor_v110 Condition="'$(_PlatformToolsetFriendlyNameFor_v110)' == ''">Visual Studio 2012 (v110)</_PlatformToolsetFriendlyNameFor_v110>
+    <_PlatformToolsetFriendlyNameFor_v100 Condition="'$(_PlatformToolsetFriendlyNameFor_v100)' == ''">Visual Studio 2010 (v100)</_PlatformToolsetFriendlyNameFor_v100>
+    <_PlatformToolsetFriendlyNameFor_v90 Condition="'$(_PlatformToolsetFriendlyNameFor_v90)' == ''">Visual Studio 2008 (v90)</_PlatformToolsetFriendlyNameFor_v90>
+
+    <v143_Installed Condition="Exists('$(VCTargetsPath)\Platforms\Win32\PlatformToolsets\v143\Toolset.props')">true</v143_Installed>
+    <v141_xp_Installed Condition="Exists('$(VCTargetsPath15)\Platforms\Win32\PlatformToolsets\v141_xp\Toolset.props')">true</v141_xp_Installed>
+
+    <!-- Define the upgrade toolsets for each old toolset -->
+    <_UpgradePlatformToolsetFor_v143 Condition="'$(_UpgradePlatformToolsetFor_v143)' == ''">v143</_UpgradePlatformToolsetFor_v143>
+    <_UpgradePlatformToolsetFor_v142 Condition="'$(_UpgradePlatformToolsetFor_v142)' == '' and '$(v143_Installed)' == 'true'">v143</_UpgradePlatformToolsetFor_v142>
+    <_UpgradePlatformToolsetFor_v141 Condition="'$(_UpgradePlatformToolsetFor_v141)' == '' and '$(v143_Installed)' == 'true'">v143</_UpgradePlatformToolsetFor_v141>
+    <_UpgradePlatformToolsetFor_v141_xp Condition="'$(_UpgradePlatformToolsetFor_v141_xp)' == ''">v141_xp</_UpgradePlatformToolsetFor_v141_xp>
+    <_UpgradePlatformToolsetFor_v140 Condition="'$(_UpgradePlatformToolsetFor_v140)' == '' and '$(v143_Installed)' == 'true'">v143</_UpgradePlatformToolsetFor_v140>
+    <_UpgradePlatformToolsetFor_v140_xp Condition="'$(_UpgradePlatformToolsetFor_v140_xp)' == '' and '$(v141_xp_Installed)' == 'true'">v141_xp</_UpgradePlatformToolsetFor_v140_xp>
+    <_UpgradePlatformToolsetFor_v120 Condition="'$(_UpgradePlatformToolsetFor_v120)' == '' and '$(v143_Installed)' == 'true'">v143</_UpgradePlatformToolsetFor_v120>
+    <_UpgradePlatformToolsetFor_v120_xp Condition="'$(_UpgradePlatformToolsetFor_v120_xp)' == '' and '$(v141_xp_Installed)' == 'true'">v141_xp</_UpgradePlatformToolsetFor_v120_xp>
+    <_UpgradePlatformToolsetFor_v110 Condition="'$(_UpgradePlatformToolsetFor_v110)' == '' and '$(v143_Installed)' == 'true'">v143</_UpgradePlatformToolsetFor_v110>
+    <_UpgradePlatformToolsetFor_v110_xp Condition="'$(UpgradePlatformToolsetFor_v110_xp)' == '' and '$(v141_xp_Installed)' == 'true'">v141_xp</_UpgradePlatformToolsetFor_v110_xp>
+    <_UpgradePlatformToolsetFor_v100 Condition="'$(_UpgradePlatformToolsetFor_v100)' == '' and '$(v143_Installed)' == 'true'">v143</_UpgradePlatformToolsetFor_v100>
+    <_UpgradePlatformToolsetFor_v90 Condition="'$(_UpgradePlatformToolsetFor_v90)' == ''  and '$(v143_Installed)' == 'true'">v143</_UpgradePlatformToolsetFor_v90>
+
+
+    <!-- Short name for platform toolset (appended to project name in Solution Explorer) -->
+    <_PlatformToolsetShortNameFor_v110_wp80>Windows Phone 8.0</_PlatformToolsetShortNameFor_v110_wp80>
+    <_PlatformToolsetShortNameFor_v120_wp81>Windows Phone 8.1</_PlatformToolsetShortNameFor_v120_wp81>
+
+    <!-- Friendly name for platform toolset (used in project property page) -->
+    <_PlatformToolsetFriendlyNameFor_v110_wp80 Condition="'$(_PlatformToolsetFriendlyNameFor_v110_wp80)' == ''">Windows Phone 8.0 (v110_wp80)</_PlatformToolsetFriendlyNameFor_v110_wp80>
+    <_PlatformToolsetFriendlyNameFor_v120_wp81 Condition="'$(_PlatformToolsetFriendlyNameFor_v120_wp81)' == ''">Windows Phone 8.1 (v120_wp81)</_PlatformToolsetFriendlyNameFor_v120_wp81>
+
+    <!-- clangcl -->
+    <!-- Short name for platform toolset (appended to project name in Solution Explorer) -->
+    <_PlatformToolsetShortNameFor_ClangCl Condition="'$(_PlatformToolsetShortNameFor_ClangCl)' == ''">LLVM - clang-cl</_PlatformToolsetShortNameFor_ClangCl>
+    <!-- Friendly name for platform toolset (used in project property page) -->
+    <_PlatformToolsetFriendlyNameFor_ClangCl Condition="'$(_PlatformToolsetFriendlyNameFor_ClangCl)' == ''">LLVM (clang-cl)</_PlatformToolsetFriendlyNameFor_ClangCl>
+
+    <!-- Llvm_ClangCl_1_0 only used in d16.1 preview 1 -->
+    <_UpgradePlatformToolsetFor_Llvm_ClangCl_1_0 Condition="'$(_UpgradePlatformToolsetFor_Llvm_ClangCl_1_0)' == ''">ClangCl</_UpgradePlatformToolsetFor_Llvm_ClangCl_1_0>
+
+    <!-- Define the TargetApplicationTypeAndVersion property if the project is an ApplicationType-project -->
+    <TargetOSAndVersion Condition="'$(TargetOSAndVersion)' == '' and '$(ApplicationType)' != '' and  '$(ApplicationTypeRevision)' != ''">$(ApplicationType) $(ApplicationTypeRevision)</TargetOSAndVersion>
+  </PropertyGroup>
+
+  <!-- import platform defaults if it exists in the current version -->
+  <Import Condition="'$(_PlatformDefaultPropsFound)' == 'true'" Project="$(_PlatformDefaultProps)"/>
+
+  <PropertyGroup>
+    <LangID Condition="'$(LangID)' == ''">1033</LangID>
+    <ProjectName Condition=" '$(ProjectName)' == '' ">$(MSBuildProjectName)</ProjectName>
+    <TargetName Condition=" '$(TargetName)' == '' and '$(AssemblyName)' != ''">$(AssemblyName)</TargetName>
+    <ProjectFileName Condition=" '$(ProjectFileName)' == '' ">$(MSBuildProjectFile)</ProjectFileName>
+    <ProjectExt Condition=" '$(ProjectExt)' == '' ">$(MSBuildProjectExtension)</ProjectExt>
+
+    <ProjectDir Condition=" '$(ProjectDir)' == '' ">$(MSBuildProjectDirectory)\</ProjectDir>
+    <ProjectPath Condition=" '$(ProjectPath)' == '' ">$(ProjectDir)$(ProjectFileName)</ProjectPath>
+    <PlatformName Condition=" '$(PlatformName)' == '' ">$(Platform)</PlatformName>
+    <SolutionDir Condition="'$(SolutionDir)'==''">$(ProjectDir)</SolutionDir>
+
+    <UserRootDir Condition="'$(UserRootDir)' == '' ">$(LocalAppData)\Microsoft\MSBuild\v4.0</UserRootDir>
+    <MultiToolTask Condition="'$(MultiToolTask)' == ''">false</MultiToolTask>
+
+    <WholeProgramOptimizationDelayImport Condition="'$(WholeProgramOptimization)' != ''">true</WholeProgramOptimizationDelayImport>
+    <WholeProgramOptimization Condition="'$(WholeProgramOptimization)' == ''">false</WholeProgramOptimization>
+    <AppContainerApplication Condition="'$(AppContainerApplication)' == '' and '$(WindowsPackageType)'=='MSIX'">true</AppContainerApplication>
+    <WindowsAppContainer Condition="'$(WindowsAppContainer)' == '' and '$(AppContainerApplication)' == 'true'">true</WindowsAppContainer>
+    <WindowsAppContainer Condition="'$(WindowsAppContainer)' == ''">false</WindowsAppContainer>
+    <WindowsStoreApp Condition="'$(WindowsStoreApp)' == '' and '$(ApplicationType)' == 'Windows Store'">true</WindowsStoreApp>
+    <WindowsStoreApp Condition="'$(WindowsAppContainer)' == 'true'">true</WindowsStoreApp>
+    <WindowsStoreApp Condition="'$(WindowsStoreApp)' == ''">false</WindowsStoreApp>
+    <!-- Default Project Reunion projects (which have WindowsPackageType set) to DesktopCompatible -->
+    <DesktopCompatible Condition="'$(DesktopCompatible)' == '' and '$(WindowsPackageType)' == '' and '$(WindowsStoreApp)' == 'true'">false</DesktopCompatible>
+    <DesktopCompatible Condition="'$(DesktopCompatible)' == '' and '$(WindowsPackageType)' != ''">true</DesktopCompatible>
+    <CLRSupport Condition="'$(CLRSupport)' == ''">false</CLRSupport>
+    <UseOfATL Condition="'$(UseOfATL)' == ''">false</UseOfATL>
+    <UseOfMFC Condition="'$(UseOfMFC)' == ''">false</UseOfMFC>
+    <SpectreMitigation Condition="'$(SpectreMitigation)' == ''">false</SpectreMitigation>
+    <SQLDebugging Condition="'$(SQLDebugging)' == ''">false</SQLDebugging>
+    <Attach Condition="'$(Attach)' == ''">false</Attach>
+
+    <EnableUnitySupport Condition="'$(EnableUnitySupport)' == ''">false</EnableUnitySupport>
+    <UseDebugLibraries Condition="'$(UseDebugLibraries)' == ''">false</UseDebugLibraries>
+    <CharacterSet Condition="'$(CharacterSet)' == ''">NotSet</CharacterSet>
+    <EnableASAN Condition="'$(EnableASAN)' == ''">false</EnableASAN>
+    <EnableFuzzer Condition="'$(EnableFuzzer)' == ''">false</EnableFuzzer>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LLVMToolsVersion Condition="'$(LLVMToolsVersion)' == ''">15.0.1</LLVMToolsVersion>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <BuildLog>
+      <Path>$(IntDir)$(MSBuildProjectName).log</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+
+  <Import Condition="'$(DisableInstalledVCTargetsDefaultsUse)' != 'true' and Exists('$(VCTargetsPath)\ImportAfter\Default')" Project="$(VCTargetsPath)\ImportAfter\Default\*.props" />
+  <Import Condition="'$(DisableInstalledVCTargetsUse)' == 'true' and '$(VCTargetsPath17)' != '' and Exists('$(VCTargetsPath17)\ImportAfter\Default')" Project="$(VCTargetsPath17)\ImportAfter\Default\*.props" />
+  <Import Condition="Exists('$(ForceImportAfterCppDefaultProps)')" Project="$(ForceImportAfterCppDefaultProps)" />
+
+</Project>

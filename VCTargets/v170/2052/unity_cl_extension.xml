@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="CL" OverrideMode="Extend" xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+  <Rule.Categories>
+    <Category Name="UnityBuild" DisplayName="Unity 生成" Description="Unity 生成选项"/>
+  </Rule.Categories>
+
+  <BoolProperty Name="IncludeInUnityFile" DisplayName="包含到 Unity 文件" Description="如果设置为 true，该文件将 #included 到 Unity 文件。" Category="UnityBuild" F1Keyword="VC.Project.VCCLCompilerTool.IncludeInUnityFile"/>
+  <IntProperty Name="OrderInUnityFile" DisplayName="Unity 文件中的序号" Description="包含在 Unity 文件中的文件将按照其序号排序。" Category="UnityBuild" F1Keyword="VC.Project.VCCLCompilerTool.OrderInUnityFile"/>
+  <BoolProperty Name="CombineFilesOnlyFromTheSameFolder" DisplayName="仅合并同一文件夹中的文件" Description="如果设置为“是”，则当文件夹中的源数量大于“Unity 文件中的最小源数量”时，一个 Unity 文件只包含同一文件夹中的文件。" Category="UnityBuild" F1Keyword="VC.Project.VCCLCompilerTool.BundleFilesOnlyFromTheSameFolder"/>
+  <IntProperty Name="MinFilesInUnityFile" DisplayName="Unity 文件中的最小源数量" Description="指定一个 Unity 文件中的最小源数量。" Category="UnityBuild" F1Keyword="VC.Project.VCCLCompilerTool.MinFilesInUnityFile"/>
+  <IntProperty Name="MaxFilesInUnityFile" DisplayName="Unity 文件中的最大源数量" Description="指定一个 unity 文件中的最大源数。&quot;0&quot; 表示没有限制。" Category="UnityBuild" F1Keyword="VC.Project.VCCLCompilerTool.MinFilesInUnityFile"/>
+  <IntProperty Name="MinUnityFiles" DisplayName="Unity 文件的最小数量" Description="指定要生成的 Unity 文件最小数量(如果可能)。" Category="UnityBuild" F1Keyword="VC.Project.VCCLCompilerTool.MinUnityFiles"/>
+  <StringProperty Name="AddCodeBeforeSourceInclude" DisplayName="要在包含前添加的代码片段" Description="在包含每个源文件之前要添加到 unity 文件的代码片段。可以使用以下宏:
+  $$unity_id$$ - 唯一 unity 文件哈希
+  $$file_number$$ - unity 文件中的源文件数量
+  $$file_name$$ - 源文件名
+  $$file_path$$ - 源文件完整路径
+  $$project_name$$ - 项目名称" Category="UnityBuild" F1Keyword="VC.Project.VCCLCompilerTool.AddCodeBeforeSourceInclude">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <StringProperty Name="AddCodeAfterSourceInclude" DisplayName="要在包含后添加的代码片段" Description="在包含每个源文件之后要添加到 unity 文件的代码片段。可以使用以下宏:
+  $$unity_id$$ - 唯一 unity 文件哈希
+  $$file_number$$ - unity 文件中的源文件数量
+  $$file_name$$ - 源文件名
+  $$file_path$$ - 源文件完整路径
+  $$project_name$$ - 项目名称" Category="UnityBuild" F1Keyword="VC.Project.VCCLCompilerTool.AddCodeAfterSourceInclude">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;Edit...&gt;(&lt;编辑...&gt;)"/>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+
+  <StringProperty Name="AddCodeBeforeSourceIncludeFromFile" DisplayName="要在包含前添加的文件代码片段" Description="在包含每个源文件之前添加到 unity 文件的代码片段。" Category="UnityBuild" Subtype="file" F1Keyword="VC.Project.VCCLCompilerTool.AddCodeBeforeSourceIncludeFromFile"/>
+
+  <StringProperty Name="AddCodeAfterSourceIncludeFromFile" DisplayName="要在包含后添加的文件代码片段" Description="在包含每个源文件之后添加到 unity 文件的代码片段。" Category="UnityBuild" Subtype="file" F1Keyword="VC.Project.VCCLCompilerTool.AddCodeBeforeSourceIncludeFromFile"/>
+
+  <StringProperty Name="UnityFilesDirectory" DisplayName="Unity 文件目录" Description="用于创建自动生成的 Unity 文件的目录。" Subtype="folder" Category="UnityBuild" F1Keyword="VC.Project.VCCLCompilerTool.UnityFileDirectory"/>
+  <BoolProperty Name="CustomUnityFile" DisplayName="自定义 Unity 文件" Description="指示自定义 unity 文件。如果设置为“是”，将不会自动生成 unity 文件。" Category="UnityBuild" F1Keyword="VC.Project.VCCLCompilerTool.CustomUnityFile"/>
+</Rule>

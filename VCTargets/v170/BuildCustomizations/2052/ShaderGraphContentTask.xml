@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule Name="ShaderGraphContentTask" PageTemplate="tool" DisplayName="Shader Graph 内容管道" SwitchPrefix="" Order="300">
+
+    <Rule.Categories>
+      <Category Name="General" DisplayName="常规"/>
+    </Rule.Categories>
+
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="ShaderGraphContentTask" Label="" HasConfigurationCondition="true"/>
+    </Rule.DataSource>
+
+    <StringProperty Subtype="file" Name="ContentOutput" DisplayName="内容输出" Description="内容的输出文件。" Category="General" Switch="" F1Keyword="VC.Project.ShaderGraphContentTask.ContentOutput">
+    </StringProperty>
+
+  </Rule>
+
+  <ItemType Name="ShaderGraphContentTask" DisplayName="Shader Graph 内容管道"/>
+  <FileExtension Name="*.dgsl" ContentType="ShaderGraphContentTask"/>
+  <ContentType Name="ShaderGraphContentTask" DisplayName="Shader Graph 内容管道" ItemType="ShaderGraphContentTask"/>
+
+</ProjectSchemaDefinitions>

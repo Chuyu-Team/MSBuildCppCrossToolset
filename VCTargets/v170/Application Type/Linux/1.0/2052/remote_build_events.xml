@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationBuildEvents" DisplayName="生成事件" PageTemplate="tool" Order="90" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <Rule.Categories>
+    <Category Name="PreBuild" DisplayName="生成前事件"/>
+    <Category Name="PreLink" DisplayName="链接前事件"/>
+    <Category Name="PostBuild" DisplayName="生成后事件"/>
+    <Category Name="RemotePreBuild" DisplayName="远程生成前事件"/>
+    <Category Name="RemotePreLink" DisplayName="远程链接前事件"/>
+    <Category Name="RemotePostBuild" DisplayName="远程生成后事件"/>
+  </Rule.Categories>
+  <StringProperty Name="PreBuildCommand" Category="PreBuild" DisplayName="命令行" Description="指定让生成前事件工具运行的命令行。" F1Keyword="VC.Project.IVCEventTool.CommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PreBuildEvent" PersistedName="Command"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="PreBuildMessage" Category="PreBuild" DisplayName="说明" Description="指定让生成前事件工具显示的说明。" F1Keyword="VC.Project.IVCEventTool.Description">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PreBuildEvent" PersistedName="Message"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="PreBuildEventUseInBuild" Category="PreBuild" DisplayName="在生成中使用" Description="指定是否将该生成事件从当前配置的生成中排除。" F1Keyword="VC.Project.IVCEventTool.ExcludedFromBuild">
+  </BoolProperty>
+  <StringListProperty Name="PreBuildAdditionalSourcesToCopyMapping" DisplayName="要复制的其他文件" Description="指定要从远程系统中复制的其他文件。(可选)可使用如下语法将列表提供为本地到远程映射对: fulllocalpath1:=fullremotepath1;fulllocalpath2:=fullremotepath2，可在其中将本地文件复制远程系统上的指定远程位置。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="PreBuild" Default="">
+    <StringListProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PreBuildEvent" PersistedName="AdditionalSourcesToCopyMapping"/>
+    </StringListProperty.DataSource>
+  </StringListProperty>
+
+  <StringProperty Name="PreLinkCommand" Category="PreLink" DisplayName="命令行" Description="指定让链接前事件工具运行的命令行。" F1Keyword="VC.Project.IVCEventTool.CommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PreLinkEvent" PersistedName="Command"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="PreLinkMessage" Category="PreLink" DisplayName="说明" Description="指定让链接前事件工具显示的说明。" F1Keyword="VC.Project.IVCEventTool.Description">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PreLinkEvent" PersistedName="Message"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="PreLinkEventUseInBuild" Category="PreLink" DisplayName="在生成中使用" Description="指定是否将该生成事件从当前配置的生成中排除。" F1Keyword="VC.Project.IVCEventTool.ExcludedFromBuild">
+  </BoolProperty>
+  <StringListProperty Name="PreLinkAdditionalSourcesToCopyMapping" DisplayName="要复制的其他文件" Description="指定要从远程系统中复制的其他文件。(可选)可使用如下语法将列表提供为本地到远程映射对: fulllocalpath1:=fullremotepath1;fulllocalpath2:=fullremotepath2，可在其中将本地文件复制远程系统上的指定远程位置。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="PreLink" Default="">
+    <StringListProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PreLinkEvent" PersistedName="AdditionalSourcesToCopyMapping"/>
+    </StringListProperty.DataSource>
+  </StringListProperty>
+
+  <StringProperty Name="PostBuildCommand" Category="PostBuild" DisplayName="命令行" Description="指定让生成后事件工具运行的命令行。" F1Keyword="VC.Project.IVCEventTool.CommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PostBuildEvent" PersistedName="Command"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="PostBuildMessage" Category="PostBuild" DisplayName="说明" Description="指定让生成后事件工具显示的说明。" F1Keyword="VC.Project.IVCEventTool.Description">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PostBuildEvent" PersistedName="Message"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="PostBuildEventUseInBuild" Category="PostBuild" DisplayName="在生成中使用" Description="指定是否将该生成事件从当前配置的生成中排除。" F1Keyword="VC.Project.IVCEventTool.ExcludedFromBuild">
+  </BoolProperty>
+  <StringListProperty Name="PostBuildAdditionalSourcesToCopyMapping" DisplayName="要复制的其他文件" Description="指定要从远程系统中复制的其他文件。(可选)可使用如下语法将列表提供为本地到远程映射对: fulllocalpath1:=fullremotepath1;fulllocalpath2:=fullremotepath2，可在其中将本地文件复制远程系统上的指定远程位置。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="PostBuild" Default="">
+    <StringListProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="PostBuildEvent" PersistedName="AdditionalSourcesToCopyMapping"/>
+    </StringListProperty.DataSource>
+  </StringListProperty>
+
+  <StringProperty Name="RemotePreBuildCommand" Category="RemotePreBuild" DisplayName="命令行" Description="为预生成事件工具指定命令行以在远程系统上运行。" F1Keyword="VC.Project.IVCEventTool.CommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;Edit...&gt;"/>
+    </StringProperty.ValueEditors>
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="RemotePreBuildEvent" PersistedName="Command"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="RemotePreBuildMessage" Category="RemotePreBuild" DisplayName="说明" Description="指定预生成事件工具的显示说明。" F1Keyword="VC.Project.IVCEventTool.Description">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="RemotePreBuildEvent" PersistedName="Message"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="RemotePreBuildEventUseInBuild" Category="RemotePreBuild" DisplayName="在生成中使用" Description="指定是否将该生成事件从当前配置的生成中排除。" F1Keyword="VC.Project.IVCEventTool.ExcludedFromBuild">
+  </BoolProperty>
+  <StringListProperty Name="RemotePreBuildAdditionalSourcesToCopyMapping" DisplayName="要复制的其他文件" Description="指定要从远程系统中复制的其他文件。(可选)可使用如下语法将列表提供为远程到本地映射对: fullremotepath1:=fulllocalpath1;fullremotepath2:=fulllocalpath2，可在其中将远程文件复制本地计算机上的指定位置。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="RemotePreBuild" Default="">
+    <StringListProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="RemotePreBuildEvent" PersistedName="AdditionalSourcesToCopyMapping"/>
+    </StringListProperty.DataSource>
+  </StringListProperty>
+
+  <StringProperty Name="RemotePreLinkCommand" Category="RemotePreLink" DisplayName="命令行" Description="为链接前事件工具指定命令行以在远程系统上运行。" F1Keyword="VC.Project.IVCEventTool.CommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;Edit...&gt;"/>
+    </StringProperty.ValueEditors>
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="RemotePreLinkEvent" PersistedName="Command"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="RemotePreLinkMessage" Category="RemotePreLink" DisplayName="说明" Description="指定链接前事件工具的显示说明。" F1Keyword="VC.Project.IVCEventTool.Description">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="RemotePreLinkEvent" PersistedName="Message"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="RemotePreLinkEventUseInBuild" Category="RemotePreLink" DisplayName="在生成中使用" Description="指定是否将该生成事件从当前配置的生成中排除。" F1Keyword="VC.Project.IVCEventTool.ExcludedFromBuild">
+  </BoolProperty>
+  <StringListProperty Name="RemotePreLinkAdditionalSourcesToCopyMapping" DisplayName="要复制的其他文件" Description="指定要从远程系统中复制的其他文件。(可选)可使用如下语法将列表提供为远程到本地映射对: fullremotepath1:=fulllocalpath1;fullremotepath2:=fulllocalpath2，可在其中将远程文件复制本地计算机上的指定位置。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="RemotePreLink" Default="">
+    <StringListProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="RemotePreLinkEvent" PersistedName="AdditionalSourcesToCopyMapping"/>
+    </StringListProperty.DataSource>
+  </StringListProperty>
+
+  <StringProperty Name="RemotePostBuildCommand" Category="RemotePostBuild" DisplayName="命令行" Description="指定让生成后事件工具在远程系统上运行的命令行。" F1Keyword="VC.Project.IVCEventTool.CommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;Edit...&gt;"/>
+    </StringProperty.ValueEditors>
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="RemotePostBuildEvent" PersistedName="Command"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <StringProperty Name="RemotePostBuildMessage" Category="RemotePostBuild" DisplayName="说明" Description="指定让生成后事件工具显示的说明。" F1Keyword="VC.Project.IVCEventTool.Description">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="RemotePostBuildEvent" PersistedName="Message"/>
+    </StringProperty.DataSource>
+  </StringProperty>
+  <BoolProperty Name="RemotePostBuildEventUseInBuild" Category="RemotePostBuild" DisplayName="在生成中使用" Description="指定是否将该生成事件从当前配置的生成中排除。" F1Keyword="VC.Project.IVCEventTool.ExcludedFromBuild">
+  </BoolProperty>
+  <StringListProperty Name="RemotePostBuildAdditionalSourcesToCopyMapping" DisplayName="要复制的其他文件" Description="指定要从远程系统中复制的其他文件。(可选)可使用如下语法将列表提供为远程到本地映射对: fullremotepath1:=fulllocalpath1;fullremotepath2:=fulllocalpath2，可在其中将远程文件复制本地计算机上的指定位置。" F1Keyword="VC.Project.VCConfiguration.BuildLogFile" Category="RemotePostBuild" Default="">
+    <StringListProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType="RemotePostBuildEvent" PersistedName="AdditionalSourcesToCopyMapping"/>
+    </StringListProperty.DataSource>
+  </StringListProperty>
+</Rule>

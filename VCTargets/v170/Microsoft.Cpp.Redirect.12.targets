@@ -1,0 +1,18 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.12.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file is used to build Visual C++ projects with the VS2010 toolset.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Condition="'$(_ToolsetVCTargetsVersion)' == 'v120'" Project="$(VCTargetsPath)\Microsoft.Cpp.ToolsetLocation.targets"/>
+  <Import Condition="'$(_ToolsetVCTargetsVersion)' != 'v120'" Project="$(VCTargetsPath)\Microsoft.Cpp.Redirect.11.targets"/>
+</Project>

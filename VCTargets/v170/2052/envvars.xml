@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="VCEnvironmentVariables" DisplayName="VC++ 环境变量" Order="8" PageTemplate="generic" Description="工具搜索目录" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="Env" DisplayName="环境" Description="Visual C++ 环境变量"/>
+    <Category Name="Dirs" DisplayName="目录" Description="Visual C++ 目录"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile"/>
+  </Rule.DataSource>
+  <StringListProperty Name="Path" DisplayName="PATH" Description="生成 VC++ 项目期间，搜索可执行文件时使用的路径。  与环境变量 PATH 相对应。" F1Keyword="VC.Project.UseEnvVars.Path" Category="Env" Separator=";" ReadOnly="true"/>
+  <StringListProperty Name="Include" DisplayName="INCLUDE" Description="生成 VC++ 项目期间，搜索包含文件时使用的路径。  与环境变量 INCLUDE 相对应。" F1Keyword="VC.Project.UseEnvVars.Include" Category="Env" Separator=";" ReadOnly="true"/>
+  <StringListProperty Name="LibPath" DisplayName="LIBPATH" Description="生成 VC++ 项目期间，搜索通过 #using 引入的文件时使用的路径。  与环境变量 LIBPATH 相对应。" F1Keyword="VC.Project.UseEnvVars.ReferencePath" Category="Env" Separator=";" ReadOnly="true"/>
+  <StringListProperty Name="Lib" DisplayName="LIB" Description="生成 VC++ 项目期间，搜索库文件时使用的路径。  与环境变量 LIB 相对应。" F1Keyword="VC.Project.UseEnvVars.LibraryPath" Category="Env" Separator=";" ReadOnly="true"/>
+  <StringListProperty Name="SourcePath" DisplayName="源目录" Description="搜索用于 Intellisense 的源文件时使用的路径。" F1Keyword="VC.Project.VCDirectories.SourcePath" Category="Dirs" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="ExcludePath" DisplayName="排除目录" Description="搜索扫描依赖项时要跳过的路径。" F1Keyword="VC.Project.UseEnvVars.ExcludePath" Category="Dirs" Separator=";" Subtype="folder"/>
+</Rule>

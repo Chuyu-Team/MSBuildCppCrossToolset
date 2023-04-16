@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationNMake" DisplayName="NMake" PageTemplate="generic" Description="NMake" SwitchPrefix="/" Order="100" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+    <Category Name="IntelliSense" DisplayName="IntelliSense" Description="IntelliSense"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile"/>
+  </Rule.DataSource>
+  <StringProperty Name="NMakeBuildCommandLine" DisplayName="生成命令行" Description="指定用于运行“生成”命令的命令行。" IncludeInCommandLine="false" Category="General" F1Keyword="VC.Project.VCNMakeTool.BuildCommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <StringProperty Name="NMakeReBuildCommandLine" DisplayName="“全部重新生成”命令行" Description="指定用于运行“全部重新生成”命令的命令行。" IncludeInCommandLine="false" Category="General" F1Keyword="VC.Project.VCNMakeTool.ReBuildCommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <StringProperty Name="NMakeCleanCommandLine" DisplayName="“清除”命令行" Description="指定用于运行“清除”命令的命令行。" IncludeInCommandLine="false" Category="General" F1Keyword="VC.Project.VCNMakeTool.CleanCommandLine">
+    <StringProperty.ValueEditors>
+      <ValueEditor EditorType="DefaultCommandPropertyEditor" DisplayName="&lt;编辑...&gt;"/>
+    </StringProperty.ValueEditors>
+  </StringProperty>
+  <StringProperty Name="NMakeOutput" DisplayName="输出" Description="指定要生成的输出文件。" Category="General" IncludeInCommandLine="false" F1Keyword="VC.Project.VCNMakeTool.Output"/>
+  <StringListProperty Name="NMakePreprocessorDefinitions" DisplayName="预处理器定义" Category="IntelliSense" Switch="D" Description="指定源文件使用的预处理器定义。" F1Keyword="VC.Project.VCNMakeTool.PreprocessorDefinitions"/>
+  <StringListProperty Name="NMakeIncludeSearchPath" DisplayName="包含搜索路径" Category="IntelliSense" Switch="I" Description="指定用于解析所包含的文件的包含搜索路径。" Subtype="folder" F1Keyword="VC.Project.VCNMakeTool.IncludeSearchPath"/>
+  <StringListProperty Name="NMakeForcedIncludes" DisplayName="强制包含" Category="IntelliSense" Switch="FI" Description="指定要强制包含的文件。" Subtype="folder" F1Keyword="VC.Project.VCNMakeTool.ForcedIncludes"/>
+  <StringListProperty Name="NMakeAssemblySearchPath" DisplayName="程序集搜索路径" Category="IntelliSense" Switch="AI" Description="指定用于解析所使用的 .NET 程序集的程序集搜索路径。" Subtype="folder" F1Keyword="VC.Project.VCNMakeTool.AssemblySearchPath"/>
+  <StringListProperty Name="NMakeForcedUsingAssemblies" DisplayName="强制使用程序集" Category="IntelliSense" Switch="FU" Description="指定强制在源文件中使用的程序集。" F1Keyword="VC.Project.VCNMakeTool.ForcedUsingAssemblies"/>
+  <StringProperty Name="AdditionalOptions" DisplayName="附加选项" Category="IntelliSense" Description="指定分析 C++ 文件时 Intellisense 使用的附加编译器开关。"/>
+</Rule>

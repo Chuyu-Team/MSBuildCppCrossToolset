@@ -1,0 +1,42 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.MSVC.Toolset.Common.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Required for enabling Team Build for packaging Windows Store app projects -->
+    <OutDirWasSpecified Condition=" '$(OutDir)'!='' AND '$(OutDirWasSpecified)'=='' ">true</OutDirWasSpecified>
+    <OutDirWasSpecified Condition=" '$(OutDir)'=='' AND '$(OutDirWasSpecified)'=='' ">false</OutDirWasSpecified>
+
+    <IntDir Condition="'$(IntDir)'=='' AND '$(IntermediateOutputPath)'!=''">$(IntermediateOutputPath)</IntDir>
+    <IntDir Condition="'$(IntDir)'=='' AND '$(IntermediateOutputPath)'=='' and '$(Platform)' == 'Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(IntDir)'=='' AND '$(IntermediateOutputPath)'=='' and '$(Platform)' != 'Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(OutDir)'=='' AND '$(SolutionDir)' != '' and '$(Platform)' == 'Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(OutDir)'=='' AND '$(SolutionDir)' != '' and '$(Platform)' != 'Win32'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(OutDir)'=='' AND '$(SolutionDir)' == ''">$(IntDir)</OutDir>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.WindowsSDK.props" Condition="Exists('$(VCTargetsPath)\Microsoft.Cpp.WindowsSDK.props')"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Common.props" />
+
+  <!-- properties  common for all platforms -->
+  <PropertyGroup>
+    <IncludePath Condition="'$(IncludePath)' == ''">$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <ExternalIncludePath Condition="'$(ExternalIncludePath)' == ''">$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
+    <LibraryWPath Condition="'$(LibraryWPath)' == ''">$(WindowsSDK_MetadataPath);</LibraryWPath>
+    <SourcePath Condition="'$(SourcePath)' == ''">$(VC_SourcePath);</SourcePath>
+
+    <CommonExecutablePath>$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</CommonExecutablePath>
+    <CommonExcludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(VC_ExecutablePath_Loc);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(FxCopDir);$(MSBuildToolsPath);$(MSBuildFrameworkToolsPath);$(MSBuild_ExecutablePath);$(SystemRoot)</CommonExcludePath>
+    <CheckMSVCComponents Condition="'$(CheckMSVCComponents)' == ''">true</CheckMSVCComponents>
+  </PropertyGroup>
+
+</Project>

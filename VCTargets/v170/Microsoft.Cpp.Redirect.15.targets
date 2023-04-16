@@ -1,0 +1,90 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+      created a backup copy.  Incorrect changes to this file will make it
+      impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <UsingTask TaskName="CheckVCToolsetVersion" AssemblyFile="$(MSBuildThisFileDirectory)Microsoft.Build.CppTasks.Common.dll" />
+  
+  <Import Condition="'$(_ToolsetVCTargetsVersion)' == 'v150'" Project="$(VCTargetsPath)\Microsoft.Cpp.ToolsetLocation.targets"/>
+  <Import Condition="'$(_ToolsetVCTargetsVersion)' != 'v150'" Project="$(VCTargetsPath)\Microsoft.Cpp.Redirect.14.targets"/>
+
+  <!-- modification required for Dev16 from Dev15 -->
+
+  <ItemDefinitionGroup>
+    <ProjectReference>
+      <OutputItemType Condition="'%(ProjectReference.LinkLibraryDependencies)' == 'true' or ('$(ConfigurationType)' == 'StaticLibrary' and '$(DesignTimeBuild)' == 'true')">_ResolvedNativeProjectReferencePaths</OutputItemType>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+
+  <!-- we want to use latest unity build support for older toolsets -->
+  <Import Condition="'$(_EnableUnitySupport)' == 'true'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.Unity.targets" />
+
+  <!-- Restore EnableUnitysupport property -->
+  <PropertyGroup>
+    <EnableUnitySupport>$(_EnableUnitySupport)</EnableUnitySupport>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RequiredBundles />
+  </PropertyGroup>
+
+  <!-- Targets shared from fxcop are only included side-by-side in the latest toolset for each VS installation
+       (v142 for VS2019, v141 for VS2017). Therefore we have to import them if redirecting to an older toolset.
+       However we must validate that older toolset doesn't already have the files side-by-side which can happen
+       if MSBuild redirected to a toolset in an older VS installation (E.g. v141 in VS2017)
+
+       A similar import for this file will have to be repeated in future Redirect.<Num>.targets
+    -->
+  <Import Condition="'$(_ToolsetFound)' == 'true' and !exists('$(VCTargetsPath)\Microsoft.CodeAnalysis.Extensions.targets') and exists('$(CurrentVCTargetsPath)\Microsoft.CodeAnalysis.Extensions.targets')" Project="$(CurrentVCTargetsPath)\Microsoft.CodeAnalysis.Extensions.targets"/>
+
+  <!-- we want access to new code analysis senarios not supported in fxcop -->
+  <Import Condition="'$(_ToolsetFound)' == 'true'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.Analysis.targets"/>
+
+  <!-- we want to support clang-tidy analysis for older toolsets -->
+  <Import Condition="'$(_ToolsetFound)' == 'true'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.ClangTidy.targets"/>
+
+
+  <Target Name="PreventUnnesessaryCppRuntimeCopyToOutDir"
+          BeforeTargets="ComputeReferenceCLInput">
+    <PropertyGroup>
+      <RemoteDebuggerDeployDebugCppRuntime>false</RemoteDebuggerDeployDebugCppRuntime>
+    </PropertyGroup>
+  </Target>
+
+  <PropertyGroup Condition="'$(_ToolsetVCTargetsVersion)' == 'v150' and $(DesignTimeBuild) != 'true'">
+    <PrepareForBuildDependsOn>$(PrepareForBuildDependsOn);CheckVCToolsetVersion</PrepareForBuildDependsOn>
+    <CheckMSVCComponents Condition="'$(CheckMSVCComponents)' == '' and ('$(PlatformToolset)' == 'v141' or '$(PlatformToolset)' == 'v141_xp')">true</CheckMSVCComponents>
+  </PropertyGroup>
+
+  <Target Name="CheckVCToolsetVersion">
+    <!-- Error out VCToolsVersion is not installed or does not match MSVC PlatformToolset -->
+    <CheckVCToolsetVersion Condition="'$(DesignTimeBuild)'!='true' and '$(CheckMSVCComponents)'=='true'"
+      VCToolsVersion="$(VCToolsVersion)"
+      PlatformToolset="$(PlatformToolset)"
+      VCToolsInstallDir="$(VCToolsInstallDir)"/>
+  </Target>
+
+  <PropertyGroup>
+    <GetProjectInfoForReferenceDependsOn Condition="'$(DesignTimeBuild)' != 'true'">
+      $(GetProjectInfoForReferenceDependsOn);
+      AddLibrariesToProjectsInfoForReference;
+    </GetProjectInfoForReferenceDependsOn>
+  </PropertyGroup>
+  
+  <Target Name="GetProjectInfoForReference" Returns="@(ProjectInfoForReference)" DependsOnTargets="$(GetProjectInfoForReferenceDependsOn)" />
+
+  <Target Name="AddLibrariesToProjectsInfoForReference" DependsOnTargets="GetResolvedLinkLibs">
+    <ItemGroup>
+      <ProjectInfoForReference Include="@(LibFullPath)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="RC" PageTemplate="tool" DisplayName="资源" SwitchPrefix="/" Order="50" xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规"/>
+    <Category Name="All Options" DisplayName="所有选项" Subtype="Search"/>
+    <Category Name="Command Line" DisplayName="命令行" Subtype="CommandLine"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="ResourceCompile" Label="" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <StringListProperty Name="PreprocessorDefinitions" DisplayName="预处理器定义" Description="为资源编译器指定一个或多个定义。(/d[宏])" Category="General" Switch="D " F1Keyword="VC.Project.VCResourceCompilerTool.PreprocessorDefinitions">
+  </StringListProperty>
+  <StringListProperty Name="DesigntimePreprocessorDefinitions" DisplayName="设计时预处理器定义" Description="资源编辑器定义。" Category="General" IncludeInCommandLine="false" Visible="false">
+  </StringListProperty>
+  <StringListProperty Name="UndefinePreprocessorDefinitions" DisplayName="取消预处理器定义" Description="取消定义符号。(/u)" Category="General" Switch="u" F1Keyword="VC.Project.VCResourceCompilerTool.UndefineProcessorDefinitions">
+  </StringListProperty>
+  <DynamicEnumProperty EnumProvider="cultures" Name="Culture" DisplayName="区域性" Description="列出资源中使用的区域性设置(如美国英语或意大利语)。(/l [数字])" Category="General" Switch="l" F1Keyword="VC.Project.VCResourceCompilerTool.Culture">
+    <DynamicEnumProperty.ProviderSettings>
+      <NameValuePair Name="DisplayNameFormat" Value="{}{1} (0x{0:x})"/>
+      <NameValuePair Name="SwitchFormat" Value="{}l 0x{0:x4}"/>
+    </DynamicEnumProperty.ProviderSettings>
+  </DynamicEnumProperty>
+  <StringListProperty Subtype="folder" Name="AdditionalIncludeDirectories" DisplayName="附加包含目录" Description="指定一个或多个要添加到包含路径的目录；如果目录不止一个，请使用分号分隔符。(/I[路径])" Category="General" Switch="I" F1Keyword="VC.Project.VCResourceCompilerTool.AdditionalIncludeDirectories">
+  </StringListProperty>
+  <BoolProperty Name="IgnoreStandardIncludePath" DisplayName="忽略标准包含路径" Description="禁止资源编译器在 INCLUDE 环境变量指定的目录中搜索包含文件。(/X)" Category="General" Switch="X" F1Keyword="VC.Project.VCResourceCompilerTool.IgnoreStandardIncludePath">
+  </BoolProperty>
+  <BoolProperty Name="ShowProgress" DisplayName="显示进度" Description="将进度消息发送到输出窗口。(/v)" Category="General" Switch="v" F1Keyword="VC.Project.VCResourceCompilerTool.ShowProgress">
+  </BoolProperty>
+  <BoolProperty Name="SuppressStartupBanner" DisplayName="取消显示启动版权标志" Description="取消显示启动版权标志和信息消息(/nologo)" Category="General" Switch="nologo" F1Keyword="VC.Project.VCResourceCompilerTool.SuppressStartupBanner">
+  </BoolProperty>
+  <StringProperty Subtype="file" Name="ResourceOutputFileName" DisplayName="资源文件名" Description="指定资源文件的名称(/fo[文件])" Category="General" Switch="fo" F1Keyword="VC.Project.VCResourceCompilerTool.ResourceOutputFileName">
+  </StringProperty>
+  <BoolProperty Name="NullTerminateStrings" DisplayName="字符串以 null 结尾" Description="将 null 追加到字符串表中的所有字符串。(/n)" Category="General" Switch="n" F1Keyword="VC.Project.VCResourceCompilerTool.NullTerminateStrings">
+  </BoolProperty>
+  <StringProperty Name="AdditionalOptions" DisplayName="附加选项" Description="附加选项" Category="Command Line" F1Keyword="vc.project.AdditionalOptionsPage">
+  </StringProperty>
+  <StringProperty Subtype="folder" Name="TrackerLogDirectory" DisplayName="跟踪器日志目录" Description="跟踪器日志目录。" Category="General" IncludeInCommandLine="false" Visible="false">
+  </StringProperty>
+</Rule>

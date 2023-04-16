@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+      <AvailableItemName Include="MASM">
+        <Targets>_MASM</Targets>
+      </AvailableItemName>
+  </ItemGroup>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+      $(ComputeLinkInputsTargets);
+      ComputeMASMOutput;
+    </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+      $(ComputeLibInputsTargets);
+      ComputeMASMOutput;
+    </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <UsingTask
+    TaskName="MASM"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+          
+  <Target Name="_WriteMasmTlogs"
+          Condition="'@(MASM)' != '' and '@(SelectedFiles)' == ''">
+    <ItemGroup>
+      <MASM Remove="@(MASM)" Condition="'%(MASM.ExcludedFromBuild)' == 'true' or '%(MASM.ObjectFileName)' == ''" />
+    </ItemGroup>
+    <ItemGroup Condition="'@(MASM)' != ''">
+      <_MasmReadTlog Include="^%(MASM.FullPath);%(MASM.AdditionalDependencies)" />
+      <_MasmWriteTlog Include="^%(MASM.FullPath);$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '%(MASM.ObjectFileName)'))" />
+    </ItemGroup>
+
+    <WriteLinesToFile
+      Condition="'@(_MasmReadTlog)' != ''"
+      File="$(TLogLocation)Masm.read.1u.tlog"
+      Lines="@(_MasmReadTlog->MetaData('Identity')->ToUpperInvariant());"
+      Overwrite="true"
+      Encoding="Unicode"/>
+    <WriteLinesToFile
+      Condition="'@(_MasmWriteTlog)' != ''"
+      File="$(TLogLocation)Masm.write.1u.tlog"
+      Lines="@(_MasmWriteTlog->MetaData('Identity')->ToUpperInvariant());"
+      Overwrite="true"
+      Encoding="Unicode"/>
+
+    <ItemGroup>
+      <_MasmReadTlog Remove="@(_MasmReadTlog)" />
+      <_MasmWriteTlog Remove="@(_MasmWriteTlog)" />
+    </ItemGroup>
+  </Target>
+    
+  <Target
+    Name="_MASM"
+    BeforeTargets="$(MASMBeforeTargets)"
+    AfterTargets="$(MASMAfterTargets)"
+    Condition="'@(MASM)' != ''"
+    Outputs="%(MASM.ObjectFileName)"
+    Inputs="%(MASM.Identity);%(MASM.AdditionalDependencies);$(MSBuildProjectFile)"
+    DependsOnTargets="_WriteMasmTlogs;_SelectedFiles">
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <MASM Remove="@(MASM)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(MASM.ExecutionDescription)" />
+    <MASM
+      Condition="'@(MASM)' != '' and '%(MASM.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(MASM.CommandLineTemplate)"
+      NoLogo="%(MASM.NoLogo)"
+      GeneratePreprocessedSourceListing="%(MASM.GeneratePreprocessedSourceListing)"
+      ListAllAvailableInformation="%(MASM.ListAllAvailableInformation)"
+      UseSafeExceptionHandlers="%(MASM.UseSafeExceptionHandlers)"
+      AddFirstPassListing="%(MASM.AddFirstPassListing)"
+      EnableAssemblyGeneratedCodeListing="%(MASM.EnableAssemblyGeneratedCodeListing)"
+      DisableSymbolTable="%(MASM.DisableSymbolTable)"
+      EnableFalseConditionalsInListing="%(MASM.EnableFalseConditionalsInListing)"
+      TreatWarningsAsErrors="%(MASM.TreatWarningsAsErrors)"
+      MakeAllSymbolsPublic="%(MASM.MakeAllSymbolsPublic)"
+      GenerateDebugInformation="%(MASM.GenerateDebugInformation)"
+      EnableMASM51Compatibility="%(MASM.EnableMASM51Compatibility)"
+      PerformSyntaxCheckOnly="%(MASM.PerformSyntaxCheckOnly)"
+      ObjectFileName="%(MASM.ObjectFileName)"
+      PreprocessorDefinitions="%(MASM.PreprocessorDefinitions)"
+      AssembledCodeListingFile="%(MASM.AssembledCodeListingFile)"
+      IncludePaths="%(MASM.IncludePaths)"
+      BrowseFile="%(MASM.BrowseFile)"
+      PreserveIdentifierCase="%(MASM.PreserveIdentifierCase)"
+      WarningLevel="%(MASM.WarningLevel)"
+      PackAlignmentBoundary="%(MASM.PackAlignmentBoundary)"
+      CallingConvention="%(MASM.CallingConvention)"
+      ErrorReporting="%(MASM.ErrorReporting)"
+      AdditionalOptions="%(MASM.AdditionalOptions)"
+      Inputs="%(MASM.Identity)" />
+  </Target>
+  <Target
+    Name="ComputeMASMOutput"
+    Condition="'@(MASM)' != ''">
+    <ItemGroup>
+      <Link Include="@(MASM->Metadata('ObjectFileName')->Distinct()->ClearMetadata())" Condition="'%(MASM.ExcludedFromBuild)' != 'true'"/>
+      <Lib Include="@(MASM->Metadata('ObjectFileName')->Distinct()->ClearMetadata())" Condition="'%(MASM.ExcludedFromBuild)' != 'true'"/>
+    </ItemGroup>
+  </Target>
+  <Target
+    Name="ComputeMASMObj"
+    Condition="'@(MASM)' != ''"
+    BeforeTargets="GetResolvedLinkObjs">
+    <ItemGroup>
+      <Obj Include="@(MASM->Metadata('ObjectFileName')->Distinct()->ClearMetadata())" Condition="'%(MASM.ExcludedFromBuild)' != 'true'"/>
+    </ItemGroup>
+  </Target>
+</Project>

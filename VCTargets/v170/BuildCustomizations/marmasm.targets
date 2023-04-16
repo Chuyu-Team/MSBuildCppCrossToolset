@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+      <AvailableItemName Include="MARMASM">
+        <Targets>_MARMASM</Targets>
+      </AvailableItemName>
+  </ItemGroup>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+      $(ComputeLinkInputsTargets);
+      ComputeMARMASMOutput;
+    </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+      $(ComputeLibInputsTargets);
+      ComputeMARMASMOutput;
+    </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <UsingTask
+    TaskName="MARMASM"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+
+  <!-- Creates the the directories that MARMASM uses -->
+  <Target Name="_CreateDirsForMARMASM">
+    <ItemGroup Condition="'@(MARMASM)'!=''">
+      <MARMASMDirsToMake Include="@(MARMASM->Metadata('ObjectFileName')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <MARMASMDirsToMake Include="@(MARMASM->Metadata('PreprocessOutputPath')->DirectoryName()->Distinct()->ClearMetadata())" />
+    </ItemGroup>
+
+    <MakeDir Directories="@(MARMASMDirsToMake)" />
+
+    <ItemGroup>
+      <MARMASMDirsToMake Remove="@(MARMASMDirsToMake)" />
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="_MARMASM"
+    BeforeTargets="$(MARMASMBeforeTargets)"
+    AfterTargets="$(MARMASMAfterTargets)"
+    Condition="'@(MARMASM)' != ''"
+    DependsOnTargets="_SelectedFiles;_CreateDirsForMARMASM">
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <MARMASM Remove="@(MARMASM)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'@(SelectedFiles)' == ''">
+      <MARMASM Remove="@(MARMASM)" Condition="'%(MARMASM.ExcludedFromBuild)' == 'true'" />
+    </ItemGroup>
+
+    <VCMessage Code="MSB8076" Type="Error" Condition="'@(MARMASM)' != '' and '$(Platform)' != 'ARM' and '$(Platform)' != 'ARM64' and '$(Platform)' != 'ARM64EC'"/>
+
+    <ItemGroup Condition="'@(MARMASM)' != ''">
+      <_Preprocess Include="@(MARMASM)" Condition="'%(MARMASM.PreprocessWithCl)' == 'true'" />
+    </ItemGroup>
+
+    <Cl
+      Condition="'@(_Preprocess)' != ''"
+      Sources="@(_Preprocess)"
+
+      AdditionalIncludeDirectories="%(_Preprocess.AdditionalIncludeDirectories)"
+      AdditionalOptions=""
+      BuildingInIDE="$(BuildingInsideVisualStudio)"
+      CompileAs="CompileAsC"
+      IgnoreStandardIncludePath="%(_Preprocess.IgnoreStandardIncludePath)"
+      PrecompiledHeader=""
+      PrecompiledHeaderFile="NotUsing"
+      PreprocessorDefinitions="%(_Preprocess.PreprocessorDefinitions)"
+      PreprocessKeepComments="%(_Preprocess.PreprocessKeepComments)"
+      PreprocessSuppressLineNumbers="%(_Preprocess.PreprocessSuppressLineNumbers)"
+      PreprocessOutputPath="%(_Preprocess.PreprocessedFileName)"
+      PreprocessToFile="True"
+      UndefineAllPreprocessorDefinitions="%(_Preprocess.UndefineAllPreprocessorDefinitions)"
+      UndefinePreprocessorDefinitions="%(_Preprocess.UndefinePreprocessorDefinitions)"
+      UseStandardPreprocessor="%(_Preprocess.UseStandardPreprocessor)"
+
+      TrackerLogDirectory                ="$(TLogLocation)"
+      ExcludedInputPaths                 ="$(ExcludePath)"
+      TLogReadFiles                      ="@(CLTLogReadFiles)"
+      TLogWriteFiles                     ="@(CLTLogWriteFiles)"
+      ToolExe                            ="$(CLToolExe)"
+      ToolPath                           ="$(CLToolPath)"
+      TrackFileAccess                    ="$(TrackFileAccess)"
+      MinimalRebuildFromTracking         ="$(TrackFileAccess)"
+      ToolArchitecture                   ="$(CLToolArchitecture)"
+      TrackerFrameworkPath               ="$(CLTrackerFrameworkPath)"
+      TrackerSdkPath                     ="$(CLTrackerSdkPath)"
+      TrackedInputFilesToIgnore          ="@(ClNoDependencies)"
+      TrackedOutputFilesToIgnore         ="@(ClTrackedOutputFilesToIgnore)"
+      DeleteOutputBeforeExecute          ="%(ClCompile.DeleteOutputBeforeExecute)"
+      AcceptableNonZeroExitCodes         ="%(ClCompile.AcceptableNonZeroExitCodes)"
+      YieldDuringToolExecution           ="$(ClYieldDuringToolExecution)"
+      EnableClServerMode                 ="true"
+      UseMsbuildResourceManager          ="$(UseMsbuildResourceManager)"
+      IgnoreErrorsFromLog                ="$(IgnoreErrorsFromLog)"
+      ErrorListRegex                     ="@(CLErrorListRegex)"
+    />
+
+    <ItemGroup Condition="'@(_Preprocess)' != ''">
+      <_PreprocessedMARMASM Include="%(_Preprocess.PreprocessedFileName)" />
+      <MARMASM Remove="@(_Preprocess)"  />
+      <MARMASM Include="@(_PreprocessedMARMASM)" />
+      <_Preprocess Remove="@(_Preprocess)" />
+      <_PreprocessedMARMASM Remove="@(PreprocessedMARMASM)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <MARMASM>
+        <ActualCommandLine>-o %(MARMASM.ObjectFileName) %(MARMASM.AdditionalOptions)</ActualCommandLine>
+      </MARMASM>
+    </ItemGroup>
+
+    <GetOutOfDateItems
+      Condition="'@(SelectedFiles)' == '' and '@(MARMASM)' != '' and '$(TrackFileAccess)' == 'true'"
+      Sources="@(MARMASM)"
+
+      OutputsMetadataName="ObjectFileName"
+      CommandMetadataName="ActualCommandLine"
+
+      TLogDirectory="$(TLogLocation)"
+      TLogNamePrefix="MARMASM"
+      TrackFileAccess="$(TrackFileAccess)"
+      >
+      <Output TaskParameter="OutOfDateSources" ItemName="_MARMASM"/>
+    </GetOutOfDateItems>
+
+    <ItemGroup Condition ="'$(SelectedFiles)' != '' or '$(TrackFileAccess)' != 'true'">
+      <_MARMASM Include="@(MARMASM)" />
+    </ItemGroup>
+
+    <Message
+      Importance="High"
+      Text="%(_MARMASM.FileName)" />
+
+    <MARMASM
+      Condition="'@(_MARMASM)' != ''"
+      CommandLineTemplate="%(_MARMASM.CommandLineTemplate)"
+      ObjectFileName="%(_MARMASM.ObjectFileName)"
+      AdditionalOptions="%(_MARMASM.AdditionalOptions)"
+      Inputs="%(_MARMASM.Identity)" />
+
+    <ItemGroup>
+      <_MARMASM Remove="@(_MARMASM)" />
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="ComputeMARMASMOutput"
+    Condition="'@(MARMASM)' != ''">
+    <ItemGroup>
+      <Link Include="@(MARMASM->Metadata('ObjectFileName')->Distinct()->ClearMetadata())" Condition="'%(MARMASM.ExcludedFromBuild)' != 'true'"/>
+      <Lib Include="@(MARMASM->Metadata('ObjectFileName')->Distinct()->ClearMetadata())" Condition="'%(MARMASM.ExcludedFromBuild)' != 'true'"/>
+    </ItemGroup>
+  </Target>
+  <Target
+    Name="ComputeMARMASMObj"
+    Condition="'@(MARMASM)' != ''"
+    BeforeTargets="GetResolvedLinkObjs">
+    <ItemGroup>
+      <Obj Include="@(MARMASM->Metadata('ObjectFileName')->Distinct()->ClearMetadata())" Condition="'%(MARMASM.ExcludedFromBuild)' != 'true'"/>
+    </ItemGroup>
+  </Target>
+</Project>

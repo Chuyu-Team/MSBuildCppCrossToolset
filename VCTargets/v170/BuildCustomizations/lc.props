@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup
+    Condition="'$(LicxCompilerBeforeTargets)' == '' and '$(LicxCompilerAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <LicxCompilerBeforeTargets>Midl</LicxCompilerBeforeTargets>
+    <LicxCompilerAfterTargets>CustomBuild</LicxCompilerAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LicxCompilerDependsOn Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;ResolveAssemblyReferences;$(LicxCompilerDependsOn)</LicxCompilerDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <LicxCompiler>
+      <NoLogo>true</NoLogo>
+      <TargetAssembly>$(TargetFileName)</TargetAssembly>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <CommandLineTemplate>lc.exe [AllOptions] [AdditionalOptions] [Inputs]</CommandLineTemplate>
+      <Outputs>%(OutputDirectory)\%(TargetAssembly).licenses</Outputs>
+      <UseDefaultComponentModules>true</UseDefaultComponentModules>
+      <ExecutionDescription>Compiling licenses...</ExecutionDescription>
+    </LicxCompiler>
+  </ItemDefinitionGroup>
+</Project>

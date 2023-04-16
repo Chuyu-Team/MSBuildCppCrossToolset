@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="CL" PageTemplate="tool" DisplayName="C/C++" SwitchPrefix="-" Order="10" xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规"/>
+    <Category Name="Optimization" DisplayName="优化"/>
+    <Category Name="Preprocessor" DisplayName="预处理器"/>
+    <Category Name="Code Generation" DisplayName="代码生成"/>
+    <Category Name="Language" DisplayName="语言"/>
+    <Category Name="Precompiled Headers" DisplayName="预编译头"/>
+    <Category Name="Advanced" DisplayName="高级"/>
+    <Category Name="All Options" DisplayName="所有选项" Subtype="Search"/>
+    <Category Name="Command Line" DisplayName="命令行" Subtype="CommandLine"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="ClCompile" Label="" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <BoolProperty Name="MSVCErrorReport" DisplayName="Visual Studio 错误报告" Description="报告错误，Visual Studio 可使用这些错误对文件和行信息进行解析。" Category="General" Switch="fdiagnostics-format=msvc" Visible="false" F1Keyword="">
+  </BoolProperty>
+  <StringProperty Name="GccToolChain" DisplayName="Gcc 工具链" Description="Gcc 工具链的文件夹路径。" Category="General" Switch="-gcc-toolchain=" Visible="false" F1Keyword="">
+  </StringProperty>
+  <StringProperty Name="TargetArch" DisplayName="目标体系结构" Description="目标的体系结构" Category="General" Switch="target " Visible="false" F1Keyword="">
+  </StringProperty>
+  <StringProperty Name="Sysroot" DisplayName="Sysroot" Description="标头和库的根目录的文件夹路径。" Category="General" Switch="-sysroot=" Visible="false" F1Keyword="">
+  </StringProperty>
+  <StringListProperty Subtype="folder" Name="ISystem" DisplayName="系统包含搜索路径" Description="SYSTEM 的目录的文件夹路径包含搜索路径。" Category="General" Switch="isystem " Visible="false" F1Keyword="">
+  </StringListProperty>
+  <StringListProperty Subtype="folder" Name="AdditionalIncludeDirectories" DisplayName="附加包含目录" Description="指定一个或多个要添加到包括路径的目录；如果有多个目录，请用分号分开。（-I[路径]）。" Category="General" Switch="I " F1Keyword="VC.Project.VCClangCompilerTool.AdditionalIncludeDirectories">
+  </StringListProperty>
+  <EnumProperty Name="DebugInformationFormat" DisplayName="调试信息格式" Description="指定编译器生成的调试信息的类型。" Category="General" F1Keyword="VC.Project.VCClangCompilerTool.DebugInformationFormat">
+    <EnumValue Name="None" Switch="g0" DisplayName="无" Description="没有生成调试信息，因此编译可能会更快。">
+    </EnumValue>
+    <EnumValue Name="FullDebug" Switch="g2 -gdwarf-2" DisplayName="全部调试信息 (DWARF2)" Description="生成 DWARF2 调试信息。">
+    </EnumValue>
+    <EnumValue Name="LineNumber" Switch="gline-tables-only" DisplayName="行号信息" Description="仅生成行号信息。">
+    </EnumValue>
+  </EnumProperty>
+  <StringProperty Subtype="file" Name="ObjectFileName" DisplayName="对象文件名" Description="指定重写默认对象文件名的名称；可以是文件名或目录名。（/Fo[名称]）。" Category="General" Switch="o " F1Keyword="VC.Project.VCClangCompilerTool.ObjectFile">
+  </StringProperty>
+  <EnumProperty Name="WarningLevel" DisplayName="警告等级" Description="选择编译器对代码错误的严格程度。其他标志应直接添加到附加选项。(/w, /Weverything)。" Category="General" F1Keyword="VC.Project.VCClangCompilerTool.WarningLevel">
+    <EnumValue Name="TurnOffAllWarnings" Switch="w" DisplayName="关闭所有警告" Description="禁用所有编译器警告。">
+    </EnumValue>
+    <EnumValue Name="EnableAllWarnings" Switch="Wall" DisplayName="启用所有警告" Description="启用所有警告，包括默认情况下禁用的那些警告。">
+    </EnumValue>
+  </EnumProperty>
+  <BoolProperty Name="TreatWarningAsError" DisplayName="将警告视为错误" Description="将所有编译器警告都视为错误。对于新项目，最好在所有编译中使用 /WX；对所有警告进行解析可确保将可能难以发现的代码缺陷减至最少。" Category="General" Switch="Werror" F1Keyword="VC.Project.VCClangCompilerTool.WarnAsError">
+  </BoolProperty>
+  <BoolProperty Name="Verbose" DisplayName="启用详细模式" Description="显示用于运行和使用详细输出的命令。" Category="General" Switch="v" F1Keyword="VC.Project.VCClangCompilerTool.Verbose">
+  </BoolProperty>
+  <StringProperty Subtype="folder" Name="TrackerLogDirectory" DisplayName="跟踪器日志目录" Description="跟踪器日志目录。" Category="General" IncludeInCommandLine="false" Visible="false">
+  </StringProperty>
+  <EnumProperty Name="Optimization" DisplayName="优化" Description="指定应用程序的优化级别。" Category="Optimization" F1Keyword="VC.Project.VCClangCompilerTool.Optimization">
+    <EnumValue Name="Custom" Switch="" DisplayName="自定义" Description="自定义优化。">
+    </EnumValue>
+    <EnumValue Name="Disabled" Switch="O0" DisplayName="已禁用" Description="禁用优化。">
+    </EnumValue>
+    <EnumValue Name="MinSize" Switch="Os" DisplayName="使大小最小化" Description="优化尺寸。">
+    </EnumValue>
+    <EnumValue Name="MaxSpeed" Switch="O2" DisplayName="使速度最大化" Description="优化速度。">
+    </EnumValue>
+    <EnumValue Name="Full" Switch="O3" DisplayName="完全优化" Description="成本高昂的优化。">
+    </EnumValue>
+  </EnumProperty>
+  <BoolProperty ReverseSwitch="fno-strict-aliasing" Name="StrictAliasing" DisplayName="严格别名" Description="假设使用最严格的别名检查规则。一种类型的对象将始终不会被假定驻留在与另一种类型的对象相同的位置。" Category="Optimization" Switch="fstrict-aliasing" F1Keyword="VC.Project.VCClangCompilerTool.StrictAliasing">
+  </BoolProperty>
+  <EnumProperty Name="ThumbMode" DisplayName="Thumb 模式" Description="生成执行 Thumb 微架构的代码。仅适用于 ARM 架构。" Category="Optimization" Visible="false" F1Keyword="VC.Project.VCClangCompilerTool.ThumbMode">
+    <EnumProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="" Label="Configuration" HasConfigurationCondition="true"/>
+    </EnumProperty.DataSource>
+    <EnumValue Name="Thumb" Switch="mthumb" DisplayName="Thumb" Description="生成 Thumb 代码。">
+    </EnumValue>
+    <EnumValue Name="ARM" Switch="marm" DisplayName="ARM" Description="生成 ARM 代码。">
+    </EnumValue>
+    <EnumValue Name="Disabled" Switch="" DisplayName="已禁用" Description="此选项不适用于所选平台。">
+    </EnumValue>
+  </EnumProperty>
+  <BoolProperty ReverseSwitch="fno-omit-frame-pointer" Name="OmitFramePointers" DisplayName="省略帧指针" Description="禁止在调用堆栈上创建帧指针。" Category="Optimization" Switch="fomit-frame-pointer" F1Keyword="VC.Project.VCClangCompilerTool.OmitFramePointers">
+  </BoolProperty>
+  <EnumProperty Name="ExceptionHandling" DisplayName="启用 C++ 异常" Description="指定将由编译器使用的异常处理模型。" Category="Code Generation" F1Keyword="VC.Project.VCClangCompilerTool.ExceptionHandling">
+    <EnumValue Name="Disabled" Switch="fno-exceptions" DisplayName="否" Description="禁用异常处理。">
+    </EnumValue>
+    <EnumValue Name="Enabled" Switch="fexceptions" DisplayName="是" Description="启用异常处理。">
+    </EnumValue>
+    <EnumValue Name="UnwindTables" Switch="funwind-tables" DisplayName="展开表" Description="生成任何所需的静态数据，但不会影响生成的代码。">
+    </EnumValue>
+  </EnumProperty>
+  <BoolProperty Name="FunctionLevelLinking" DisplayName="启用函数级链接" Description="允许编译器以打包函数(COMDATs)的形式打包各个函数。要求进行编辑并继续工作。 (ffunction-sections)" Category="Code Generation" Switch="ffunction-sections" F1Keyword="VC.Project.VCClangCompilerTool.EnableFunctionLevelLinking">
+  </BoolProperty>
+  <BoolProperty Name="DataLevelLinking" DisplayName="启用数据级别链接" Description="启用链接器优化，通过在一个独立的分区中的发出每个数据项来移除未使用的数据。" Category="Code Generation" Switch="fdata-sections" F1Keyword="VC.Project.VCClangCompilerTool.DataLevelLinking">
+  </BoolProperty>
+  <BoolProperty Name="EnableNeonCodegen" DisplayName="启用高级 SIMD (Neon)" Description="启用 NEON 浮点硬件的代码生成。仅适用于 ARM 架构。" Category="Code Generation" Switch="mfpu=neon" F1Keyword="VC.Project.VCClangCompilerTool.DataLevelLinking">
+  </BoolProperty>
+  <EnumProperty Name="FloatABI" DisplayName="浮点 ABI" Description="选择浮点 ABI 选项。" Category="Code Generation" F1Keyword="VC.Project.VCClangCompilerTool.FloatABI">
+    <EnumValue Name="soft" Switch="mfloat-abi=soft" DisplayName="Soft" Description="“Soft”可使编译器生成包含浮点运算库调用的输出。">
+    </EnumValue>
+    <EnumValue Name="softfp" Switch="mfloat-abi=softfp" DisplayName="SoftFP" Description="“SoftFP”允许使用硬件浮点指令生成代码，但仍然使用软浮点调用约定。">
+    </EnumValue>
+    <EnumValue Name="hard" Switch="mfloat-abi=hard" DisplayName="Hard" Description="“Hard”允许生成浮点指令和使用 FPU 特定的调用约定。">
+    </EnumValue>
+  </EnumProperty>
+  <EnumProperty Name="BufferSecurityCheck" DisplayName="安全检查" Description="“安全检查”有助于检查堆栈缓冲区是否超负荷运行，它是一种常见的尝试攻击程序安全的命令。(fstack-protector)。" Category="Code Generation" F1Keyword="VC.Project.VCClangCompilerTool.BufferSecurityCheck">
+    <EnumValue Name="false" Switch="" DisplayName="禁用安全检查" Description="禁用安全检查。">
+    </EnumValue>
+    <EnumValue Name="true" Switch="fstack-protector" DisplayName="启用安全检查" Description="启用安全检查。(fstack-protector)">
+    </EnumValue>
+  </EnumProperty>
+  <BoolProperty Name="PositionIndependentCode" DisplayName="位置无关代码" Description="生成位置无关代码(PIC)以便在共享库中使用。" Category="Code Generation" Switch="fpic" F1Keyword="VC.Project.VCClangCompilerTool.PIC">
+  </BoolProperty>
+  <BoolProperty ReverseSwitch="fno-short-enums" Name="UseShortEnums" DisplayName="使用短枚举" Description="枚举类型仅用作可能值的输入设置需要的字节数。" Category="Code Generation" Switch="fshort-enums" F1Keyword="VC.Project.VCClangCompilerTool.UseShortEnums">
+  </BoolProperty>
+  <EnumProperty Name="RuntimeLibrary" DisplayName="运行库" Description="指定运行时库以进行链接。     (MSVC /MT, /MTd, /MD, /MDd 交换机)" Category="Code Generation" F1Keyword="VC.Project.VCCLCompilerTool.RuntimeLibrary">
+    <EnumValue Name="MultiThreaded" Switch="" DisplayName="多线程" Description="让应用程序使用多线程的静态版本的运行库。">
+    </EnumValue>
+    <EnumValue Name="MultiThreadedDebug" Switch="" DisplayName="多线程调试" Description="定义 _DEBUG 和 _MT。此选项还会让编译器将库名称 LIBCMTD.lib 放置到 .obj 文件中，以便链接器将使用 LIBCMTD.lib 来解析外部符号。">
+    </EnumValue>
+    <EnumValue Name="MultiThreadedDLL" Switch="" DisplayName="多线程 DLL" Description="让应用程序使用特定于多线程和 DLL 的运行库版本。定义 _MT 和 _DLL，并让编译器将库名称 MSVCRT.lib 放入 .obj 文件中。">
+    </EnumValue>
+    <EnumValue Name="MultiThreadedDebugDLL" Switch="" DisplayName="多线程调试 DLL" Description="定义 _DEBUG、_MT 和 _DLL，并让应用程序使用特定于调试多线程和 DLL 的运行库版本。它还会让编译器将库名称 MSVCRTD.lib 放入 .obj 文件中。">
+    </EnumValue>
+  </EnumProperty>
+  <BoolProperty ReverseSwitch="fno-rtti" Name="RuntimeTypeInfo" DisplayName="启用运行时类型信息" Description="添加代码，用于检查运行时的 C++ 对象(运行时类型信息)。     (frtti, fno-rtti)" Category="Language" Switch="frtti" F1Keyword="VC.Project.VCClangCompilerTool.RuntimeTypeInfo">
+  </BoolProperty>
+  <EnumProperty Name="CLanguageStandard" DisplayName="C 语言标准" Description="确定 C 语言标准。" Category="Language" F1Keyword="VC.Project.VCClangCompilerTool.CLanguageStandard">
+    <EnumValue Name="Default" Switch="" DisplayName="默认值">
+    </EnumValue>
+    <EnumValue Name="c89" Switch="std=c89" DisplayName="C89" Description="C89 语言标准。">
+    </EnumValue>
+    <EnumValue Name="c99" Switch="std=c99" DisplayName="C99" Description="C99 语言标准。">
+    </EnumValue>
+    <EnumValue Name="c11" Switch="std=c11" DisplayName="C11" Description="C11 语言标准。">
+    </EnumValue>
+    <EnumValue Name="gnu99" Switch="std=gnu99" DisplayName="C99 (GNU Dialect)" Description="C99 (GNU Dialect)语言标准。">
+    </EnumValue>
+    <EnumValue Name="gnu11" Switch="std=gnu11" DisplayName="C11 (GNU Dialect)" Description="C11 (GNU Dialect)语言标准。">
+    </EnumValue>
+  </EnumProperty>
+  <EnumProperty Name="CppLanguageStandard" DisplayName="C++ 语言标准" Description="确定 C++ 语言标准。" Category="Language" F1Keyword="VC.Project.VCClangCompilerTool.CppLanguageStandard">
+    <EnumValue Name="Default" Switch="" DisplayName="默认" Description="">
+    </EnumValue>
+    <EnumValue Name="c++98" Switch="std=c++98" DisplayName="C++03" Description="C++03 语言标准。">
+    </EnumValue>
+    <EnumValue Name="c++11" Switch="std=c++11" DisplayName="C++11" Description="C++11 语言标准。">
+    </EnumValue>
+    <EnumValue Name="c++14" Switch="std=c++14" DisplayName="C++14" Description="C++14 语言标准。">
+    </EnumValue>
+    <EnumValue Name="c++1z" Switch="std=c++1z" DisplayName="C++17" Description="C++17 语言标准。">
+    </EnumValue>
+    <EnumValue Name="gnu++98" Switch="std=gnu++98" DisplayName="C++03 (GNU Dialect)" Description="C++03 (GNU Dialect)语言标准。">
+    </EnumValue>
+    <EnumValue Name="gnu++11" Switch="std=gnu++11" DisplayName="C++11 (GNU Dialect)" Description="C++11 (GNU Dialect)语言标准。">
+    </EnumValue>
+    <EnumValue Name="gnu++14" Switch="std=gnu++14" DisplayName="C++14 (GNU Dialect)" Description="C++14 (GNU Dialect)语言标准。">
+    </EnumValue>
+    <EnumValue Name="gnu++1z" Switch="std=gnu++1z" DisplayName="C++17 (GNU Dialect)" Description="C++17 (GNU Dialect)语言标准。">
+    </EnumValue>
+  </EnumProperty>
+  <StringListProperty Name="PreprocessorDefinitions" DisplayName="预处理器定义" Description="定义源文件的预处理符号。(-D)" Category="Preprocessor" Switch="D " F1Keyword="VC.Project.VCClangCompilerTool.PreprocessorDefinitions">
+  </StringListProperty>
+  <StringListProperty Name="UndefinePreprocessorDefinitions" DisplayName="取消预处理器定义" Description="指定取消一个或多个预处理器定义。  (-U [宏])" Category="Preprocessor" Switch="U " F1Keyword="VC.Project.VCClangCompilerTool.UndefinePreprocessorDefinitions">
+  </StringListProperty>
+  <BoolProperty Name="UndefineAllPreprocessorDefinitions" DisplayName="取消所有预处理器定义" Description="取消以前定义的所有预处理器值。(-undef)" Category="Preprocessor" Switch="undef" F1Keyword="VC.Project.VCClangCompilerTool.UndefineAllPreprocessorDefinitions">
+  </BoolProperty>
+  <BoolProperty Name="ShowIncludes" DisplayName="显示包含文件" Description="生成包含文件的列表(包括编译器输出)。  (-H)" Category="Preprocessor" Switch="H" F1Keyword="VC.Project.VCClangCompilerTool.ShowIncludes">
+  </BoolProperty>
+  <EnumProperty Name="PrecompiledHeader" DisplayName="预编译头" Description="创建/使用预编译头: 在生成期间启用创建或使用预编译头。" Category="Precompiled Headers" F1Keyword="VC.Project.VCClangCompilerTool.PrecompiledHeader">
+    <EnumValue Name="Use" Switch="" DisplayName="使用" Description="使用预编译头。">
+    </EnumValue>
+    <EnumValue Name="NotUsing" Switch="" DisplayName="不使用预编译头" Description="不使用预编译头。">
+    </EnumValue>
+  </EnumProperty>
+  <StringProperty Subtype="file" Name="PrecompiledHeaderFile" DisplayName="预编译头文件" Description="指定要使用的预编译头文件的头文件名称。此文件还将在生成期间被添加进“强制包含文件”中" Category="Precompiled Headers" F1Keyword="VC.Project.VCClangCompilerTool.PrecompiledHeaderFile">
+  </StringProperty>
+  <StringProperty Name="PrecompiledHeaderOutputFileDirectory" DisplayName="预编译头输出文件目录" Description="指定生成的预编译头的目录。此目录将在生成过程中同时被添加到“附加包含目录”中" Category="Precompiled Headers" F1Keyword="VC.Project.VCClangCompilerTool.PrecompiledHeaderOutputFileDirectory">
+  </StringProperty>
+  <EnumProperty Name="PrecompiledHeaderCompileAs" DisplayName="编译预编译头作为" Description="选择预编译头文件的编译语言选项(-x c-header, -x c++-header)。" Category="Precompiled Headers" F1Keyword="VC.Project.VCClangCompilerTool.PrecompiledHeaderCompileAs">
+    <EnumValue Name="CompileAsC" Switch="x c-header" DisplayName="编译为 C 代码" Description="编译为 C 代码。">
+    </EnumValue>
+    <EnumValue Name="CompileAsCpp" Switch="x c++-header" DisplayName="编译为 C++ 代码" Description="编译为 C++ 代码。">
+    </EnumValue>
+  </EnumProperty>
+  <EnumProperty Name="CompileAs" DisplayName="编译为" Description="选择 .c 和 .cpp 文件的编译语言选项。“默认”将基于 .c 或 .cpp 扩展名进行检测。(-x c, -x c++)" Category="Advanced" F1Keyword="VC.Project.VCClangCompilerTool.CompileAs">
+    <EnumValue Name="Default" Switch="" DisplayName="默认" Description="默认值。">
+    </EnumValue>
+    <EnumValue Name="CompileAsC" Switch="x c" DisplayName="编译为 C 代码" Description="编译为 C 代码。">
+    </EnumValue>
+    <EnumValue Name="CompileAsCpp" Switch="x c++" DisplayName="编译为 C++ 代码" Description="编译为 C++ 代码。">
+    </EnumValue>
+  </EnumProperty>
+  <StringListProperty Subtype="file" Name="ForcedIncludeFiles" DisplayName="强制包含文件" Description="一个或多个强制包含文件。(-include [name])" Category="Advanced" Switch="include " F1Keyword="VC.Project.VCClangCompilerTool.ForcedIncludeFiles">
+  </StringListProperty>
+  <BoolProperty Name="UseMultiToolTask" DisplayName="多处理器编译" Description="多处理器编译。" Category="Advanced" F1Keyword="VC.Project.VCClangCompilerTool.MultiProcessorCompilation">
+    <BoolProperty.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="" Label="" HasConfigurationCondition="true"/>
+    </BoolProperty.DataSource>
+  </BoolProperty>
+  <BoolProperty ReverseSwitch="fno-ms-compatibility" Name="MSCompatibility" DisplayName="Microsoft 兼容性模式" Description="启用 Microsoft Visual C++ 完全兼容性。" Category="Advanced" Switch="fms-compatibility" F1Keyword="VC.Project.VCClangCompilerTool.MSCompatibility">
+  </BoolProperty>
+  <StringProperty Name="MSCompatibilityVersion" DisplayName="Microsoft 兼容性模式版本" Description="句点分隔的值，表示在 _MSC_VER 中报告的 Microsoft 编译器版本号 (0 =  不定义 (默认)) 。" Category="Advanced" Switch="fms-compatibility-version=" F1Keyword="VC.Project.VCClangCompilerTool.MSCompatibilityVersion">
+  </StringProperty>
+  <BoolProperty ReverseSwitch="fno-ms-extensions" Name="MSExtensions" DisplayName="Microsoft 扩展支持" Description="接受 Microsoft 编译器支持的一些非标准构造。" Category="Advanced" Switch="fms-extensions" F1Keyword="VC.Project.VCClangCompilerTool.MSExtensions">
+  </BoolProperty>
+  <StringProperty Name="MSCompilerVersion" DisplayName="Microsoft 编译器版本" Description="在 _MSC_VER 中报告的 Microsoft 编译器版本号 (0 =  不定义 (默认)) 。" Category="Advanced" Switch="fmsc-version=" F1Keyword="VC.Project.VCClangCompilerTool.MSCompilerVersion">
+  </StringProperty>
+  <StringProperty Name="AdditionalOptions" DisplayName="附加选项" Description="附加选项。" Category="Command Line" F1Keyword="vc.project.AdditionalOptionsPage">
+  </StringProperty>
+  <BoolProperty Name="BuildingInIde" Visible="false">
+  </BoolProperty>
+</Rule>

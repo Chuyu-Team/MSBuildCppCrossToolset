@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup
+    Condition="'$(MARMASMBeforeTargets)' == '' and '$(MARMASMAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <MARMASMBeforeTargets>Midl</MARMASMBeforeTargets>
+    <MARMASMAfterTargets>CustomBuild</MARMASMAfterTargets>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <MARMASM>
+      <PreprocessWithCl Condition="'%(PreprocessWithCl)' == ''">true</PreprocessWithCl>
+      <PreprocessedFileName Condition="'%(PreprocessedFileName)' == ''">$(IntDir)%(FileName)%(Extension)</PreprocessedFileName>
+      <ObjectFileName Condition="'%(ObjectFileName)' == ''">$(IntDir)%(FileName).obj</ObjectFileName>
+      <CommandLineTemplate Condition="'%(CommandLineTemplate)' == '' and '$(Platform)' == 'ARM'">armasm.exe [Inputs] [AllOptions] [AdditionalOptions]</CommandLineTemplate>
+      <CommandLineTemplate Condition="'%(CommandLineTemplate)' == '' and '$(Platform)' == 'ARM64'">armasm64.exe [Inputs] [AllOptions] [AdditionalOptions]</CommandLineTemplate>
+      <CommandLineTemplate Condition="'%(CommandLineTemplate)' == '' and '$(Platform)' == 'ARM64EC'">armasm64.exe [Inputs] [AllOptions] [AdditionalOptions] -machine ARM64EC</CommandLineTemplate>
+    </MARMASM>
+  </ItemDefinitionGroup>
+</Project>

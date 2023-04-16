@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="BSCMake" PageTemplate="tool" DisplayName="浏览信息" SwitchPrefix="/" Order="80" xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规"/>
+    <Category Name="All Options" DisplayName="所有选项" Subtype="Search"/>
+    <Category Name="Command Line" DisplayName="命令行" Subtype="CommandLine"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="Bscmake" Label="" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <BoolProperty Name="SuppressStartupBanner" DisplayName="取消显示启动版权标志" Description="运行时不显示标准 Microsoft 版权数据。(/nologo)" Category="General" Switch="nologo" F1Keyword="VC.Project.VCBscMakeTool.SuppressStartupBanner">
+  </BoolProperty>
+  <StringProperty Subtype="file" Name="OutputFile" DisplayName="输出文件" Description="重写默认输出文件名(/o[文件])" Category="General" Switch="o" F1Keyword="VC.Project.VCBscMakeTool.OutputFile">
+  </StringProperty>
+  <BoolProperty Name="PreserveSbr" DisplayName="保留 SBR 文件" Description="导致 bscmake.exe 执行保留 .sbr 文件的完全生成。  这样将允许使用备用的增量生成方法。(/n)" Category="General" Switch="n" F1Keyword="VC.Project.VCBscMakeTool.PreserveSBR">
+  </BoolProperty>
+  <StringProperty Subtype="folder" Name="TrackerLogDirectory" DisplayName="跟踪器日志目录" Description="跟踪器日志目录。" Category="General" IncludeInCommandLine="false" Visible="false">
+  </StringProperty>
+  <StringProperty Name="AdditionalOptions" DisplayName="附加选项" Description="附加选项" Category="Command Line" F1Keyword="vc.project.AdditionalOptionsPage">
+  </StringProperty>
+</Rule>

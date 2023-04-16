@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule
+    Name="LicxCompiler"
+    PageTemplate="tool"
+    DisplayName="License Compiler"
+    Order="200">
+    <Rule.DataSource>
+      <DataSource
+        Persistence="ProjectFile"
+        ItemType="LicxCompiler" />
+    </Rule.DataSource>
+    <Rule.Categories>
+      <Category
+        Name="General">
+        <Category.DisplayName>
+          <sys:String>General</sys:String>
+        </Category.DisplayName>
+      </Category>
+      <Category
+        Name="Command Line"
+        Subtype="CommandLine">
+        <Category.DisplayName>
+          <sys:String>Command Line</sys:String>
+        </Category.DisplayName>
+      </Category>
+    </Rule.Categories>
+    <StringListProperty
+      Name="Inputs"
+      Category="Command Line"
+      IsRequired="true"
+      Switch="/complist:">
+     <StringListProperty.DataSource>
+       <DataSource
+          Persistence="ProjectFile"
+          ItemType="LicxCompiler"
+          SourceType="Item" />
+     </StringListProperty.DataSource>
+   </StringListProperty>
+    <BoolProperty
+      Name="NoLogo"
+      HelpUrl="https://msdn.microsoft.com/library/default.asp?url=/library/en-us/cptools/html/cpgrflicensecompilerlcexe.asp"
+      DisplayName="Suppress Startup Banner"
+      Description="Suppress the display of the startup banner and information messages.     (/nologo)"
+      Switch="/nologo" />
+    <BoolProperty
+      Name="VerboseOutput"
+      HelpUrl="https://msdn.microsoft.com/library/default.asp?url=/library/en-us/cptools/html/cpgrflicensecompilerlcexe.asp"
+      DisplayName="Verbose Output"
+      Description="Specifies verbose mode; displays compilation progress information.     (/v)"
+      Switch="/v" />
+    <StringProperty
+      Name="TargetAssembly"
+      HelpUrl="https://msdn.microsoft.com/library/default.asp?url=/library/en-us/cptools/html/cpgrflicensecompilerlcexe.asp"
+      DisplayName="Target Assembly"
+      Description="Specifies the executable for which the .licenses file is being generated.     (/target:[assembly])"
+      Switch="/target:&quot;[value]&quot;" />
+    <StringProperty
+      Name="OutputDirectory"
+      HelpUrl="https://msdn.microsoft.com/library/default.asp?url=/library/en-us/cptools/html/cpgrflicensecompilerlcexe.asp"
+      DisplayName="Output Directory"
+      Description="Specifies the directory in which to place the output .licenses file.     (/outdir:[directory])"
+      Switch="/outdir:&quot;[value]&quot;" />
+    <StringListProperty
+      Name="ComponentModules"
+      HelpUrl="https://msdn.microsoft.com/library/default.asp?url=/library/en-us/cptools/html/cpgrflicensecompilerlcexe.asp"
+      DisplayName="Component Modules"
+      Description="Specifies the list of modules that contain the components listed in the /complist file.     (/i:[module])"
+      Switch="/i:&quot;[value]&quot;" />
+    <BoolProperty
+      Name="UseDefaultComponentModules"
+      HelpUrl="https://msdn.microsoft.com/library/default.asp?url=/library/en-us/cptools/html/cpgrflicensecompilerlcexe.asp"
+      DisplayName="Use Default Component Modules"
+      Description="Use Default Component Modules." />
+    <StringProperty
+      Name="CommandLineTemplate"
+      DisplayName="Command Line"
+      Visible="False"
+      IncludeInCommandLine="False" />
+    <DynamicEnumProperty
+    Name="LicxCompilerBeforeTargets"
+    Category="General"
+    EnumProvider="Targets"
+    IncludeInCommandLine="False">
+      <DynamicEnumProperty.DisplayName>
+        <sys:String>Execute Before</sys:String>
+      </DynamicEnumProperty.DisplayName>
+      <DynamicEnumProperty.Description>
+        <sys:String>Specifies the targets for the build customization to run before.</sys:String>
+      </DynamicEnumProperty.Description>
+      <DynamicEnumProperty.ProviderSettings>
+        <NameValuePair
+          Name="Exclude"
+          Value="^LicxCompilerBeforeTargets|^Compute" />
+      </DynamicEnumProperty.ProviderSettings>
+      <DynamicEnumProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          ItemType=""
+          HasConfigurationCondition="true" />
+      </DynamicEnumProperty.DataSource>
+    </DynamicEnumProperty>
+    <DynamicEnumProperty
+      Name="LicxCompilerAfterTargets"
+      Category="General"
+      EnumProvider="Targets"
+      IncludeInCommandLine="False">
+      <DynamicEnumProperty.DisplayName>
+        <sys:String>Execute After</sys:String>
+      </DynamicEnumProperty.DisplayName>
+      <DynamicEnumProperty.Description>
+        <sys:String>Specifies the targets for the build customization to run after.</sys:String>
+      </DynamicEnumProperty.Description>
+      <DynamicEnumProperty.ProviderSettings>
+        <NameValuePair
+          Name="Exclude"
+          Value="^LicxCompilerAfterTargets|^Compute" />
+      </DynamicEnumProperty.ProviderSettings>
+      <DynamicEnumProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          ItemType=""
+          HasConfigurationCondition="true" />
+      </DynamicEnumProperty.DataSource>
+    </DynamicEnumProperty>
+    <StringListProperty
+      Name="Outputs"
+      DisplayName="Outputs"
+      IncludeInCommandLine="False"
+      Visible="False" />
+    <StringProperty
+      Name="ExecutionDescription"
+      DisplayName="Execution Description"
+      IncludeInCommandLine="False"
+      Visible="False" />
+    <StringListProperty
+      Name="AdditionalDependencies"
+      DisplayName="Additional Dependencies"
+      IncludeInCommandLine="False"
+      Visible="False" />
+    <StringProperty
+      Subtype="AdditionalOptions"
+      Name="AdditionalOptions"
+      Category="Command Line">
+      <StringProperty.DisplayName>
+        <sys:String>Additional Options</sys:String>
+      </StringProperty.DisplayName>
+      <StringProperty.Description>
+        <sys:String>Additional Options</sys:String>
+      </StringProperty.Description>
+    </StringProperty>
+  </Rule>
+  <ItemType
+    Name="LicxCompiler"
+    DisplayName="License Compiler" />
+  <FileExtension
+    Name="*.licx"
+    ContentType="LicxCompiler" />
+  <ContentType
+    Name="LicxCompiler"
+    DisplayName="License Compiler"
+    ItemType="LicxCompiler" />
+</ProjectSchemaDefinitions>

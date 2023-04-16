@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationDirectories" DisplayName="VC++ 目录" Order="8" PageTemplate="generic" Description="工具搜索目录" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="VC++" DisplayName="常规" Description="Visual C++ 目录"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile"/>
+  </Rule.DataSource>
+  <StringListProperty Name="IncludePath" DisplayName="包含目录" Description="生成 VC++ 项目期间，搜索包含文件时使用的路径。  与环境变量 INCLUDE 相对应。" F1Keyword="VC.Project.VCDirectories.IncludePath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="LibraryPath" DisplayName="库目录" Description="生成 VC++ 项目期间，搜索库文件时使用的路径。  与环境变量 LIB 相对应。" F1Keyword="VC.Project.VCDirectories.LibraryPath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="SourcePath" DisplayName="源目录" Description="搜索用于 Intellisense 的源文件时使用的路径。" F1Keyword="VC.Project.VCDirectories.SourcePath" Category="VC++" Separator=";" Subtype="folder"/>
+  <StringListProperty Name="ExcludePath" DisplayName="排除目录" Description="搜索扫描依赖项时要跳过的路径。" F1Keyword="VC.Project.VCDirectories.ExcludePath" Category="VC++" Separator=";" Subtype="folder"/>
+</Rule>

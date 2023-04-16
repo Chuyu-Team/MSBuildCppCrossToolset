@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="CL" DisplayName="常规" PageTemplate="generic" Description="常规" SwitchPrefix="/" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="ClCompile" Label="" HasConfigurationCondition="false"/>
+  </Rule.DataSource>
+  <StringListProperty Name="AdditionalIncludeDirectories" DisplayName="包含搜索路径" Description="指定一个或多个要添加到包含路径中的目录；当目录不止一个时，请用分号分隔。          (/I[路径])" F1Keyword="VC.Project.VCCLCompilerTool.AdditionalIncludeDirectories" Switch="I" Category="General" Subtype="folder"/>
+  <StringListProperty Name="ForcedIncludeFiles" DisplayName="强制包含文件" Description="一个或多个强制的包含文件。     (/FI[名称])" Category="General" Switch="FI" F1Keyword="VC.Project.VCCLCompilerTool.ForcedIncludeFiles" Subtype="file"/>
+  <StringListProperty Name="PreprocessorDefinitions" DisplayName="预处理器定义" Description="为源文件定义预处理符号。     (/D[宏=])" Category="General" Switch="D" F1Keyword="VC.Project.VCCLCompilerTool.PreprocessorDefinitions">
+  </StringListProperty>
+  <StringListProperty Name="UndefinePreprocessorDefinitions" DisplayName="取消预处理器定义" Description="指定取消一个或多个预处理器定义。          (/U[宏])" Category="General" Switch="U" F1Keyword="VC.Project.VCCLCompilerTool.UndefinePreprocessorDefinitions">
+  </StringListProperty>
+</Rule>

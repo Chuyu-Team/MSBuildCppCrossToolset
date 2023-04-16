@@ -1,0 +1,27 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.Props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+      created a backup copy.  Incorrect changes to this file will make it
+      impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+   <PropertyGroup Condition="'$(_ToolsetFound)' == 'true' and '$(WindowsAppContainer)' == 'true'">
+    <!-- When redirecting, use the current version of XAML tools. -->
+    <_DefaultCppCommonExtensionTargets>false</_DefaultCppCommonExtensionTargets>
+    <_CppCommonExtensionTargets Condition="'$(_CppCommonExtensionTargets)' == ''">$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.Cpp.targets</_CppCommonExtensionTargets>
+  </PropertyGroup>
+
+  <Import Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.Redirect.17.props" />
+
+  <PropertyGroup>
+    <_Redirect>$(_ToolsetFound)</_Redirect>
+  </PropertyGroup>
+  
+</Project>

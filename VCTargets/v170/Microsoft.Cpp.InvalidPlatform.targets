@@ -1,0 +1,24 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.InvalidPlatform.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file defines the information needed to deal with the case where an invalid platform is
+passed to the project, so that errors occur at build- instead of load-time. 
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project InitialTargets="InvalidPlatformError" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <UsingTask TaskName="VCMessage" AssemblyFile="$(MSBuildThisFileDirectory)Microsoft.Build.CppTasks.Common.dll" />
+
+    <Target Name="InvalidPlatformError">
+      <VCMessage Condition="'$(BuildingInsideVisualStudio)' == 'true'" Code="MSB8006" Type="Error" Arguments="$(MSBuildProjectFile);$(Platform)" />
+      <VCMessage Condition="'$(BuildingInsideVisualStudio)' != 'true'" Code="MSB8007" Type="Error" Arguments="$(MSBuildProjectFile);$(Platform)" />
+    </Target>
+</Project>

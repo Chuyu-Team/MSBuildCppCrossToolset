@@ -1,0 +1,37 @@
+<!--
+***********************************************************************************************
+Microsoft.CodeAnalysis.Extensions.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup Condition="'$(ConfigurationType)'!='Utility' and '$(ConfigurationType)'!='Makefile'">
+    <!-- Add the CppCoreCheck extension  only if it wasn't explicitly set false in the project (allow project override) -->
+    <!-- To disable CppCoreCheck, set property EnableCppCoreCheck=false in the project -->
+    <EspXtensions Condition="'$(EnableCppCoreCheck)'!='false'">CppCoreCheck.dll;$(EspXtensions)</EspXtensions>
+    <!-- Add the EnumIndex extension  only if it wasn't explicitly set false in the project (allow project override) -->
+    <!-- To disable EnumIndex, set property EnableEnumIndex=false in the project -->
+    <EspXtensions Condition="'$(EnableEnumIndex)'!='false'">EnumIndex.dll;$(EspXtensions)</EspXtensions>
+    <!-- Add the HResultCheck extension  only if it wasn't explicitly set false in the project (allow project override) -->
+    <!-- To disable HResultCheck, set property EnableHResultCheck=false in the project -->
+    <EspXtensions Condition="'$(EnableHResultCheck)'!='false'">HResultCheck.dll;$(EspXtensions)</EspXtensions>
+    <!-- Add the VariantClear extension  only if it wasn't explicitly set false in the project (allow project override) -->
+    <!-- To disable VariantClear, set property EnableVariantClear=false in the project -->
+    <EspXtensions Condition="'$(EnableVariantClear)'!='false'">VariantClear.dll;$(EspXtensions)</EspXtensions>
+    <!-- Add the ConcurrencyCheck extension  only if it wasn't explicitly set false in the project (allow project override) -->
+    <!-- To disable ConcurrencyCheck, set property EnableConcurrencyCheck=false in the project -->
+    <ConcurrencyCheckPath>$(VC_ExecutablePath_x86_x86)\ConcurrencyCheck.dll</ConcurrencyCheckPath>
+    <ConcurrencyCheckPath Condition="'$(VCToolArchitecture)'=='Native64Bit'">$(VC_ExecutablePath_x64_x64)\ConcurrencyCheck.dll</ConcurrencyCheckPath>
+    <ConcurrencyCheckPath Condition="'$(VCToolArchitecture)'=='NativeARM64'">$(VC_ExecutablePath_ARM64_ARM64)\ConcurrencyCheck.dll</ConcurrencyCheckPath>
+    <ConcurrencyCheckPath Condition="'$(_CodeAnalysisExtensions)' == 'true'">$(MsvcAnalysisPluginPath)\ConcurrencyCheck.dll</ConcurrencyCheckPath>
+    <EspXtensions Condition="'$(EnableConcurrencyCheck)'!='false' and ('$(_CodeAnalysisExtensions)' == 'true' or Exists('$(ConcurrencyCheckPath)'))">ConcurrencyCheck.dll;$(EspXtensions)</EspXtensions>
+  </PropertyGroup>
+
+</Project>

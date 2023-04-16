@@ -1,0 +1,30 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.ClangTidy.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(LLVMInstallDir)' == ''">
+    <LLVMInstallDir Condition="'$(PlatformTarget)'=='x86'">$(VsInstallRoot)\VC\Tools\Llvm</LLVMInstallDir>
+    <LLVMInstallDir Condition="'$(PlatformTarget)'=='x64'">$(VsInstallRoot)\VC\Tools\Llvm\x64</LLVMInstallDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ClangTidyToolExe Condition="'$(ClangTidyToolExe)'==''">clang-tidy.exe</ClangTidyToolExe>
+    <ClangTidyToolPath Condition="'$(ClangTidyToolPath)'==''">$(LLVMInstallDir)\bin</ClangTidyToolPath>
+    
+    <ClangTidyChecks Condition="'$(ClangTidyChecks)'==''"></ClangTidyChecks>
+    <ClangTidyHeaderFilter Condition="'$(ClangTidyHeaderFilter)'==''"></ClangTidyHeaderFilter>
+    <ClangTidyWarningsInSystemHeaders Condition="'$(ClangTidyWarningsInSystemHeaders)'==''">false</ClangTidyWarningsInSystemHeaders>
+    <ClangTidyAdditionalOptions Condition="'$(ClangTidyAdditionalOptions)'==''"></ClangTidyAdditionalOptions>
+
+	<ClangAnalysisToolsPath Condition="'$(ClangAnalysisToolsPath)'==''">$(ClangTidyToolPath)</ClangAnalysisToolsPath>
+  </PropertyGroup>
+</Project>

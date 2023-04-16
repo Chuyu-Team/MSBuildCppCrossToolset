@@ -1,0 +1,47 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.MissingToolset.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <ItemGroup>
+    <!--Minimal set of Property pages to be able to see project items and change toolset-->
+    <PropertyPageSchema Include="$(CurrentVCTargetsPath)$(LangID)\ProjectItemsSchema.xml" />
+
+    <PropertyPageSchema Include="$(CurrentVCTargetsPath)$(LangID)\general.xml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(CurrentVCTargetsPath)$(LangID)\general_file.xml">
+      <Context>File</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(CurrentVCTargetsPath)$(LangID)\general_ps.xml">
+      <Context>PropertySheet</Context>
+    </PropertyPageSchema>
+
+    <PropertyPageSchema Include="$(CurrentVCTargetsPath)$(LangID)\folder.xml">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+
+    <!-- Property sheet specific property pages -->
+    <PropertyPageSchema Include="$(CurrentVCTargetsPath)$(LangID)\usermacros.xml">
+      <Context>PropertySheet</Context>
+    </PropertyPageSchema>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <UseDefaultPropertyPageSchemas>false</UseDefaultPropertyPageSchemas>
+  </PropertyGroup>
+
+  <Import Project="$(CurrentVCTargetsPath)\Microsoft.CppCommon.Targets"/>
+  
+</Project>

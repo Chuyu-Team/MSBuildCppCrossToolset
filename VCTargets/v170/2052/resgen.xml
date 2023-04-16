@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="Resgen" DisplayName="托管资源" Order="100" PageTemplate="tool" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="EmbeddedResource" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <StringProperty Name="LogicalName" DisplayName="资源逻辑名称" Description="最终程序集中资源的逻辑名称。" F1Keyword="VC.Project.VCManagedResourceCompilerTool.LogicalName"/>
+  <StringProperty Name="OutputFileName" ReadOnly="true" DisplayName="输出文件名" Description="此 .resx 文件构成的最终输出文件的名称。" F1Keyword="VC.Project.VCManagedResourceCompilerTool.OutputFileName"/>
+  <BoolProperty Name="DefaultLocalizedResources" ReadOnly="true" DisplayName="默认本地化资源" Description="指示此 .resx 文件是构成默认资源还是附属 DLL。  这由资源文件的文件名控制。" F1Keyword="VC.Project.VCManagedResourceCompilerTool.DefaultLocalizedResources"/>
+</Rule>

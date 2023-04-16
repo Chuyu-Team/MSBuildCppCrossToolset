@@ -1,0 +1,541 @@
+﻿<!--
+***********************************************************************************************
+Linux.WSL.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file defines the steps/targets required to build Visual C++ projects
+specifically on x64 platforms.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="Microsoft.Build.Linux.WSL.Tasks.ExecuteCommand" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.WSL.Tasks.ResolveWSLTarget" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.Ar" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.Compile" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.Ld" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.MultiMakeCl" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.ComputeHeaders" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.GenerateNinja" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.PrepareDeploymentItems" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.ValidateCompatibleRemoteArchitectures" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.CopySources" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="Microsoft.Build.Linux.Tasks.ResolveRemoteDir" AssemblyFile="$(MSBuildthisFileDirectory)Microsoft.Build.Linux.Tasks.dll"/>
+
+  <Import Project="$(MSBuildthisFileDirectory)Linux.Common.targets"/>
+
+  <ItemGroup>
+    <SourcesToCopyRemotely Include="@(ClCompile);@(ClInclude);@(None)" />
+    <DataFilesToCopyRemotely Include="@(Xsd);@(Resource);@(Object);@(Library);@(FxCompile);@(Image);@(Media);@(Xml);@(Text);@(Font)" />
+  </ItemGroup>
+
+  <Target Name="CreateFullDebugSymbols" />
+
+  <PropertyGroup>
+    <WindowsSubsystem>Ubuntu</WindowsSubsystem>
+    <LastWSLTargetFile>$(IntDir)LastWSLTarget.tlog</LastWSLTargetFile>
+    <UseSSHCopy>false</UseSSHCopy>
+  </PropertyGroup>
+
+  <!-- Add Link output as a consumable similar to a library. -->
+  <ItemDefinitionGroup>
+    <Link>
+      <ImportLibrary>%(Link.OutputFile)</ImportLibrary>
+      <AdditionalLibraryDirectories>$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <Target Name="_FixupRemoteIntelliSenseIncludes" BeforeTargets="GetClCommandLines" DependsOnTargets="_ResolveWSLTarget">
+    <ComputeHeaders
+      ProjectDir="$(ProjectDir)"
+      RemoteProjectDir="$(RemoteProjectDir)"
+      TargetLinuxPlatform="$(TargetLinuxPlatform)"
+      WiringPiIncludePath="$(wiringPiIncludePath)"
+      IncludePath="$(IncludePath)"
+      LinuxIncludePath="$(LinuxIncludePath)"
+      Sources="@(ClCompile)"
+      RemoteType="WSL"
+      CCompiler="$(RemoteCCompileToolExe)"
+      CppCompiler="$(RemoteCppCompileToolExe)"
+      CStandard="%(ClCompile.CLanguageStandard)"
+      CppStandard="%(ClCompile.CppLanguageStandard)"
+      WSLPath="$(ResolvedWSLTarget)">
+      <Output TaskParameter="TranslatedSources" ItemName="TranslatedClCompile"/>
+      <Output TaskParameter="CIntelliSenseIncludePath" PropertyName="CIntelliSenseIncludePath"/>
+      <Output TaskParameter="CppIntelliSenseIncludePath" PropertyName="CppIntelliSenseIncludePath"/>
+    </ComputeHeaders>
+    <ItemGroup>
+      <ClCompile>
+        <ISenseIncludeDirectories Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'">$(CIntelliSenseIncludePath)</ISenseIncludeDirectories>
+        <ISenseIncludeDirectories Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp'">$(CppIntelliSenseIncludePath)</ISenseIncludeDirectories>
+      </ClCompile>
+      <ClCompile>
+        <AdditionalIncludeDirectories Condition="'%(Identity)'!=''" >@(TranslatedClCompile->'%(AdditionalIncludeDirectories)');@(ClCompile->'%(ISenseIncludeDirectories)')</AdditionalIncludeDirectories>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PrepareDeploymentItems" Returns="@(DeploymentItems)">
+    <PrepareDeploymentItems
+      ProjectDir="$(ProjectDir)"
+      RemoteProjectDir="$(RemoteProjectDir)"
+      IntermediateDir="$(IntDir)"
+      RemoteTarget="$(RemoteTarget)"
+      RemoteDebugTarget="$(RemoteDebugTarget)"
+      RemoteDebuggingTarget="$(RemoteDebuggingTarget)"
+      RemoteDeployDir="$(RemoteDeployDir)"
+      Outputs="@(Link);@(Lib)"
+      OutputFile="$(TargetPath)"
+      ClCompileItems="@(ClCompile)"
+      RemoteDeployItems="@(RemoteDeploy)"
+      Items="@(SourcesToCopyRemotely);@(DataFilesToCopyRemotely)"
+      FromWSLProject="true">
+      <Output TaskParameter="DeploymentItems" ItemName="DeploymentItems" />
+    </PrepareDeploymentItems>
+  </Target>
+
+  <Target Name="_ValidateCompatibleRemoteArchitectures">
+    <ValidateCompatibleRemoteArchitectures
+      FailedMessage="ValidateValidArchitectureStatic.Mismatch"
+      FailOnInvalidArchitecture="false"
+      SourceMachine="$(RemoteTarget)"
+      TargetMachine="$(RemoteDebuggingTarget)"/>
+  </Target>  
+
+  <Target Name="_ResolveWSLTarget">
+    <ResolveWSLTarget
+      WSLPath="$(WSLPath)">
+      <Output TaskParameter="ResolvedWSLTarget" PropertyName="ResolvedWSLTarget"/>
+    </ResolveWSLTarget>
+  </Target>
+
+  <Target Name="ResolveRemoteDir" Condition="'$(DesignTimeBuild)' != 'true'" DependsOnTargets="_PrepareUpToDateChecks;_ResolveWSLTarget">
+    <ResolveRemoteDir
+      RemoteProjectDir="$(RemoteProjectDir)"
+      RemoteTarget="$(ResolvedWSLTarget)"
+      ProjectDir="$(ProjectDir)"
+      IntermediateDir="$(IntDir)"
+      OutputDir ="$(OutDir)"
+      RemoteOutputDir="$(RemoteOutDir)"
+      RemoteIntermediateDir="$(RemoteIntDir)"
+      RemoteProjectDirFile="$(RemoteProjectDirFile)"
+      RequireRemoteConnection="$(RequireRemoteConnection)"
+      UseSSHCopy="$(UseSSHCopy)">
+      <Output TaskParameter="ResolvedRemoteProjectDir" PropertyName="_ResolvedRemoteProjectDir"/>
+      <Output TaskParameter="ResolvedRemoteIntermediateDir" PropertyName="_ResolvedRemoteIntermediateDir"/>
+      <Output TaskParameter="ResolvedRemoteOutputDir" PropertyName="_ResolvedRemoteOutputDir"/>
+    </ResolveRemoteDir>
+  </Target>
+
+  <!-- *******************************************************************************************
+        Compile/Link targets and tasks
+       ******************************************************************************************* -->
+
+  <PropertyGroup>
+    <BeforeBuildCompileTargets>
+      $(BeforeBuildCompileTargets);
+      _PrepareForClCompile;
+    </BeforeBuildCompileTargets>
+
+    <BuildLinkTargets>
+      $(BuildLinkTargets);
+    </BuildLinkTargets>
+
+    <AfterBuildLinkTargets>
+      RemotePostBuildEvent;
+      $(AfterBuildLinkTargets);
+    </AfterBuildLinkTargets>
+
+    <BuildGenerateSourcesTargets>
+      $(BuildGenerateSourcesTargets);
+      RemotePreBuildEvent;
+    </BuildGenerateSourcesTargets>
+
+    <TargetPath Condition="'$(TargetPath)' == ''">$(OutDir)\$(TargetName)$(TargetExt)</TargetPath>
+    <RemoteTargetPath Condition="'$(RemoteTargetPath)' == ''">$(RemoteOutDir)/$(TargetName)$(TargetExt)</RemoteTargetPath>
+  </PropertyGroup>
+  
+  <Target Name="_Link" DependsOnTargets="$(BeforeLinkTargets);$(ComputeLinkInputsTargets);ComputeManifestInputsTargets;ManifestResourceCompile;PrepareResourceNames;MakeDirsForLink;DoLinkOutputFilesMatch;PreLinkEvent;RemotePreLinkEvent;Link;ComputeLinkImportLibraryOutputsForClean;$(AfterLinkTargets)" Condition="'$(LinkCompiled)' == 'true'">
+  </Target>
+
+  <Target Name="_PrepareForClCompile">
+  </Target>
+
+  <Target Name="FixupCLCompileOptions" Condition="'@(ClCompile)' != ''">
+    <ItemGroup>
+      <ClCompile>
+        <!--<ClangForcedIncludeFiles>%(ClCompile.ForcedIncludeFiles)</ClangForcedIncludeFiles>-->
+        <PrecompiledHeaderFile Condition="'%(ClCompile.PrecompiledHeader)' != 'Use'"></PrecompiledHeaderFile>
+        <!--<MinimalRebuildFromTracking Condition="'$(_BuildActionType)' != 'Build' or '$(ForceRebuild)' == 'true'">false</MinimalRebuildFromTracking>-->
+        <WarningLevel Condition="'%(WarningLevel)' == 'Level1' or '%(WarningLevel)' == 'Level2' or '%(WarningLevel)' == 'Level3'">EnableAllWarnings</WarningLevel>
+        <CompileAs Condition="'%(ClCompile.CompileAs)' == 'Default' and '%(ClCompile.Extension)' == '.c'">CompileAsC</CompileAs>
+      </ClCompile>
+
+      <ClCompile>
+        <!-- Still unknown extension, assume C++ -->
+        <CompileAs Condition="'%(ClCompile.CompileAs)' == 'Default'">CompileAsCpp</CompileAs>
+      </ClCompile>
+
+      <ClCompile>
+        <!-- Only Pass C++ standard to Cpp files -->
+        <!-- C/ObjC share the same standard, and C++/ObjC++ share the same standard -->
+        <CLanguageStandard Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp'"></CLanguageStandard>
+        <CppLanguageStandard Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'"></CppLanguageStandard>
+        <!-- GCC does not allow Wno-pointer-sign for C++ -->
+        <CAdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp'"></CAdditionalWarning>
+        <CppAdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'"></CppAdditionalWarning>
+      </ClCompile>
+
+      <ClCompile>
+        <RemoteCompileToolExe Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp'">$(RemoteCppCompileToolExe)</RemoteCompileToolExe>
+        <RemoteCompileToolExe Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'">$(RemoteCCompileToolExe)</RemoteCompileToolExe>
+      </ClCompile>
+
+      <ClCompile>
+        <ThreadSafeStatics Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'" />
+        <RuntimeTypeInfo Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'" />
+      </ClCompile>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <MultiProcBuild Condition="'$(MultiProcBuild)' == '' and '$(MultiProcNumber)' != ''" >true</MultiProcBuild>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_SelectClCompile" DependsOnTargets="SelectClCompile">
+    <ItemGroup Condition="'@(SelectedFiles)'!=''">
+      <SourcesToCopyRemotely Remove="@(SourcesToCopyRemotely)" Condition="'%(Identity)' != '@(SelectedFiles)'"/>
+      <DataFilesToCopyRemotely Remove="@(DataFilesToCopyRemotely)" Condition="'%(Identity)' != '@(SelectedFiles)'"/>
+    </ItemGroup>
+    <PropertyGroup>
+      <CleanRemoteProjectDirectory Condition="'@(SelectedFiles)'!=''">false</CleanRemoteProjectDirectory>
+      <AdditionalSourcesToCopyMapping Condition="'@(SelectedFiles)'!=''"></AdditionalSourcesToCopyMapping>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_AssignProjectReferencesPlatformType">
+    <ItemGroup>
+      <_MSBuildProjectReferenceExistent Include="@(_MSBuildProjectReferenceExistent)">
+        <ProjectApplicationType>Linux</ProjectApplicationType>
+      </_MSBuildProjectReferenceExistent>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_WriteWSLTarget" DependsOnTargets="_ResolveWSLTarget">
+    <WriteLinesToFile
+            File="$(LastWSLTargetFile)"
+            Lines="$(ResolvedWSLTarget)"
+            Overwrite="true"
+            Encoding="Unicode"/>
+  </Target>
+  
+  <Target Name="_PrepareUpToDateChecks" DependsOnTargets="_WriteWSLTarget">
+    <PropertyGroup>
+    <CopySourcesUpToDateFile>$(IntDir)$(WindowsSubsystem).CopySourcesUpToDateFile.tlog</CopySourcesUpToDateFile>
+      <CompileUpToDateFile>$(IntDir)$(WindowsSubsystem).CompileUpToDateFile.tlog</CompileUpToDateFile>
+      <LinkUpToDateFile>$(IntDir)$(WindowsSubsystem).LinkUpToDateFile.tlog</LinkUpToDateFile>
+      <RemoteProjectDirFile>$(IntDir)$(WindowsSubsystem).RemoteProjectDirFile.tlog</RemoteProjectDirFile>
+    </PropertyGroup>
+  </Target> 
+
+  <Target Name="_CopySources" DependsOnTargets="_ConsolidateSourcesToCopy;_PrepareUpToDateChecks;_ValidateSources;_ResolveWSLTarget" >
+    <CopySources Condition="'$(LocalRemoteCopySources)' != 'false' and '$(ResolvedWSLTarget)' != ''"
+      Sources="@(FinalSourcesToCopyRemotely)"
+      AdditionalSources="@(AdditionalSourcesToCopyRemotely)"
+      ProjectDir="$(ProjectDir)"
+      RemoteProjectDir="$(RemoteProjectDir)"
+      RemoteTarget="$(ResolvedWSLTarget)"
+      IntermediateDir="$(IntDir)"
+      OutputDir ="$(OutDir)"
+      RemoteOutputDir="$(RemoteOutDir)"
+      RemoteIntermediateDir="$(RemoteIntDir)"
+      RemoteProjectDirFile="$(RemoteProjectDirFile)"
+      UpToDateFile="$(CopySourcesUpToDateFile)"
+      LocalRemoteCopySources="$(LocalRemoteCopySources)"
+      ProjectPublicIncludePath="$(ProjectPublicIncludePath)"
+      LocalTargetPath="$(TargetPath)"
+      UseSSHCopy="$(UseSSHCopy)">
+      <Output TaskParameter="ResolvedRemoteProjectDir" PropertyName="_ResolvedRemoteProjectDir" />
+      <Output TaskParameter="ResolvedProjectPublicIncludePath" PropertyName="RemoteIncludePath" />
+      <Output TaskParameter="ResolvedTargetPath" PropertyName="ResolvedTargetPath" />
+    </CopySources>
+  </Target> 
+
+  <Target Name="ClCompile" Condition="'@(ClCompile)' != ''" DependsOnTargets="_ResolveWSLTarget;_SelectClCompile;_PrepareUpToDateChecks;_CopySources;ResolveRemoteDir">
+    <MultiMakeCl Condition="'%(ClCompile.ExcludedFromBuild)'!='true'"
+      Sources="@(ClCompile)"
+      ProjectDir="$(ProjectDir)"
+      RemoteProjectDir="$(_ResolvedRemoteProjectDir)"
+      IntermediateDir="$(IntDir)"
+      OutputDir ="$(OutDir)"
+      RemoteOutputDir="$(_ResolvedRemoteOutputDir)"
+      RemoteIntermediateDir="$(_ResolvedRemoteIntermediateDir)"
+      RemoteTarget="$(ResolvedWSLTarget)"
+      ImportedProjects="$(MSBuildAllProjects)"
+      IncludePath="$(IncludePath)"
+      EnableASAN="$(EnableASAN)"
+      UseSSHCopy="$(UseSSHCopy)"
+      LocalRemoteCopySources="$(LocalRemoteCopySources)">
+      <Output TaskParameter="RemoteClCompile" ItemName="RemoteClCompile"/>
+    </MultiMakeCl>
+
+    <GenerateNinja Condition="'@(RemoteClCompile)' != '' and '$(EnableIncrementalBuild)' == 'WithNinja'"
+      RemoteClCompile="@(RemoteClCompile)"
+      OutputFile="$(NinjaOutputFile)"
+      ProjectDir="$(ProjectDir)"
+      RemoteProjectDir="$(_ResolvedRemoteProjectDir)"
+      IntermediateDir="$(IntDir)"
+      OutputDir ="$(OutDir)"
+      RemoteOutputDir="$(_ResolvedRemoteOutputDir)"
+      RemoteIntermediateDir="$(_ResolvedRemoteIntermediateDir)"
+      ClInclude="@(ClInclude)"
+      UpToDateFile="$(CompileUpToDateFile)"
+      Timeout="$(RemoteCompileCommandTimeout)"
+      MultiProcBuild="$(MultiProcBuild)"
+      MultiProcNumber="$(MultiProcNumber)"
+      RemoteTarget="$(ResolvedWSLTarget)"
+      LocalRemoteCopySources="$(LocalRemoteCopySources)"
+      UseSSHCopy="$(UseSSHCopy)">
+      <Output TaskParameter="RemoteLink" ItemName="RemoteLink"/>
+      <Output TaskParameter="IsCompileUpToDate" PropertyName="IsCompileUpToDate"/>
+    </GenerateNinja>
+
+    <Compile Condition="'@(RemoteClCompile)' != '' and '$(EnableIncrementalBuild)' == 'No'"
+      ProjectDir="$(ProjectDir)"
+      RemoteProjectDir="$(_ResolvedRemoteProjectDir)"
+      IntermediateDir="$(IntDir)"
+      OutputDir ="$(OutDir)"
+      RemoteIntermediateDir="$(_ResolvedRemoteIntermediateDir)"
+      RemoteOutputDir="$(_ResolvedRemoteOutputDir)"
+      RemoteClCompile="@(RemoteClCompile)"
+      ClInclude="@(ClInclude)"
+      UpToDateFile="$(CompileUpToDateFile)"
+      Timeout="$(RemoteCompileCommandTimeout)"
+      CopyObjectFiles="$(RemoteCompileLocalCopyObjectFiles)"
+      MultiProcBuild="$(MultiProcBuild)"
+      MultiProcNumber="$(MultiProcNumber)"
+      RemoteTarget="$(ResolvedWSLTarget)"
+      LocalRemoteCopySources="$(LocalRemoteCopySources)"
+      UseSSHCopy="$(UseSSHCopy)">
+      <Output TaskParameter="RemoteLink" ItemName="RemoteLink"/>
+      <Output TaskParameter="IsCompileUpToDate" PropertyName="IsCompileUpToDate"/>
+    </Compile>
+
+    <WriteLinesToFile Overwrite="true" Encoding="Unicode" File="$(TLogLocation)\compile.read.1.tlog" Lines="@(ClCompile->'^%(Fullpath)');@(ClInclude->'^%(fullpath)')" />
+
+    <!-- The following new line is intentional. -->
+    <WriteLinesToFile Overwrite="true" Encoding="Unicode" File="$(TLogLocation)\compile.write.1.tlog" Lines="@(ClCompile->'^%(Fullpath)
+$(CompileUpToDateFile)')" />
+  </Target>
+
+  <Target Name="Link" DependsOnTargets="_ResolveWSLTarget;_ExtractSharedLibraryReferences">
+    <ItemGroup>
+      <Link>
+        <TimestampSurrogate Condition="'%(Link.TimestampSurrogate)' == ''">$(CompileUpToDateFile)</TimestampSurrogate>
+      </Link>
+    </ItemGroup>
+
+    <Ld Condition="'@(Link)' != ''"
+      ProjectDir="$(ProjectDir)"
+      RemoteProjectDir="$(_ResolvedRemoteProjectDir)"
+      RemoteIntermediateDir="$(_ResolvedRemoteIntermediateDir)"
+      RemoteOutputDir="$(_ResolvedRemoteOutputDir)"
+      OutputDir ="$(OutDir)"
+      ProjectFileName="$(ProjectFileName)"
+      IntermediateDir="$(IntDir)"
+      Sources="@(Link)"
+      OutputFile="%(Link.OutputFile)"
+      ShowProgress="%(Link.ShowProgress)"
+      Version="%(Link.Version)"
+      VerboseOutput="%(Link.VerboseOutput)"
+      Trace="%(Link.Trace)"
+      TraceSymbols="%(Link.TraceSymbols)"
+      PrintMap="%(Link.PrintMap)"
+      UnresolvedSymbolReferences="%(Link.UnresolvedSymbolReferences)"
+      OptimizeForMemory="%(Link.OptimizeForMemory)"
+      SharedLibrarySearchPath="%(Link.SharedLibrarySearchPath)"
+      AdditionalLibraryDirectories="%(Link.AdditionalLibraryDirectories);@(SharedLibraryDirectories)"
+      IgnoreSpecificDefaultLibraries="%(Link.IgnoreSpecificDefaultLibraries)"
+      IgnoreDefaultLibraries="%(Link.IgnoreDefaultLibraries)"
+      AdditionalDependencies="%(Link.AdditionalDependencies)"
+      ForceUndefineSymbolReferences="%(Link.ForceUndefineSymbolReferences)"
+      LibraryDependencies="%(Link.LibraryDependencies);@(SharedLibrarySources)"
+      DebuggerSymbolInformation="%(Link.DebuggerSymbolInformation)"
+      GenerateMapFile="%(Link.GenerateMapFile)"
+      Relocation="%(Link.Relocation)"
+      FunctionBinding="%(Link.FunctionBinding)"
+      NoExecStackRequired="%(Link.NoExecStackRequired)"
+      LinkDLL="%(Link.LinkDLL)"
+      WholeArchiveBegin="%(Link.WholeArchiveBegin)"
+      AdditionalOptions="%(Link.AdditionalOptions)"
+      WholeArchiveEnd="%(Link.WholeArchiveEnd)"
+      RemoteToolExe="$(RemoteLdToolExe)"
+      Timeout="$(RemoteLdCommmandTimeout)"
+      UpToDateFile="$(LinkUpToDateFile)"
+      IsCompileUpToDate="$(IsCompileUpToDate)"
+      EnableASAN="$(EnableASAN)"
+      UseOfStl="$(UseOfStl)"
+      RemoteTarget="$(ResolvedWSLTarget)"
+      LocalRemoteCopySources="$(LocalRemoteCopySources)"
+      UseSSHCopy="$(UseSSHCopy)"
+      CopyOutputFile="$(RemoteLinkLocalCopyOutput)">
+      <Output TaskParameter="RemoteTargetPath" ItemName="RemoteTargetPath"/>
+    </Ld>
+
+    <WriteLinesToFile Overwrite="true" Condition="'@(ProjectReferenceToLink->HasMetadata(TimestampSurrogate))' != ''" Encoding="Unicode" File="$(TLogLocation)\link.read.1.tlog" Lines="@(Link->'^%(Fullpath)','|');@(ProjectReferenceToLink->'%(TimestampSurrogate)'->Distinct())" />
+
+    <WriteLinesToFile Overwrite="true" Encoding="Unicode" File="$(TLogLocation)\link.write.1.tlog" Lines="@(Link->'^%(Fullpath)','|');$(LinkUpToDateFile)" />
+  </Target>
+  
+  <Target Name="Lib" DependsOnTargets="_ResolveWSLTarget;_PrepareUpToDateChecks">
+    <ItemGroup>
+      <Lib>
+        <TimestampSurrogate Condition="'%(Lib.TimestampSurrogate)' == ''">$(CompileUpToDateFile)</TimestampSurrogate>
+      </Lib>
+    </ItemGroup>
+
+    <Ar Condition="'@(Lib)' != ''"
+      ProjectDir="$(ProjectDir)"
+      ProjectFileName="$(ProjectFileName)"
+      RemoteProjectDir="$(_ResolvedRemoteProjectDir)"
+      IntermediateDir="$(IntDir)"
+      OutputDir ="$(OutDir)"
+      RemoteOutputDir="$(_ResolvedRemoteOutputDir)"
+      RemoteIntermediateDir="$(_ResolvedRemoteIntermediateDir)"
+      Sources="@(Lib)"
+      Command="%(Lib.Command)"
+      CreateIndex="%(Lib.CreateIndex)"
+      CreateThinArchive="%(Lib.CreateThinArchive)"
+      NoWarnOnCreate="%(Lib.NoWarnOnCreate)"
+      TruncateTimestamp="%(Lib.TruncateTimestamp)"
+      SuppressStartupBanner="%(Lib.SuppressStartupBanner)"
+      Verbose="%(Lib.Verbose)"
+      OutputFile="%(Lib.OutputFile)"
+      RemoteToolExe="$(RemoteArToolExe)"
+      AdditionalOptions="%(Lib.AdditionalOptions)"      
+      Timeout="$(RemoteArCommmandTimeout)"
+      UpToDateFile="$(LinkUpToDateFile)"
+      IsCompileUpToDate="$(IsCompileUpToDate)"
+      RemoteTarget="$(ResolvedWSLTarget)"
+      LocalRemoteCopySources="$(LocalRemoteCopySources)"
+      UseSSHCopy="$(UseSSHCopy)"
+      CopyOutputFile="$(RemoteLinkLocalCopyOutput)">
+    </Ar>
+
+    <WriteLinesToFile Overwrite="true" Condition="'@(ProjectReferenceToLink->HasMetadata(TimestampSurrogate))' != ''" Encoding="Unicode" File="$(TLogLocation)\Lib.read.1.tlog" Lines="@(Lib->'^%(Fullpath)','|');@(ProjectReferenceToLink->'%(TimestampSurrogate)'->Distinct())" />
+
+    <WriteLinesToFile Overwrite="true" Encoding="Unicode" File="$(TLogLocation)\lib.write.1.tlog" Lines="@(Lib->'^%(Fullpath)');$(LinkUpToDateFile)" />
+  </Target>
+
+   <!-- Local build/link commands executed using MSBuild Exec task-->
+  <Target Name="PreBuildEvent" Condition="'$(PreBuildEventUseInBuild)'!='false'">
+    <Message Text="Description: %(PreBuildEvent.Message)" Condition="'%(PreBuildEvent.Message)' != '' and '%(PreBuildEvent.Command)' != ''"/>
+    <Exec Command="%(PreBuildEvent.Command)$(_BuildSuffix)" Condition="'%(PreBuildEvent.Command)' != ''"/>
+  </Target>
+
+  <Target Name="PreLinkEvent" Condition="'$(PreLinkEventUseInBuild)'!='false'" >
+    <Message Text="Description: %(PreLinkEvent.Message)" Condition="'%(PreLinkEvent.Message)' != '' and '%(PreLinkEvent.Command)' != ''"/>
+    <Exec Command="%(PreLinkEvent.Command)$(_BuildSuffix)" Condition="'%(PreLinkEvent.Command)' != ''"/>
+  </Target>
+
+  <Target Name="PostBuildEvent" AfterTargets="RemotePostBuildEvent"  Condition="'$(PostBuildEventUseInBuild)'!='false'">
+    <Message Text="Description: %(PostBuildEvent.Message)" Condition="'%(PostBuildEvent.Message)' != '' and '%(PostBuildEvent.Command)' != ''"/>
+    <Exec Command="%(PostBuildEvent.Command)$(_BuildSuffix)" Condition="'%(PostBuildEvent.Command)' != ''"/>
+  </Target>
+
+  <!-- Remote build/link commands -->
+  <Target Name="RemotePreBuildEvent" Condition="'$(RemotePreBuildEventUseInBuild)' != 'false'" DependsOnTargets="_ResolveWSLTarget;_CopySources">
+    <Message Text="Description: %(RemotePreBuildEvent.Message)" Condition="'%(RemotePreBuildEvent.Message)' != '' and '%(RemotePreBuildEvent.Command)' != ''"/>
+    <ExecuteCommand Condition="('%(RemotePreBuildEvent.Command)' != '')"
+      Command="%(RemotePreBuildEvent.Command)"
+      ProjectDir="$(ProjectDir)"
+      IntermediateDir="$(IntDir)"
+      Timeout="$(RemoteExecuteTimeout)"
+      WSLPath="$(ResolvedWSLTarget)">
+    </ExecuteCommand>
+  </Target>
+
+  <Target Name="RemotePreLinkEvent" Condition="'$(RemotePreLinkEventUseInBuild)' != 'false'" DependsOnTargets="_ResolveWSLTarget">
+    <Message Text="Description: %(RemotePreLinkEvent.Message)" Condition="'%(RemotePreLinkEvent.Message)' != '' and '%(RemotePreLinkEvent.Command)' != ''"/>
+    <ExecuteCommand Condition="('%(RemotePreLinkEvent.Command)' != '')" 
+      Command="%(RemotePreLinkEvent.Command)"
+      ProjectDir="$(ProjectDir)"
+      IntermediateDir="$(IntDir)"
+      Timeout="$(RemoteExecuteTimeout)"
+      WSLPath="$(ResolvedWSLTarget)">
+    </ExecuteCommand>
+  </Target>
+
+  <Target Name="RemotePostBuildEvent" Condition="'$(RemotePostBuildEventUseInBuild)' != 'false'" DependsOnTargets="_ResolveWSLTarget">
+    <Message Text="Description: %(RemotePostBuildEvent.Message)" Condition="'%(RemotePostBuildEvent.Message)' != '' and '%(RemotePostBuildEvent.Command)' != ''"/>
+    <ExecuteCommand Condition="('%(RemotePostBuildEvent.Command)' != '' )"
+      Command="%(RemotePostBuildEvent.Command)"
+      ProjectDir="$(ProjectDir)"
+      IntermediateDir="$(IntDir)"
+      Timeout="$(RemoteExecuteTimeout)"
+      WSLPath="$(ResolvedWSLTarget)">
+    </ExecuteCommand>
+  </Target>
+
+  <!--************************************
+       PROPERTY PAGES AND DESIGNTIME DEFS
+       ***********************************-->
+  
+  <!-- Designtime definitions -->
+  <ItemGroup>
+    <PropertyPageSchema Condition="'$(LocalRemoteCopySources)' == 'false'" Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_general_linux.xml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Condition="'$(LocalRemoteCopySources)' != 'false'" Include="$(LinuxCommonTargetsPath)$(LangID)\wsl2_general_linux.xml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\folder.xml">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_directories_linux.xml"/>
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_gcc_linux.xml"/>
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_ld_linux.xml" />
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_ar_linux.xml" />
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_debugger_linux.xml" />
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_build_events.xml" />
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\remote_copy_sources.xml"/>
+  </ItemGroup>
+
+  <!-- Property pages -->
+  <ItemGroup>
+    <!-- Unique items for the project -->
+    <CustomBuildStep Include="$(ProjectName)" />
+    <PreBuildEvent Include="$(ProjectName)" />
+    <PreLinkEvent Include="$(ProjectName)" />
+    <PostBuildEvent Include="$(ProjectName)" />
+    <RemotePreBuildEvent Include="$(ProjectName)" />
+    <RemotePreLinkEvent Include="$(ProjectName)" />
+    <RemotePostBuildEvent Include="$(ProjectName)" />
+
+    <!-- Tools that show up in the IDE property pages for Link/Lib -->
+    <ProjectTools Condition="'$(ConfigurationType)' == 'Application' or '$(ConfigurationType)' == 'DynamicLibrary'" Include="Link" />
+    <ProjectTools Condition="'$(ConfigurationType)' == 'StaticLibrary'" Include="Lib" />
+    <ProjectTools Include="CustomBuildStep" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <DetermineProjectTypeTargets>_SetLinuxISenseIdentifier;$(DetermineProjectTypeTargets)</DetermineProjectTypeTargets>
+  </PropertyGroup>
+
+  <Target Name="_SetLinuxISenseIdentifier">
+    <PropertyGroup>
+      <ToolsetISenseIdentifier>Linux;$(IntDir)iconfig.json</ToolsetISenseIdentifier>
+    </PropertyGroup>
+  </Target>
+
+  <ItemGroup>
+    <ProjectCapability Include="LinuxNative"/>
+    <ProjectCapability Include="LinuxWSLNative"/>
+  </ItemGroup>
+
+</Project>

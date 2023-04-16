@@ -1,0 +1,151 @@
+<!--
+***********************************************************************************************
+Linux.Cross.Common.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <!-- Required for enabling Team Build projects -->
+    <OutDirWasSpecified Condition=" '$(OutDir)'!='' AND '$(OutDirWasSpecified)'=='' ">true</OutDirWasSpecified>
+    <OutDirWasSpecified Condition=" '$(OutDir)'=='' AND '$(OutDirWasSpecified)'=='' ">false</OutDirWasSpecified>
+
+    <IntDir Condition="'$(IntDir)'=='' AND '$(IntermediateOutputPath)'!=''">$(IntermediateOutputPath)</IntDir>
+    <IntDir Condition="'$(IntDir)'=='' AND '$(IntermediateOutputPath)'==''">obj\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(OutDir)'=='' AND '$(ProjectDir)' == ''">$(IntDir)</OutDir>
+    <OutDir Condition="'$(OutDir)'=='' AND '$(ProjectDir)' != ''">bin\$(Platform)\$(Configuration)\</OutDir>
+
+    <!-- Disable features not supported by Linux projects -->
+    <UseOfMFC>false</UseOfMFC>
+    <UseOfATL>false</UseOfATL>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+
+  <!-- Default values -->
+  <PropertyGroup>
+    <TargetRuntime>Native</TargetRuntime>
+    <TargetExt />
+    <ProjectName Condition="'$(ProjectName)' == ''">$(MSBuildProjectName)</ProjectName>
+
+    <ConfigurationType Condition="'$(ConfigurationType)' == ''">Application</ConfigurationType>
+  </PropertyGroup>
+
+  <!-- ConfigurationType Specific values -->
+  <PropertyGroup Condition="'$(ConfigurationType)' == 'Application'">
+    <LinkCompiled>true</LinkCompiled>
+    <TargetExt>.out</TargetExt>
+    <TargetName Condition="'$(TargetName)' == ''">$(ProjectName)</TargetName>
+    <OutputType>exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ConfigurationType)' == 'DynamicLibrary'">
+    <LinkCompiled>true</LinkCompiled>
+    <TargetExt>.so.1.0</TargetExt>
+    <TargetName Condition="'$(TargetName)' == ''">lib$(ProjectName)</TargetName>
+    <OutputType>library</OutputType>
+  </PropertyGroup>
+
+   <PropertyGroup Condition="'$(ConfigurationType)' == 'StaticLibrary'">
+    <LibCompiled>true</LibCompiled>
+    <TargetExt>.a</TargetExt>
+    <TargetName Condition="'$(TargetName)' == ''">lib$(ProjectName)</TargetName>
+    <OutputType>staticlibrary</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- VCToolsInstallDir and WindowsSdkDir are required to statisfy the missing directory detection. -->
+    <VCToolsInstallDir Condition="'$(VCToolsInstallDir)' == ''">VCToolsInstallDir_is_not_defined</VCToolsInstallDir>
+    <WindowsSdkDir Condition="'$(WindowsSdkDir)' == ''">WindowsSdkDir_is_not_defined</WindowsSdkDir>
+    <_CheckDev11ToolsInstalled>false</_CheckDev11ToolsInstalled>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <CustomBuild>
+      <Message                     Condition="'%(CustomBuild.Message)'                    == ''">Performing Custom Build Tools</Message>
+      <LinkObjects                 Condition="'%(CustomBuild.LinkObjects)'                == ''">true</LinkObjects>
+      <TreatOutputAsContent        Condition="'%(CustomBuild.TreatOutputAsContent)'       == ''">false</TreatOutputAsContent>
+      <TrackerLogDirectory         Condition="'%(CustomBuild.TrackerLogDirectory)'        == ''">$(TLogLocation)</TrackerLogDirectory>
+      <MinimalRebuildFromTracking  Condition="'%(CustomBuild.MinimalRebuildFromTracking)' == ''">true</MinimalRebuildFromTracking>
+      <AcceptableNonZeroExitCodes  Condition="'%(CustomBuild.AcceptableNonZeroExitCodes)' == ''">$(AcceptableNonZeroExitCodes)</AcceptableNonZeroExitCodes>
+    </CustomBuild>
+    <CustomBuildStep>
+      <Message                     Condition="'%(CustomBuildStep.Message)'=='' and '$(LangID)'=='1033'" >Performing Custom Build Step</Message>
+    </CustomBuildStep>
+    <ProjectReference>
+      <LinkLibraryDependencies      Condition="'%(ProjectReference.LinkLibraryDependencies)' == '' and '$(ConfigurationType)' == 'StaticLibrary'">false</LinkLibraryDependencies>
+      <LinkLibraryDependencies      Condition="'%(ProjectReference.LinkLibraryDependencies)' == ''">true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs   Condition="'%(ProjectReference.UseLibraryDependencyInputs)' == ''">false</UseLibraryDependencyInputs>
+      <ReferenceOutputAssembly      Condition="'%(ProjectReference.ReferenceOutputAssembly)' == ''">false</ReferenceOutputAssembly>
+      <Private                      Condition="'%(ProjectReference.Private)' == ''">true</Private>
+    </ProjectReference>
+    <ClCompile>
+      <ClangMode>true</ClangMode>
+      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <DebugInformationFormat Condition="'$(UseDebugLibraries)' == 'true'">FullDebug</DebugInformationFormat>
+      <DebugInformationFormat Condition="'$(UseDebugLibraries)' != 'true'">Minimal</DebugInformationFormat>
+      <PreprocessorDefinitions Condition="'$(UseDebugLibraries)' != 'true'">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CAdditionalWarning>switch;no-deprecated-declarations;empty-body;conversion;return-type;parentheses;no-pointer-sign;no-format;uninitialized;unreachable-code;unused-function;unused-value;unused-variable;%(CAdditionalWarning)</CAdditionalWarning>
+      <CppAdditionalWarning>switch;no-deprecated-declarations;empty-body;conversion;return-type;parentheses;no-format;uninitialized;unreachable-code;unused-function;unused-value;unused-variable;%(CppAdditionalWarning)</CppAdditionalWarning>
+      <Optimization Condition="'$(UseDebugLibraries)' == 'true'">Disabled</Optimization>
+      <Optimization Condition="'$(UseDebugLibraries)' != 'true'">Full</Optimization>
+      <StrictAliasing>false</StrictAliasing>
+      <ProgramDatabaseFileName>$(IntDir)</ProgramDatabaseFileName>
+      <UnrollLoops>false</UnrollLoops>
+      <LinkTimeOptimization>false</LinkTimeOptimization>
+      <NoCommonBlocks>false</NoCommonBlocks>
+      <OmitFramePointers Condition="'$(UseDebugLibraries)' == 'true'">false</OmitFramePointers>
+      <OmitFramePointers Condition="'$(UseDebugLibraries)' != 'true'">true</OmitFramePointers>
+      <ExceptionHandling Condition="'%(ClCompile.ExceptionHandling)' == ''">Enabled</ExceptionHandling>
+      <ObjCExceptionHandling>Disabled</ObjCExceptionHandling>
+      <MakeStringsReadOnly>true</MakeStringsReadOnly>
+      <RelaxIEEE>false</RelaxIEEE>
+      <HideInlineMethods>false</HideInlineMethods>
+      <PositionIndependentCode>false</PositionIndependentCode>
+      <SymbolsHiddenByDefault>false</SymbolsHiddenByDefault>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ObjectFileName>$(IntDir)%(filename).o</ObjectFileName>
+      <CompileAs>Default</CompileAs>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <Verbose>false</Verbose>
+      <EnablePREfast Condition="'%(ClCompile.EnablePREfast)' == ''">false</EnablePREfast>
+      <OmitFramePointers Condition="'%(ClCompile.OmitFramePointers)' == ''">false</OmitFramePointers>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <PrecompiledHeaderOutputFileDirectory>$(IntDir)</PrecompiledHeaderOutputFileDirectory>
+      <PrecompiledHeaderOutputFile></PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderCompileAs>CompileAsCpp</PrecompiledHeaderCompileAs>
+      <CLanguageStandard Condition="'%(ClCompile.CLanguageStandard)' == ''">c11</CLanguageStandard>
+      <CppLanguageStandard Condition="'%(ClCompile.CppLanguageStandard)' == ''">c++11</CppLanguageStandard>
+      <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
+    </ClCompile>
+    <Link>
+      <ShowProgress>false</ShowProgress>
+      <Version>false</Version>
+      <VerboseOutput>false</VerboseOutput>
+      <Trace>false</Trace>
+      <PrintMap>false</PrintMap>
+      <IncrementalLink>false</IncrementalLink>
+      <IgnoreDefaultLibraries>false</IgnoreDefaultLibraries>
+      <OptimizeForMemory>false</OptimizeForMemory>
+      <DebuggerSymbolInformation>true</DebuggerSymbolInformation>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+    </Link>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <Command>Replacement</Command>
+      <CreateIndex>true</CreateIndex>
+      <NoWarnOnCreate>true</NoWarnOnCreate>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+    </Lib>
+  </ItemDefinitionGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)\Linux.Common.props" />
+
+</Project>

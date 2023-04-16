@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="ConfigurationGeneralAdvanced" OverrideMode="Extend" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  
+  <EnumProperty Name="PreferredToolArchitecture" DisplayName="首选的生成工具体系结构" Description="确定将使用哪些生成工具来编译程序(32 位、64 位或 64 位 Arm)。" Category="General" F1Keyword="VC.Project.VCConfiguration.PreferredToolArchitecture">
+    <EnumValue Name="" DisplayName="默认"/>
+    <EnumValue Name="arm64" DisplayName="64 位 Arm (arm64)"/>
+    <EnumValue Name="x86" DisplayName="32 位(x86)"/>
+    <EnumValue Name="x64" DisplayName="64 位(x64)"/>
+  </EnumProperty>
+</Rule>

@@ -1,0 +1,242 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.ClangTidy.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will impact
+          the way you build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="ClangTidy" AssemblyFile="$(MSBuildThisFileDirectory)Microsoft.Build.CppTasks.Common.dll"/>
+  <UsingTask TaskName="CLCommandLine" AssemblyFile="$(MSBuildThisFileDirectory)Microsoft.Build.CppTasks.Common.dll"/>
+
+  <!-- *******************************************************************************************
+        Clang Tidy Section
+       ******************************************************************************************* -->
+
+  <ItemGroup Condition="'$(ConfigurationType)'!='Utility' AND '$(ApplicationType)' != 'Linux'">
+    <!-- Properties page for Clang Tidy configuration -->
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)$(LangID)\clangtidy.xml" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ClangTidyDependsOn>
+      BeforeClangTidy;
+      $(ClangTidyDependsOn);
+      AfterClangTidy;
+    </ClangTidyDependsOn>
+    <ClangTidyAfterTargets Condition="'$(ClangTidyAfterTargets)'==''"></ClangTidyAfterTargets>
+  </PropertyGroup>
+
+  <!-- BeforeClangTidy: Redefine this target in your project in order to run tasks just before ClangTidy. -->
+  <Target Name="BeforeClangTidy">
+  </Target>
+
+  <!-- AfterClangTidy: Redefine this target in your project in order to run tasks just after ClangTidy. -->
+  <Target Name="AfterClangTidy">
+  </Target>
+
+  <PropertyGroup>
+    <ClangTidyLogFile>$(TargetName).ClangTidy.log</ClangTidyLogFile>
+    <ClangTidyProjectDirectory>$(TargetName).ClangTidy</ClangTidyProjectDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <CoreClangTidy Include="$(IntDir)"/>
+    <CoreClangTidy Condition="'$(TLogLocation)' != '$(IntDir)'" Include="$(TLogLocation)"/>
+  </ItemGroup>
+
+  <Target
+      Name="GetCompileCommands"
+      Returns="@(CompileCommands)"
+      Condition="'@(ClCompile)' != ''">
+
+    <!-- Make sure the directory exists. -->
+    <MakeDir Directories="$(IntDir)"/>
+
+    <ItemGroup>
+      <ClCompile>
+        <!-- add command line options that only clang-tidy will see -->
+        <AdditionalOptions>$(ClangTidyAdditionalOptions) %(ClCompile.AdditionalOptions)</AdditionalOptions>      
+
+        <!-- remove precompiled headers as compiler may not match clang-tidy toolset -->
+        <PrecompiledHeader />
+        <PrecompiledHeaderFile />
+        <PrecompiledHeaderOutputFile />
+        
+        <!-- remove settings which don't apply to clang -->
+        <BrowseInformation />
+        <BrowseInformationFile />
+        <CompileAsManaged />
+        <CompileAsWinRT />
+        <DisableLanguageExtensions />
+        <DisableSpecificWarnings />
+        <EnableFiberSafeOptimizations />
+        <MultiProcessorCompilation />
+        <EnableParallelCodeGeneration />
+        <EnablePREfast />
+        <EnforceTypeConversionRules />
+        <ErrorReporting />
+        <ExpandAttributedSource />
+        <ForceConformanceInForLoopScope />
+        <ForcedUsingFiles />
+        <GenerateXMLDocumentationFiles />
+        <IgnoreStandardIncludePath />
+        <MinimalRebuild />
+        <OpenMPSupport />
+        <PREfastAdditionalOptions />
+        <PREfastAdditionalPlugins />
+        <PREfastLog />
+        <PREfastProjectDirectory />
+        <PREfastRulesetDirectories />
+        <PREfastRulesetFile />
+        <ProgramDataBaseFileName />
+        <RemoveUnreferencedCodeData />
+        <SDLCheck />
+        <SpectreMitigation />
+        <StringPooling />
+        <TreatSpecificWarningsAsErrors />
+        <TreatWChar_tAsBuiltInType />
+        <UseFullPaths />
+        <WholeProgramOptimization />
+      </ClCompile>
+    </ItemGroup>
+  
+    <CLCommandLine
+        Condition="'%(ClCompile.ExcludedFromBuild)'!='true' and '%(ClCompile.CompilerIteration)' == ''"
+
+        BuildingInIDE                      ="$(BuildingInsideVisualStudio)"
+        Sources                            ="@(ClCompile)"
+
+        AdditionalIncludeDirectories       ="%(ClCompile.AdditionalIncludeDirectories)"
+        AdditionalOptions                  ="%(ClCompile.AdditionalOptions)"
+        AdditionalUsingDirectories         ="%(ClCompile.AdditionalUsingDirectories)"
+        AssemblerListingLocation           ="%(ClCompile.AssemblerListingLocation)"
+        AssemblerOutput                    ="%(ClCompile.AssemblerOutput)"
+        BasicRuntimeChecks                 ="%(ClCompile.BasicRuntimeChecks)"
+        BrowseInformation                  ="%(ClCompile.BrowseInformation)"
+        BrowseInformationFile              ="%(ClCompile.BrowseInformationFile)"
+        BufferSecurityCheck                ="%(ClCompile.BufferSecurityCheck)"
+        CallingConvention                  ="%(ClCompile.CallingConvention)"
+        ControlFlowGuard                   ="%(ClCompile.ControlFlowGuard)"
+        CompileAsManaged                   ="%(ClCompile.CompileAsManaged)"
+        CompileAsWinRT                     ="%(ClCompile.CompileAsWinRT)"
+        CompileAs                          ="%(ClCompile.CompileAs)"
+        ConformanceMode                    ="%(ClCompile.ConformanceMode)"
+        DebugInformationFormat             ="%(ClCompile.DebugInformationFormat)"
+        DiagnosticsFormat                  ="%(ClCompile.DiagnosticsFormat)"
+        DisableLanguageExtensions          ="%(ClCompile.DisableLanguageExtensions)"
+        DisableSpecificWarnings            ="%(ClCompile.DisableSpecificWarnings)"
+        EnableEnhancedInstructionSet       ="%(ClCompile.EnableEnhancedInstructionSet)"
+        EnableFiberSafeOptimizations       ="%(ClCompile.EnableFiberSafeOptimizations)"
+        EnableParallelCodeGeneration       ="%(ClCompile.EnableParallelCodeGeneration)"
+        EnablePREfast                      ="%(ClCompile.EnablePREfast)"
+        EnforceTypeConversionRules         ="%(ClCompile.EnforceTypeConversionRules)"
+        ErrorReporting                     ="%(ClCompile.ErrorReporting)"
+        ExceptionHandling                  ="%(ClCompile.ExceptionHandling)"
+        ExcludedInputPaths                 ="%(ClCompile.ExcludedInputPaths)"
+        ExpandAttributedSource             ="%(ClCompile.ExpandAttributedSource)"
+        FavorSizeOrSpeed                   ="%(ClCompile.FavorSizeOrSpeed)"
+        FloatingPointExceptions            ="%(ClCompile.FloatingPointExceptions)"
+        FloatingPointModel                 ="%(ClCompile.FloatingPointModel)"
+        ForceConformanceInForLoopScope     ="%(ClCompile.ForceConformanceInForLoopScope)"
+        ForcedIncludeFiles                 ="%(ClCompile.ForcedIncludeFiles)"
+        ForcedUsingFiles                   ="%(ClCompile.ForcedUsingFiles)"
+        FunctionLevelLinking               ="%(ClCompile.FunctionLevelLinking)"
+        GenerateXMLDocumentationFiles      ="%(ClCompile.GenerateXMLDocumentationFiles)"
+        IgnoreStandardIncludePath          ="%(ClCompile.IgnoreStandardIncludePath)"
+        InlineFunctionExpansion            ="%(ClCompile.InlineFunctionExpansion)"
+        IntrinsicFunctions                 ="%(ClCompile.IntrinsicFunctions)"
+        LanguageStandard                   ="%(ClCompile.LanguageStandard)"
+        MinimalRebuild                     ="%(ClCompile.MinimalRebuild)"
+        MultiProcessorCompilation          ="%(ClCompile.MultiProcessorCompilation)"
+        ObjectFileName                     ="%(ClCompile.ObjectFileName)"
+        OmitDefaultLibName                 ="%(ClCompile.OmitDefaultLibName)"
+        OmitFramePointers                  ="%(ClCompile.OmitFramePointers)"
+        OpenMPSupport                      ="%(ClCompile.OpenMPSupport)"
+        Optimization                       ="%(ClCompile.Optimization)"
+        PrecompiledHeader                  ="%(ClCompile.PrecompiledHeader)"
+        PrecompiledHeaderFile              ="%(ClCompile.PrecompiledHeaderFile)"
+        PrecompiledHeaderOutputFile        ="%(ClCompile.PrecompiledHeaderOutputFile)"
+        PREfastAdditionalOptions           ="%(ClCompile.PREfastAdditionalOptions)"
+        PREfastAdditionalPlugins           ="%(ClCompile.PREfastAdditionalPlugins)"
+        PREfastLog                         ="%(ClCompile.PREfastLog)"
+        PREfastRulesetFile                 ="%(ClCompile.PREfastRulesetFile)"
+        PREfastProjectDirectory            ="%(ClCompile.PREfastProjectDirectory)"
+        PREfastRulesetDirectories          ="%(ClCompile.PREfastRulesetDirectories)"
+        PreprocessKeepComments             ="%(ClCompile.PreprocessKeepComments)"
+        PreprocessorDefinitions            ="%(ClCompile.PreprocessorDefinitions)"
+        PreprocessSuppressLineNumbers      ="%(ClCompile.PreprocessSuppressLineNumbers)"
+        PreprocessToFile                   ="%(ClCompile.PreprocessToFile)"
+        ProcessorNumber                    ="%(ClCompile.ProcessorNumber)"
+        ProgramDataBaseFileName            ="%(ClCompile.ProgramDataBaseFileName)"
+        RemoveUnreferencedCodeData         ="%(ClCompile.RemoveUnreferencedCodeData)"
+        RuntimeLibrary                     ="%(ClCompile.RuntimeLibrary)"
+        RuntimeTypeInfo                    ="%(ClCompile.RuntimeTypeInfo)"
+        SDLCheck                           ="%(ClCompile.SDLCheck)"
+        ShowIncludes                       ="%(ClCompile.ShowIncludes)"
+        WarningVersion                     ="%(ClCompile.WarningVersion)"
+        SmallerTypeCheck                   ="%(ClCompile.SmallerTypeCheck)"
+        SpectreMitigation                  ="%(ClCompile.SpectreMitigation)"
+        StringPooling                      ="%(ClCompile.StringPooling)"
+        StructMemberAlignment              ="%(ClCompile.StructMemberAlignment)"
+        SupportJustMyCode                  ="%(ClCompile.SupportJustMyCode)"
+        SuppressStartupBanner              ="%(ClCompile.SuppressStartupBanner)"
+        TreatSpecificWarningsAsErrors      ="%(ClCompile.TreatSpecificWarningsAsErrors)"
+        TreatWarningAsError                ="%(ClCompile.TreatWarningAsError)"
+        TreatWChar_tAsBuiltInType          ="%(ClCompile.TreatWChar_tAsBuiltInType)"
+        UndefineAllPreprocessorDefinitions ="%(ClCompile.UndefineAllPreprocessorDefinitions)"
+        UndefinePreprocessorDefinitions    ="%(ClCompile.UndefinePreprocessorDefinitions)"
+        UseFullPaths                       ="%(ClCompile.UseFullPaths)"
+        UseUnicodeForAssemblerListing      ="%(ClCompile.UseUnicodeForAssemblerListing)"
+        WarningLevel                       ="%(ClCompile.WarningLevel)"
+        WholeProgramOptimization           ="%(ClCompile.WholeProgramOptimization)"
+        WinRTNoStdLib                      ="%(ClCompile.WinRTNoStdLib)"
+        XMLDocumentationFileName           ="%(ClCompile.XMLDocumentationFileName)"
+        CreateHotpatchableImage            ="%(CLCompile.CreateHotpatchableImage)"
+
+        TrackerLogDirectory                ="%(ClCompile.TrackerLogDirectory)"
+
+        TLogReadFiles                      ="@(CLTLogReadFiles)"
+        TLogWriteFiles                     ="@(CLTLogWriteFiles)"
+        ToolPath                           ="$(CLToolPath)"
+        ToolExe                            ="$(CLToolExe)"
+        TrackFileAccess                    ="$(TrackFileAccess)"
+        MinimalRebuildFromTracking         ="%(ClCompile.MinimalRebuildFromTracking)"
+        ToolArchitecture                   ="$(CLToolArchitecture)"
+        TrackerFrameworkPath               ="$(CLTrackerFrameworkPath)"
+        TrackerSdkPath                     ="$(CLTrackerSdkPath)"
+        TrackedInputFilesToIgnore          ="@(ClNoDependencies)"
+        DeleteOutputOnExecute              ="$(CLDeleteOutputOnExecute)"
+
+        AcceptableNonZeroExitCodes         ="%(ClCompile.AcceptableNonZeroExitCodes)"
+        YieldDuringToolExecution           ="$(ClYieldDuringToolExecution)"
+    >
+      <Output TaskParameter="CommandLines"  ItemName="CompileCommands" />
+    </CLCommandLine>
+  </Target>
+
+  <Target
+      Name="ClangTidy"
+      DependsOnTargets="$(ClangTidyDependsOn);GetCompileCommands"
+      AfterTargets="$(ClangTidyAfterTargets)">
+      
+    <ClangTidy
+        Condition                          ="'@(CompileCommands)'!=''"
+        CompileCommands                    ="@(CompileCommands)"
+
+        OutputFile                         ="$(IntDir)$(ClangTidyLogFile)"
+        BuildPath                          ="$(IntDir)$(ClangTidyProjectDirectory)"
+        Checks                             ="$(ClangTidyChecks)"
+        HeaderFilter                       ="$(ClangTidyHeaderFilter)"
+        WarningsInSystemHeaders            ="$(ClangTidyWarningsInSystemHeaders)"
+
+        ToolPath                           ="$(ClangTidyToolPath)"
+        ToolExe                            ="$(ClangTidyToolExe)" />
+  </Target>
+
+</Project>

@@ -1,0 +1,399 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.10.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file is used to build Visual C++ projects with the VS2010 toolset.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    
+  <PropertyGroup>
+    <!-- In VS2010, OutputPath was set in the Defaults.props.  Later version of VS, it was moved to .targets 
+    Since Redirection doesn't redirect Defaults.props, add it here. -->
+    <OutputPath>$(OutDir)</OutputPath>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.ToolsetLocation.targets"/>
+
+  <!-- Targets  missing in Vs2010 toolsets -->
+  <PropertyGroup>
+    <!-- Determine if the build is using Native tools or cross tools for AMD64 and IA64 . -->
+    <_IsNativeEnvironment Condition="'$(PROCESSOR_ARCHITECTURE)' == 'AMD64' and '$(Platform)' == 'X64'">true</_IsNativeEnvironment>
+    <_IsNativeEnvironment Condition="'$(PROCESSOR_ARCHITECTURE)' == 'IA64' and '$(Platform)' == 'Itanium'">true</_IsNativeEnvironment>
+  </PropertyGroup>
+
+  <!-- *******************************************************************************************
+        Properies to set before reference resolution
+       ******************************************************************************************* -->
+  <Target Name="_PrepareForAssemblyReferenceResolution" >
+    <!-- Determine if a project is native/managed.  If managed, then add mscorlib to managed projects for the build and ide. -->
+    <PropertyGroup>
+      <ManagedAssembly Condition="'$(TargetRuntime)' != 'Native' and '$(ConfigurationType)' != 'StaticLibrary' and '%(ClCompile.CompileAsManaged)' != 'false' and '%(ClCompile.CompileAsManaged)' != ''">true</ManagedAssembly>
+    </PropertyGroup>
+
+    <!-- Clear the target framework for Native projects -->
+    <PropertyGroup>
+      <TargetFrameworkMoniker Condition="'$(ManagedAssembly)' != 'true'"></TargetFrameworkMoniker>
+    </PropertyGroup>
+
+    <!-- Add/remove additional implict references for reference resolution -->
+    <PropertyGroup>
+      <AdditionalExplicitAssemblyReferences Condition="'$(ManagedAssembly)' == 'true'">mscorlib</AdditionalExplicitAssemblyReferences>
+      <!-- Filter out System.Core added by: Microsoft.NETFramework.props  -->
+      <AdditionalExplicitAssemblyReferences Condition="'$(ManagedAssembly)' != 'true'"></AdditionalExplicitAssemblyReferences>
+    </PropertyGroup>
+  </Target>
+
+  <!-- These properties needs to be set after importing Microsoft.common.targets, otherwise they will be overwritten -->
+  <PropertyGroup>
+    <ResolveReferencesDependsOn>_PrepareForAssemblyReferenceResolution;$(ResolveReferencesDependsOn)</ResolveReferencesDependsOn>
+    <ResolveAssemblyReferencesDependsOn>_PrepareForAssemblyReferenceResolution;$(ResolveAssemblyReferencesDependsOn)</ResolveAssemblyReferencesDependsOn>
+    <ResolveSDKReferencesDependsOn>_PrepareForAssemblyReferenceResolution;$(ResolveSDKReferencesDependsOn)</ResolveSDKReferencesDependsOn>
+  </PropertyGroup>
+
+  <!-- *******************************************************************************************
+        AllProjectOutputGroups
+        AllProjectOutputGroups returns specific files for needed for deployment.
+        Primary output, Debug Symbols, Content Files, Source Files, Documentation Files, etc
+       ******************************************************************************************* -->
+
+  <PropertyGroup>
+    <AllProjectOutputGroupsDependsOn>
+      $(AllProjectOutputGroupsDependsOn);
+      BuiltProjectOutputGroup;
+      DebugSymbolsProjectOutputGroup;
+      DocumentationProjectOutputGroup;
+      SatelliteDllsProjectOutputGroup;
+      SourceFilesProjectOutputGroup;
+      ContentFilesProjectOutputGroup;
+      SGenFilesOutputGroup
+    </AllProjectOutputGroupsDependsOn>
+  </PropertyGroup>
+
+  <Target Name="AllProjectOutputGroups" DependsOnTargets="$(AllProjectOutputGroupsDependsOn)" />
+
+  <!-- *************************BuiltProjectOutputGroup****************************************** -->
+  <PropertyGroup>
+    <BuiltProjectOutputGroupDependsOn>PrepareForBuild</BuiltProjectOutputGroupDependsOn>
+    <AddAppConfigToBuildOutputs Condition="('$(AddAppConfigToBuildOutputs)'=='') and ('$(OutputType)'!='library')">true</AddAppConfigToBuildOutputs>
+  </PropertyGroup>
+  <Target
+      Name="BuiltProjectOutputGroup"
+      Returns="@(BuiltProjectOutputGroupOutput)"
+      DependsOnTargets="$(BuiltProjectOutputGroupDependsOn)">
+
+    <ItemGroup>
+      <_BuiltProjectOutputGroupOutputIntermediate Include="$(TargetPath)">
+        <FinalOutputPath>$(TargetPath)</FinalOutputPath>
+      </_BuiltProjectOutputGroupOutputIntermediate>
+    </ItemGroup>
+
+    <!-- This item represents the app.config file -->
+    <ItemGroup>
+      <_BuiltProjectOutputGroupOutputIntermediate Include="$(AppConfig)"  Condition="'$(AddAppConfigToBuildOutputs)'=='true'">
+        <FinalOutputPath>$(TargetDir)$(TargetFileName).config</FinalOutputPath>
+        <TargetPath>$(TargetFileName).config</TargetPath>
+        <!-- For compatibility with 2.0 -->
+        <OriginalItemSpec>$(AppConfig)</OriginalItemSpec>
+      </_BuiltProjectOutputGroupOutputIntermediate>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_IsolatedComReference Include="@(COMReference)" Condition=" '%(COMReference.Isolated)' == 'true' "/>
+      <_IsolatedComReference Include="@(COMFileReference)" Condition=" '%(COMFileReference.Isolated)' == 'true' "/>
+    </ItemGroup>
+
+    <!-- This item represents the native manifest, example: WindowsApplication1.exe.manifest or Native.ClassLibrary1.manifest -->
+    <ItemGroup>
+      <_BuiltProjectOutputGroupOutputIntermediate Include="$(OutDir)$(_DeploymentTargetApplicationManifestFileName)" Condition="'@(NativeReference)'!='' or '@(_IsolatedComReference)'!=''">
+        <TargetPath>$(_DeploymentTargetApplicationManifestFileName)</TargetPath>
+        <!-- For compatibility with 2.0 -->
+        <OriginalItemSpec>$(OutDir)$(_DeploymentTargetApplicationManifestFileName)</OriginalItemSpec>
+      </_BuiltProjectOutputGroupOutputIntermediate>
+    </ItemGroup>
+
+    <!-- Convert intermediate items into final items; this way we can get the full path for each item -->
+    <ItemGroup>
+      <BuiltProjectOutputGroupOutput Include="@(_BuiltProjectOutputGroupOutputIntermediate->'%(FullPath)')" Condition="$(ConfigurationType) != 'StaticLibrary'">
+        <!-- For compatibility with 2.0 -->
+        <OriginalItemSpec Condition="'%(_BuiltProjectOutputGroupOutputIntermediate.OriginalItemSpec)' == ''">%(_BuiltProjectOutputGroupOutputIntermediate.FullPath)</OriginalItemSpec>
+      </BuiltProjectOutputGroupOutput>
+    </ItemGroup>
+  </Target>
+
+
+  <!-- *************************DebugSymbolsProjectOutputGroup****************************************** -->
+
+  <PropertyGroup>
+    <DebugSymbolsProjectOutputGroupDependsOn>$(DebugSymbolsProjectOutputGroupDependsOn)</DebugSymbolsProjectOutputGroupDependsOn>
+  </PropertyGroup>
+
+  <Target Name="DebugSymbolsProjectOutputGroup"
+          Returns="@(DebugSymbolsProjectOutputGroupOutput)"
+          DependsOnTargets="$(DebugSymbolsProjectOutputGroupDependsOn)">
+    <ItemGroup>
+      <!--  Remove values defined from Microsoft.Common.targets  -->
+      <DebugSymbolsProjectOutputGroupOutput Remove="@(DebugSymbolsProjectOutputGroupOutput)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$(ConfigurationType) != 'StaticLibrary'">
+      <Link Condition="'@(Link)' == ''" Include="Temp">
+        <localtemp>true</localtemp>
+      </Link>
+      <DebugSymbolsProjectOutputGroupOutput Include="@(Link->MetaData('ProgramDatabaseFile')->FullPath()->Distinct()->ClearMetaData())" />
+      <DebugSymbolsProjectOutputGroupOutput Remove="@(DebugSymbolsProjectOutputGroupOutput)" Condition="!Exists(%(DebugSymbolsProjectOutputGroupOutput.Identity))"/>
+      <DebugSymbolsProjectOutputGroupOutput>
+        <FinalOutputPath>%(FullPath)</FinalOutputPath>
+        <TargetPath>%(Filename)%(Extension)</TargetPath>
+      </DebugSymbolsProjectOutputGroupOutput>
+      <Link Condition="'%(Link.localtemp)' == 'true'" Remove="@(Link)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- *************************DocumentationProjectOutputGroup****************************************** -->
+
+  <PropertyGroup>
+    <DocumentationProjectOutputGroupDependsOn>$(DocumentationProjectOutputGroupDependsOn)ResolvedXDCMake;ComputeCLCompileGeneratedXDCFiles</DocumentationProjectOutputGroupDependsOn>
+  </PropertyGroup>
+  <Target
+      Name="DocumentationProjectOutputGroup"
+      Returns="@(DocumentationProjectOutputGroupOutput)"
+      DependsOnTargets="$(DocumentationProjectOutputGroupDependsOn)">
+    <ItemGroup>
+      <XDCMake Condition="'@(XDCMake)' == ''" Include="Temp">
+        <localtemp>true</localtemp>
+      </XDCMake>
+      <DocumentationProjectOutputGroupOutput Include="@(XDCMake->MetaData('OutputFile')->FullPath()->Distinct()->ClearMetaData())" />
+      <DocumentationProjectOutputGroupOutput Remove="@(DocumentationProjectOutputGroupOutput)" Condition="!Exists(%(DocumentationProjectOutputGroupOutput.Identity))"/>
+      <XDCMake Condition="'%(XDCMake.localtemp)' == 'true'" Remove="@(XDCMake)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- *************************SourceFilesProjectOutputGroup****************************************** -->
+
+  <PropertyGroup>
+    <SourceFilesProjectOutputGroupDependsOn>PrepareForBuild;AssignTargetPaths</SourceFilesProjectOutputGroupDependsOn>
+  </PropertyGroup>
+
+  <Target
+      Name="SourceFilesProjectOutputGroup"
+      Returns="@(SourceFilesProjectOutputGroupOutput)"
+      DependsOnTargets="$(SourceFilesProjectOutputGroupDependsOn)">
+
+    <AssignTargetPath Files="@(Compile)" RootFolder="$(MSBuildProjectDirectory)">
+      <Output TaskParameter="AssignedFiles" ItemName="_CompileWithTargetPath" />
+    </AssignTargetPath>
+
+    <ItemGroup>
+      <!-- First we deal with Compile, EmbeddedResource and AppConfig -->
+      <SourceFilesProjectOutputGroupOutput
+       Include="@(ClCompile->'%(FullPath)');
+                @(EmbeddedResource->'%(FullPath)');
+                @(LicxCompiler->'%(FullPath)');
+                @(MASM->'%(FullPath)');
+                @(ClInclude->'%(FullPath)');
+                @(Midl->'%(FullPath)');
+                @(ResourceCompile->'%(FullPath)');
+                @(Xsd->'%(FullPath)');
+                @(CustomBuild->'%(FullPath)');
+                @(Resource->'%(FullPath)');
+                @(Object->'%(FullPath)');
+                @(Library->'%(FullPath)');
+                @(Manifest->'%(FullPath)');
+                @(Image->'%(FullPath)');
+                @(Media->'%(FullPath)');
+                @(Font->'%(FullPath)');
+                @(_EmbedManagedResourceFile->'%(FullPath)');
+                @(AppConfigWithTargetPath->'%(FullPath)');
+                $(AdditionalSourceFiles)"/>
+
+      <!-- Include the project file -->
+      <SourceFilesProjectOutputGroupOutput Include="$(MSBuildProjectFullPath)">
+        <!-- For compatibility with 2.0 -->
+        <OriginalItemSpec>$(MSBuildProjectFullPath)</OriginalItemSpec>
+        <TargetPath>$(ProjectFileName)</TargetPath>
+      </SourceFilesProjectOutputGroupOutput>
+    </ItemGroup>
+  </Target>
+
+  <!-- *************************ContentFilesProjectOutputGroup****************************************** -->
+
+  <PropertyGroup>
+    <ContentFilesProjectOutputGroupDependsOn>$(ContentFilesProjectOutputGroupDependsOn);PrepareForBuild;AssignTargetPaths;</ContentFilesProjectOutputGroupDependsOn>
+  </PropertyGroup>
+
+  <Target
+      Name="ContentFilesProjectOutputGroup"
+      Returns="@(ContentFilesProjectOutputGroupOutput)"
+      DependsOnTargets="$(ContentFilesProjectOutputGroupDependsOn)">
+
+    <ItemGroup>
+      <_ContentFilesProjectOutputGroupOutput Include="@(ClCompile)" Condition="'%(ClCompile.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(EmbeddedResource)" Condition="'%(EmbeddedResource.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(_LicxFile)" Condition="'%(_LicxFile.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(ClInclude)" Condition="'%(ClInclude.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Midl)" Condition="'%(Midl.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(FxcOutputs)" Condition="'%(FxcOutputs.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(ResourceCompile)" Condition="'%(ResourceCompile.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Xsd)" Condition="'%(Xsd.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Xml)" Condition="'%(Xml.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Text)" Condition="'%(Text.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Font)" Condition="'%(Font.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(CustomBuild)" Condition="'%(CustomBuild.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Resource)" Condition="'%(Resource.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Object)" Condition="'%(Object.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Library)" Condition="'%(Library.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Manifest)" Condition="'%(Manifest.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Image)" Condition="'%(Image.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(Media)" Condition="'%(Media.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(_EmbedManagedResourceFile)" Condition="'%(_EmbedManagedResourceFile.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(AppConfigWithTargetPath)" Condition="'%(AppConfigWithTargetPath.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+      <_ContentFilesProjectOutputGroupOutput Include="@(None)" Condition="'%(None.DeploymentContent)'=='true'">
+        <_RootFolder>%(DefiningProjectDirectory)</_RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+
+      <_ContentFilesProjectOutputGroupOutput>
+        <RootFolder Condition="'%(_ContentFilesProjectOutputGroupOutput.RootFolder)' == ''">%(_RootFolder)</RootFolder>
+      </_ContentFilesProjectOutputGroupOutput>
+
+      <_ContentFilesProjectOutputGroupOutput Include="$(AdditionalContentFiles)" />
+
+      <!-- Add CustomBuild->Outputs since the output is different than the initial include -->
+      <_ContentFilesProjectOutputGroupOutput Include="@(CustomBuild->WithMetadataValue('TreatOutputAsContent', 'true')->Metadata('Outputs'))" >
+        <DeploymentContent>true</DeploymentContent>
+      </_ContentFilesProjectOutputGroupOutput>
+
+      <!-- Add CustomBuild->Outputs since the output is different than the initial include -->
+      <_ContentFilesProjectOutputGroupOutput Include="@(CustomBuildStep->WithMetadataValue('TreatOutputAsContent', 'true')->Metadata('Outputs'))" >
+        <DeploymentContent>true</DeploymentContent>
+      </_ContentFilesProjectOutputGroupOutput>
+
+      <ContentFilesProjectOutputGroupOutputFullPath Include="@(_ContentFilesProjectOutputGroupOutput->'%(FullPath)')" Condition="'%(_ContentFilesProjectOutputGroupOutput.DeploymentContent)'=='true'" />
+      <_ContentFilesProjectOutputGroupOutput Remove="@(_ContentFilesProjectOutputGroupOutput)" />
+    </ItemGroup>
+
+    <!-- AssignTargetPath uses the metadata "link" to override assigning TargetPath -->
+    <AssignTargetPath Condition="'@(ContentFilesProjectOutputGroupOutputFullPath)' != '' and '%(ContentFilesProjectOutputGroupOutputFullPath.RootFolder)' != ''" Files="@(ContentFilesProjectOutputGroupOutputFullPath)" RootFolder="%(ContentFilesProjectOutputGroupOutputFullPath.RootFolder)">
+      <Output TaskParameter="AssignedFiles" ItemName="ContentFilesProjectOutputGroupOutput" />
+    </AssignTargetPath>
+
+    <AssignTargetPath Condition="'@(ContentFilesProjectOutputGroupOutputFullPath)' != '' and '%(ContentFilesProjectOutputGroupOutputFullPath.RootFolder)' == ''" Files="@(ContentFilesProjectOutputGroupOutputFullPath)" RootFolder="$(ProjectDir)">
+      <Output TaskParameter="AssignedFiles" ItemName="ContentFilesProjectOutputGroupOutput" />
+    </AssignTargetPath>
+
+    <ItemGroup>
+      <ContentFilesProjectOutputGroupOutputFullPath Remove="@(ContentFilesProjectOutputGroupOutputFullPath)" />
+    </ItemGroup>
+  </Target>
+
+  <Target
+      Name="CopyWinMDArtifactsOutputGroup"
+      Returns=""/>
+
+  <Target Name="PrimaryWinMDOutputGroup"
+          Returns="" />
+
+  <Target
+      Name="GeneratedFilesOutputGroup"
+      Returns="" />
+
+  <!-- *******************************************************************************************
+        Override Dev10 Compute Reference CL Inputs target to avoid writing tlog file (WriteLinesToFile) during designtime build 
+        (otherwise it is a copy of Dev10 target)
+       ******************************************************************************************* -->
+  <!-- This will compute the references for the /FU switch on compiler. -->
+  <Target Name="ComputeReferenceCLInput"
+          DependsOnTargets="ResolveReferences"
+          Returns="@(ReferencePath)" >
+
+    <!-- Add additional switches to Cl.exe to support MultiTargeting -->
+    <ItemGroup>
+      <ClCompile Condition="'@(ClCompile)' != '' and '$(CLRSupport)' != 'false' and '$(CLRSupport)' != ''">
+        <AdditionalUsingDirectories>$(TargetFrameworkDirectory);%(ClCompile.AdditionalUsingDirectories)</AdditionalUsingDirectories>
+        <AdditionalOptions Condition="('$(TargetFrameworkVersion)' == 'v3.5' or '$(TargetFrameworkVersion)' == 'v3.0' or '$(TargetFrameworkVersion)' == 'v2.0')">/d1clr:nostdlib %(ClCompile.AdditionalOptions)</AdditionalOptions>
+        <AdditionalOptions Condition="'$(TargetFrameworkVersion)' == 'v4.0'">/clr:nostdlib %(ClCompile.AdditionalOptions)</AdditionalOptions>
+      </ClCompile>
+    </ItemGroup>
+
+    <!-- Add the results to the ReferencePath and to Compiler /FU switch -->
+    <ItemGroup Condition="('@(ProjectReference)'!='' or '@(Reference)'!='')">
+      <ProjectReferenceToCompile Condition="'%(ReferencePath.ReferenceOutputAssembly)' != 'false'" Include="@(ReferencePath)" />
+      <ClCompile Condition="'%(ClCompile.CompileAsManaged)' != 'false' and '%(ClCompile.CompileAsManaged)' != ''">
+        <ForcedUsingFiles Condition="'%(ClCompile.ForcedUsingFiles)' == ''">@(ProjectReferenceToCompile)</ForcedUsingFiles>
+        <ForcedUsingFiles Condition="'%(ClCompile.ForcedUsingFiles)' != ''">%(ClCompile.ForcedUsingFiles);@(ProjectReferenceToCompile)</ForcedUsingFiles>
+      </ClCompile>
+      <__ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')"/>
+      <_ReferenceCopyLocalPaths Include="%(__ReferenceCopyLocalPaths.FullPath)"/>
+      <!-- Convert to fullpath -->
+      <_ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths->'%(FullPath)')"/>
+      <!-- Remove any files that did not needed copying-->
+    </ItemGroup>
+
+    <!-- Write the references with CopyLocal flag to a tlog for cleaning (but only during real build, not designtime) -->
+    <WriteLinesToFile Condition="('@(_ReferenceCopyLocalPaths)'!='') and '$(DesignTimeBuild)' != 'true'" File="$(IntDir)$(ProjectName).write.1.tlog" Lines="@(_ReferenceCopyLocalPaths)"/>
+
+    <Message Condition="'$(_REFERENCE_DEBUG)'=='true' and '%(ClCompile.CompileAsManaged)' != 'false' and '%(ClCompile.CompileAsManaged)' != ''" Text="ReferencePath=@(ReferencePath)" Importance="high" />
+
+    <ItemGroup>
+      <ProjectReferenceToCompile Remove="@(ProjectReferenceToCompile)" />
+      <_ReferenceCopyLocalPaths Remove="@(_ReferenceCopyLocalPaths)" />
+      <__ReferenceCopyLocalPaths Remove="@(__ReferenceCopyLocalPaths)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- If the VCTargetPath was redirected to VCTargetsPath10, then general_file.xml doesn't exists. To correct this, use the current version of the xml instead.-->
+  <ItemGroup>
+    <PropertyPageSchema Include="$(CurrentVCTargetsPath)$(LangID)\general_file.xml">
+      <Context>File</Context>
+    </PropertyPageSchema>
+  </ItemGroup>  
+  
+</Project>

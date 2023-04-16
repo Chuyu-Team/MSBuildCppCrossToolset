@@ -1,0 +1,164 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.CurrentVersion.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Condition="Exists('$(ForceImportBeforeCppTargets)')" Project="$(ForceImportBeforeCppTargets)"/>
+    
+  <PropertyGroup>
+    <SolutionExt>.sln</SolutionExt>
+    <Language>C++</Language>
+    <DefaultLanguageSourceExtension>.cpp</DefaultLanguageSourceExtension>
+
+    <!-- List of optional installation bundles required -->
+    <RequiredBundles Condition="'$(ApplicationType)' == 'Android'">$(RequiredBundles);Component.MDD.Android</RequiredBundles>
+    <RequiredBundles Condition="'$(ApplicationType)' == 'iOS'">$(RequiredBundles);Component.MDD.IOS</RequiredBundles>
+
+    <!-- Ensure that IntDir and OutDir will contain proper trailing slash.  Also set the flag to warn the user.  -->
+    <IntDirTrailingSlashWarning Condition="'$(IntDir)' != '' and !HasTrailingSlash('$(IntDir)')">true</IntDirTrailingSlashWarning>
+    <OutDirTrailingSlashWarning Condition="'$(OutDir)' != '' and !HasTrailingSlash('$(OutDir)')">true</OutDirTrailingSlashWarning>
+    <IntDir Condition="'$(IntDir)' != '' and !HasTrailingSlash('$(IntDir)')">$(IntDir)\</IntDir>
+    <OutDir Condition="'$(OutDir)' != '' and !HasTrailingSlash('$(OutDir)')">$(OutDir)\</OutDir>
+
+    <!-- Correct OutputPath as it may be out of sync with OutDir -->
+    <OutputPath>$(OutDir)</OutputPath>
+    <!-- Prevent error about OutputPath in Microsoft.Common.CurrentVersion.targets which happens before "Missing toolset" error -->
+    <OutputPath Condition="'$(OutputPath)' == ''">Debug\</OutputPath>
+  </PropertyGroup>
+
+  <!-- *******************************************************************************************
+        Set Build Default Environment Variables
+       ******************************************************************************************* -->
+
+  <UsingTask TaskName="SetEnv" AssemblyFile="$(MSBuildThisFileDirectory)Microsoft.Build.CppTasks.Common.dll"/>
+
+  <!-- Determine to use the 32 or 64 bit tools. -->
+  <PropertyGroup>
+    <_IsNativeEnvironment Condition="'$(PROCESSOR_ARCHITECTURE)' == 'AMD64' and '$(Platform)' == 'X64'">true</_IsNativeEnvironment>
+    <_IsNativeEnvironment Condition="'$(PROCESSOR_ARCHITECTURE)' == 'IA64' and '$(Platform)' == 'Itanium'">true</_IsNativeEnvironment>
+    <!-- VS2013 is not using DefaultToolArchitecture (it is using PreferredToolArchitecture instead), but need to keep it defined for older toolsets -->
+    <DefaultToolArchitecture Condition="'$(DefaultToolArchitecture)' == '' and '$(_IsNativeEnvironment)' != 'true'">Native32Bit</DefaultToolArchitecture>
+    <DefaultToolArchitecture Condition="'$(DefaultToolArchitecture)' == '' and '$(_IsNativeEnvironment)' == 'true'">Native64Bit</DefaultToolArchitecture>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(LibraryWPath)' != '' and '$(TargetPlatformIdentifier)' == 'Windows' and '$(TargetPlatformVersion)' != '' and '$(TargetPlatformVersion)' != '7.0'">
+    <ReferencePath>$(LibraryWPath);$(ReferencePath)</ReferencePath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SetBuildDefaultEnvironmentVariablesDependsOn>
+      AddExternalIncludDirectoriesToPaths;
+      $(SetBuildDefaultEnvironmentVariablesDependsOn)
+    </SetBuildDefaultEnvironmentVariablesDependsOn>
+    <DetermineProjectTypeTargets>
+      $(DetermineProjectTypeTargets);
+      AddExternalIncludDirectoriesToPaths
+    </DetermineProjectTypeTargets>
+  </PropertyGroup>
+
+  <Target Name="AddExternalIncludDirectoriesToPaths"
+    DependsOnTargets="$(AddExternalIncludDirectoriesToPathsDependsOn)"
+    Condition="'$(UseEnv)' != 'true'">
+
+    <ItemGroup Condition="'$(ExternalIncludePath)' != ''">
+      <_ExternalIncludePathToInclude Include="$(ExternalIncludePath)"/>
+      <_ExternalIncludePathToInclude Remove="$(IncludePath)"/>
+      <_ExternalIncludePathToExclude Include="$(ExternalIncludePath)"/>
+      <_ExternalIncludePathToExclude Remove="$(ExcludePath)"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <IncludePath Condition="'@(_ExternalIncludePathToInclude)' != ''">$(IncludePath);@(_ExternalIncludePathToInclude)</IncludePath>
+      <ExcludePath Condition="'@(_ExternalIncludePathToExclude)' != ''">$(ExcludePath);@(_ExternalIncludePathToExclude)</ExcludePath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_ExternalIncludePathToInclude Remove="@(_ExternalIncludePathToInclude)" />
+      <_ExternalIncludePathToExclude Remove="@(_ExternalIncludePathToExclude)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="SetBuildDefaultEnvironmentVariables"
+          DependsOnTargets="$(SetBuildDefaultEnvironmentVariablesDependsOn)"
+          Condition="'$(UseEnv)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+
+    <!-- Vs2013 does not use NativeExecutablePath, but we have to keep this for older toolsets. -->
+    <PropertyGroup>
+      <ExecutablePath Condition="'$(_IsNativeEnvironment)' == 'true' and '$(NativeExecutablePath)' != ''">$(NativeExecutablePath)</ExecutablePath>
+    </PropertyGroup>
+
+    <SetEnv Name   ="PATH"
+            Value  ="$(ExecutablePath)"
+            Prefix ="false">
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="Path"/>
+    </SetEnv>
+
+    <SetEnv Name   ="LIB"
+            Value  ="$(LibraryPath)"
+            Prefix ="false">
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="LIB"/>
+    </SetEnv>
+
+    <SetEnv Name   ="LIBPATH"
+            Value  ="$(ReferencePath)"
+            Prefix ="false">
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="LIBPATH"/>
+    </SetEnv>
+
+    <SetEnv Name   ="INCLUDE"
+        Value  ="$(IncludePath)"
+        Prefix ="false" >
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="INCLUDE"/>
+    </SetEnv>
+
+    <SetEnv Name   ="EXTERNAL_INCLUDE"
+        Value  ="$(ExternalIncludePath)"
+        Prefix ="false" >
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="EXTERNAL_INCLUDE"/>
+    </SetEnv>
+
+  </Target>
+
+  <!-- *******************************************************************************************
+    Set User Macro Environment Variables
+     ******************************************************************************************* -->
+  <Target Name="SetUserMacroEnvironmentVariables" 
+          Condition="'@(BuildMacro)' != '' and '$(DesignTimeBuild)' != 'true'">
+    
+    <SetEnv Condition="'%(BuildMacro.EnvironmentVariable)' == 'true'"
+        Name   ="@(BuildMacro)"
+        Value  ="%(BuildMacro.Value)"
+        Prefix ="false">
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="%(BuildMacro.Identity)"/>
+    </SetEnv>
+    
+  </Target>
+  
+  <!-- *******************************************************************************************
+       Import Platform targets or Makefile
+       ******************************************************************************************* -->
+  <ImportGroup Condition="'$(ConfigurationType)' != 'Makefile'">
+    <Import Condition="'$(_ToolsetFound)' == 'true'" Project="$(_PlatformTargets)" />
+    <Import Condition="'$(_ToolsetFound)' == 'true' and '$(EnableUnitySupport)' == 'true'" Project="$(VCTargetsPath)\Microsoft.Cpp.Unity.targets" />
+    <Import Condition="'$(_UseDefaultToolset)' == 'true'" Project="$(_DefaultPlatformTargets)" />
+    <Import Condition="'$(_ToolsetFound)' != 'true' and '$(_UseDefaultToolset)' != 'true'" Project="$(VCTargetsPath)\Microsoft.Cpp.MissingToolset.targets"/>
+  </ImportGroup>
+  
+  <Import Condition="'$(ConfigurationType)' == 'Makefile'" Project="$(VCTargetsPath)\Microsoft.MakeFile.Targets"/>
+    
+    <!-- *******************************************************************************************
+        Cleaning targets
+       ******************************************************************************************* -->
+  <Import Project="$(VCTargetsPath)\Microsoft.CppClean.targets" />
+
+  <Import Condition="Exists('$(ForceImportAfterCppTargets)')" Project="$(ForceImportAfterCppTargets)"/>
+  
+</Project>

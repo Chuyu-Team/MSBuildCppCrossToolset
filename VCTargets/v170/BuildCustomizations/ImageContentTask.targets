@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(LangID)\$(MSBuildThisFileName).xml" />
+    <AvailableItemName Include="ImageContentTask">
+      <Targets>_ImageContentTask</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+
+  <UsingTask TaskName="Microsoft.VisualStudio.Graphics.Api.ImageContentTask" AssemblyFile="$(VSInstallDir)\Common7\IDE\Extensions\Microsoft\VsGraphics\Microsoft.VisualStudio.Graphics.Api.dll" />
+
+  <PropertyGroup>
+    <ContentFilesProjectOutputGroupDependsOn>$(ContentFilesProjectOutputGroupDependsOn);MakeDirsForImageContentTask</ContentFilesProjectOutputGroupDependsOn>
+  </PropertyGroup>
+
+  <!-- Makes the the directories that the task uses -->
+  <Target Name="MakeDirsForImageContentTask">
+
+    <ItemGroup Condition="'@(ImageContentTask)'!=''">
+      <ImageContentOutputs Include="@(ImageContentTask->Metadata('ContentOutput')->Distinct())">
+        <DeploymentContent>True</DeploymentContent>
+      </ImageContentOutputs>
+      <ImageContentTaskDirsToMake Include="@(ImageContentTask->DirectoryName())" />
+      <ImageContentOutputs>
+        <Link Condition="'%(ImageContentOutputs.DeploymentContent)'=='True'">$([MSBuild]::MakeRelative($(TargetDir), %(FullPath)))</Link> 
+      </ImageContentOutputs>
+
+      <None Include="@(ImageContentOutputs);" />
+    </ItemGroup>
+
+    <MakeDir Directories="@(ImageContentTaskDirsToMake)" />
+
+    <ItemGroup>
+      <ImageContentTaskDirsToMake Remove="@(ImageContentTaskDirsToMake)" />
+    </ItemGroup>
+  </Target>
+    
+  <!-- Inject a custom target into Clean by extending CleanDependsOn -->
+  <PropertyGroup>
+    <CleanDependsOn>
+	$(CleanDependsOn);
+	CustomAfterClean
+    </CleanDependsOn>
+  </PropertyGroup> 
+
+  <!-- Clean the generated output files -->
+  <Target Name="CustomAfterClean" DependsOnTargets="MakeDirsForImageContentTask">
+    <Delete Files="%(ImageContentTask.ContentOutput)" />
+  </Target>
+
+  <Target
+    Name="_ImageContentTask"
+    BeforeTargets="$(ImageContentTaskBeforeTargets)"
+    AfterTargets="$(ImageContentTaskAfterTargets)"
+    Condition="'@(ImageContentTask)' != ''"
+    DependsOnTargets="_SelectedFiles;MakeDirsForImageContentTask">
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <ImageContentTask Remove="@(ImageContentTask)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(ImageContentTask.Identity)" />
+    <ImageContentTask
+        Condition                    = "'@(ImageContentTask)' != '' and '%(ImageContentTask.ExcludedFromBuild)'!='true'"
+        Source                       = "%(ImageContentTask.Identity)"
+        ContentOutput                = "%(ImageContentTask.ContentOutput)"
+        Compress                     = "%(ImageContentTask.Compress)"
+        GeneratePremultipliedAlpha   = "%(ImageContentTask.GeneratePremultipliedAlpha)"
+        GenerateMips                 = "%(ImageContentTask.GenerateMips)"
+        TLogDir                      = "$(TLogLocation)"
+        IsDebugBuild                 = "$(UseDebugLibraries)"
+      />
+  </Target>
+
+</Project>

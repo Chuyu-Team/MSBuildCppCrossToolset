@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="Folder" DisplayName="常规" PageTemplate="generic" Description="空文件夹占位符" xmlns="http://schemas.microsoft.com/build/2009/properties">
+	<Rule.DataSource>
+		<DataSource Persistence="ProjectInstance" HasConfigurationCondition="False" ItemType="Folder"/>
+	</Rule.DataSource>
+
+	<StringProperty Name="Identity" DisplayName="文件夹名称" ReadOnly="true" Category="Misc"/>
+	<StringProperty Name="FullPath" DisplayName="完整路径" ReadOnly="true" Category="Misc"/>
+</Rule>

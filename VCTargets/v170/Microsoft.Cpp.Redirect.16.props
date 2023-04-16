@@ -1,0 +1,44 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.16.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+      created a backup copy.  Incorrect changes to this file will make it
+      impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+   <!-- check alternative VCTargetsPath16 location if DisableInstalledVCTargetsUse is set to true -->
+  <PropertyGroup>
+    <_VCTargetsPathForToolset Condition="'$(VCTargetsPath16)' != ''">$([MSBuild]::Unescape($([Microsoft.Build.Utilities.ToolLocationHelper]::FindRootFolderWhereAllFilesExist($(VCTargetsPath16), $(_RelativeToolsetFiles)))))</_VCTargetsPathForToolset>
+  </PropertyGroup>
+
+  <!-- try to find the toolset in VS 16.* installs  -->
+  <PropertyGroup Condition="'$(DisableInstalledVCTargetsUse)' != 'true' and '$(_VCTargetsPathForToolset)' == ''">
+    <_RelativeVCTargetsPath_16>Msbuild\Microsoft\VC\v160\</_RelativeVCTargetsPath_16>
+    <_VSInstallFolders_16>$([Microsoft.Build.Utilities.ToolLocationHelper]::GetFoldersInVSInstallsAsString('16.0', '17.0', ''))</_VSInstallFolders_16>
+    <_RelativeToolsetFiles_16>$(_RelativeVCTargetsPath_16)$(_RelativeToolsetProps);$(_RelativeVCTargetsPath_16)$(_RelativeToolsetTargets);$(_RelativeVCTargetsPath_16)$(_RelativePlatformProps);$(_RelativeVCTargetsPath_16)$(_RelativePlatformTargets)</_RelativeToolsetFiles_16>
+    <_VsInstallRootForToolset Condition="'$(_VSInstallFolders_16)' != ''">$([MSBuild]::Unescape($([Microsoft.Build.Utilities.ToolLocationHelper]::FindRootFolderWhereAllFilesExist($(_VSInstallFolders_16), $(_RelativeToolsetFiles_16)))))</_VsInstallRootForToolset>
+    <_VCTargetsPathForToolset Condition="'$(_VsInstallRootForToolset)' != ''">$(_VsInstallRootForToolset)\$(_RelativeVCTargetsPath_16)</_VCTargetsPathForToolset>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(_VCTargetsPathForToolset)' != ''">
+    <_ToolsetFound>true</_ToolsetFound>
+    <_ToolsetVCTargetsVersion>v160</_ToolsetVCTargetsVersion>
+  </PropertyGroup>
+
+  <!-- v142 tools don't have arm64 host versions  -->
+  <PropertyGroup>
+    <HostARM64Suported>false</HostARM64Suported>
+  </PropertyGroup>
+
+  <Import Condition="'$(_ToolsetFound)' == 'true'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.ToolsetLocation.props" />
+
+  <!-- try older VS versions if toolset is not found -->
+  <Import Condition="'$(_ToolsetFound)' != 'true'  and '$(MinSupportedVCTargetsVersion)' != 'v160'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.Redirect.15.props" />
+
+</Project>

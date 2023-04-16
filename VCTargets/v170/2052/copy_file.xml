@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="CopyFile" DisplayName="复制文件" Order="100" PageTemplate="tool" xmlns="http://schemas.microsoft.com/build/2009/properties">
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="CopyFileToFolders" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规" Description="常规"/>
+  </Rule.Categories>
+  <StringListProperty Name="DestinationFolders" DisplayName="目标目录" Description="要将文件复制到其中的文件夹。" Category="General" Subtype="folder">
+  </StringListProperty>
+  <StringProperty Name="DestinationFileName" DisplayName="目标文件名" Description="要将文件复制到其中的文件名。" Category="General">
+  </StringProperty>
+  <BoolProperty Name="TreatOutputAsContent" Category="General" DisplayName="将目标文件视为内容" Description="指定目标文件是否是可部署的内容。">
+  </BoolProperty>
+  <StringProperty Name="RootFolder" DisplayName="内容根文件夹" Description="要用于打包的内容根文件夹。" Category="General" Subtype="folder">
+  </StringProperty>
+  <DynamicEnumProperty Name="CopyFileAfterTargets" Category="General" DisplayName="在此后执行" Description="指定之后要运行的“复制文件”的目标。这对于项目中的所有复制文件都是相同的。" EnumProvider="Targets">
+    <DynamicEnumProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType=""/>
+    </DynamicEnumProperty.DataSource>
+    <DynamicEnumProperty.ProviderSettings>
+      <NameValuePair Name="Exclude" Value="^Compute"/>
+    </DynamicEnumProperty.ProviderSettings>
+  </DynamicEnumProperty>
+  <DynamicEnumProperty Name="CopyFileBeforeTargets" Category="General" DisplayName="在此前执行" Description="指定之前要运行的“复制文件”的目标。这对于项目中的所有复制文件都是相同的。" EnumProvider="Targets">
+    <DynamicEnumProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" ItemType=""/>
+    </DynamicEnumProperty.DataSource>
+    <DynamicEnumProperty.ProviderSettings>
+      <NameValuePair Name="Exclude" Value="^Compute"/>
+    </DynamicEnumProperty.ProviderSettings>
+  </DynamicEnumProperty>
+</Rule>

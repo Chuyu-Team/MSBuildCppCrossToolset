@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="XSD" PageTemplate="tool" DisplayName="XML 数据生成器工具" SwitchPrefix="/" Order="120" xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule.Categories>
+    <Category Name="General" DisplayName="常规"/>
+    <Category Name="All Options" DisplayName="所有选项" Subtype="Search"/>
+    <Category Name="Command Line" DisplayName="命令行" Subtype="CommandLine"/>
+  </Rule.Categories>
+  <Rule.DataSource>
+    <DataSource Persistence="ProjectFile" ItemType="Xsd" Label="" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+  <BoolProperty Name="SuppressStartupBanner" DisplayName="取消显示启动版权标志" Description="运行时不显示标准 Microsoft 版权数据。(/nologo)" Category="General" Switch="nologo" F1Keyword="VC.Project.VCXMLDataGeneratorTool.SupressStartupBanner">
+  </BoolProperty>
+  <StringProperty Name="Namespace" DisplayName="命名空间" Description="已生成的类文件的命名空间。默认命名空间为全局命名空间。(/namespace:[字符串])" Category="General" Switch="namespace:" F1Keyword="VC.Project.VCXMLDataGeneratorTool.Namespace">
+  </StringProperty>
+  <StringProperty Name="Language" DisplayName="语言" Description="用于已生成代码的语言。请从“CS”、“VB”、“JS”、“VJS”、“CPP”中选择，或者为实现 System.CodeDom.Compiler.CodeDomProvider 的类提供一个完全限定的名称。默认语言是“CS”(CSharp)。(/language:[字符串])" Category="General" Switch="language:" Visible="false">
+  </StringProperty>
+  <EnumProperty Name="GenerateFromSchema" DisplayName="从架构生成" Description="从架构生成的类型" Category="General" F1Keyword="VC.Project.VCXMLDataGeneratorTool.GenerateFromSchema">
+    <EnumValue Name="classes" Switch="classes" DisplayName="类" Description="针对此架构生成类。(/classes)">
+    </EnumValue>
+    <EnumValue Name="dataset" Switch="dataset" DisplayName="数据集" Description="针对此架构生成子类数据集。(/dataset)">
+    </EnumValue>
+  </EnumProperty>
+  <StringProperty Name="AdditionalOptions" DisplayName="附加选项" Description="附加选项" Category="Command Line" F1Keyword="vc.project.AdditionalOptionsPage">
+  </StringProperty>
+  <StringProperty Subtype="folder" Name="TrackerLogDirectory" DisplayName="跟踪器日志目录" Description="跟踪器日志目录。" Category="General" IncludeInCommandLine="false" Visible="false">
+  </StringProperty>
+</Rule>

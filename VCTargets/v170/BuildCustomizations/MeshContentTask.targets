@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(LangID)\$(MSBuildThisFileName).xml" />
+    <AvailableItemName Include="MeshContentTask">
+      <Targets>_MeshContentTask</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+
+  <UsingTask TaskName="Microsoft.VisualStudio.Graphics.Api.MeshContentTask" AssemblyFile="$(VSInstallDir)\Common7\IDE\Extensions\Microsoft\VsGraphics\Microsoft.VisualStudio.Graphics.Api.dll" />
+
+  <PropertyGroup>
+    <ContentFilesProjectOutputGroupDependsOn>$(ContentFilesProjectOutputGroupDependsOn);MakeDirsForMeshContentTask</ContentFilesProjectOutputGroupDependsOn>
+  </PropertyGroup>
+
+  <!-- Makes the the directories that the task uses -->
+  <Target Name="MakeDirsForMeshContentTask">
+
+    <ItemGroup Condition="'@(MeshContentTask)'!=''">
+      <MeshContentTaskDirsToMake Include="@(MeshContentOutputs->DirectoryName())" />
+    </ItemGroup>
+
+    <MakeDir Directories="@(MeshContentTaskDirsToMake)" />
+
+    <ItemGroup>
+      <MeshContentTaskDirsToMake Remove="@(MeshContentTaskDirsToMake)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Inject a custom target into Clean by extending CleanDependsOn -->
+  <PropertyGroup>
+    <CleanDependsOn>
+	$(CleanDependsOn);
+	CustomAfterClean
+    </CleanDependsOn>
+  </PropertyGroup> 
+
+
+  <!-- Clean the generated output files -->
+  <Target Name="CustomAfterClean" DependsOnTargets="MakeDirsForMeshContentTask">
+    <Delete Files="%(MeshContentTask.ContentOutput)" />
+  </Target>
+
+  <PropertyGroup>
+    <ContentFilesProjectOutputGroupDependsOn>$(ContentFilesProjectOutputGroupDependsOn);_MeshContentTask</ContentFilesProjectOutputGroupDependsOn>
+  </PropertyGroup>
+
+  <Target
+    Name="_MeshContentTask"
+    BeforeTargets="$(MeshContentTaskBeforeTargets)"
+    AfterTargets="$(MeshContentTaskAfterTargets)"
+    Condition="'@(MeshContentTask)' != ''"
+    DependsOnTargets="_SelectedFiles;MakeDirsForMeshContentTask">
+
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <MeshContentTask Remove="@(MeshContentTask)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+
+    <Message
+      Importance="High"
+      Text="%(MeshContentTask.Identity)" 
+    />
+
+    <MeshContentTask
+        Condition                    = "'@(MeshContentTask)' != '' and '%(MeshContentTask.ExcludedFromBuild)'!='true'"
+        Source                       = "%(MeshContentTask.Identity)"
+        ContentOutput                = "%(MeshContentTask.ContentOutput)"
+        TLogDir                      = "$(TLogLocation)"
+        IsDebugBuild                 = "$(UseDebugLibraries)"
+        >
+
+      <Output TaskParameter="AdditionalExportedFiles" ItemName="ExportedFiles" />
+
+    </MeshContentTask>
+
+    <ItemGroup>
+      <ExportedFiles>
+        <DeploymentContent>True</DeploymentContent>
+        <Link>%(Filename)%(Extension)</Link>
+      </ExportedFiles>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="@(ExportedFiles);" />
+    </ItemGroup>
+
+  </Target>
+
+</Project>

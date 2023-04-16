@@ -1,0 +1,30 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+      created a backup copy.  Incorrect changes to this file will make it
+      impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- ************************************************************************************ -->
+  <!--******************************* Redirection Logic *********************************** -->
+  <!-- ************************************************************************************ -->
+  <!-- Reset _Redirect value before redirecting. Also prevent the import of DesignTime.targets in redirected versions. -->
+  <PropertyGroup>
+    <_Redirect>false</_Redirect>
+    <_ImportMicrosoftCppDesignTime>false</_ImportMicrosoftCppDesignTime>
+    <DisableInstalledVCTargetsUse>false</DisableInstalledVCTargetsUse>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Redirect.17.targets" />
+
+  <PropertyGroup>
+    <_ImportMicrosoftCppDesignTime>true</_ImportMicrosoftCppDesignTime>
+  </PropertyGroup>
+
+</Project>

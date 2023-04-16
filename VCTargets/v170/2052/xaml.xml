@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright, Microsoft Corporation, All rights reserved.-->
+<Rule Name="XAML" DisplayName="XAML 编译器" Order="75" PageTemplate="tool" xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+  <Rule.Categories>
+    <Category Name="XamlCompiler" DisplayName="XAML 编译器"/>
+  </Rule.Categories>
+  
+  <Rule.DataSource>
+    <!-- A Page items must be present for this Rule to be active -->
+    <DataSource Persistence="ProjectFile" ItemType="Page" HasConfigurationCondition="true"/>
+  </Rule.DataSource>
+
+  <StringProperty Name="SuppressXamlWarnings" DisplayName="禁止显示的 XAML 警告" Description="要抑制的 XAML 编译器警告。列出为以 “;” 分隔的十进制整数值。" Category="XamlCompiler">
+        <StringProperty.DataSource>
+            <!-- But don't store the value on the Page Item, store it as a global property -->
+            <DataSource Persistence="ProjectFile" ItemType="" HasConfigurationCondition="true"/>
+        </StringProperty.DataSource>
+  </StringProperty>
+
+ </Rule>

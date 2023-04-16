@@ -1,0 +1,35 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Redirect.17.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+      created a backup copy.  Incorrect changes to this file will make it
+      impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- check if we have cpp targets installed by vcpkg -->
+  <PropertyGroup Condition="'$(VcpkgInstalledVCTargets)' == 'true' and '$(VCTargetsPath17)' != '' and '$(PlatformDirectory)' != '' and '$(ToolsetDirectory)' != ''">
+    <_VCTargetsPathForToolset>$(VCTargetsPath17)</_VCTargetsPathForToolset>
+  </PropertyGroup>
+
+  <!-- check alternative VCTargetsPath17 location if DisableInstalledVCTargetsUse is set to true -->
+  <PropertyGroup Condition="'$(VcpkgInstalledVCTargets)' != 'true' and '$(DisableInstalledVCTargetsUse)' == 'true' and '$(VCTargetsPath17)' != ''">
+    <_VCTargetsPathForToolset>$([MSBuild]::Unescape($([Microsoft.Build.Utilities.ToolLocationHelper]::FindRootFolderWhereAllFilesExist($(VCTargetsPath17), $(_RelativeToolsetFiles)))))</_VCTargetsPathForToolset>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(_VCTargetsPathForToolset)' != ''">
+    <_ToolsetFound>true</_ToolsetFound>
+    <_ToolsetVCTargetsVersion>v170</_ToolsetVCTargetsVersion>
+  </PropertyGroup>
+
+  <Import Condition="'$(_ToolsetFound)' == 'true'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.ToolsetLocation.props" />
+
+  <!-- try older VS versions if toolset is not found -->
+  <Import Condition="'$(_ToolsetFound)' != 'true'  and '$(MinSupportedVCTargetsVersion)' != 'v170'" Project="$(CurrentVCTargetsPath)\Microsoft.Cpp.Redirect.16.props" />
+
+</Project>
