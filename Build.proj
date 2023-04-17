@@ -41,11 +41,11 @@ MSBuild.exe "Build.proj"
       <PlatformsFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Linux.Tasks\Targets\Platforms\**\*.*"/>
     </ItemGroup>
     <Copy SourceFiles="@(PlatformsRootFiles)" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0" />
-    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\ARM\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\ARM64\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\MIPS\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\x64\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\x86\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\ARM\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\ARM64\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\MIPS\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\x64\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\x86\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
   </Target>
   
   <Target Name="_GetProjectAllConfiguration" Returns="@(AllProjectReferenceConfigurations)">
