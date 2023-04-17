@@ -12,7 +12,7 @@
 > 注意：不支持Windows，因为Windows下微软直接支持。
 
 ## 1.2. 兼容的编译器
-* GCC [正在进行]
+* GCC - YY_Cross_GCC_1_0 [正在进行]
 * CLang [尚未开始]
 
 > 这些编译工具将作为平台工具集实现。
@@ -35,15 +35,15 @@
 
 ```
 export VCTargetsPath=/home/john/Desktop/VCTargets/v170/
-export VCTargetsPath17=/home/john/Desktop/VCTargets/v170/
 ```
 
 它们将临时添加VCTargetsPath、VCTargetsPath17二个环境变量，如果需要持久配置，请自行修改系统配置。
 
 ## 2.3. 编译vcxproj项目
-假设项目位置： `/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj`。
-并且编译 Release x86，那么可以输入如下命令：
+假设项目位置： `/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj`。并且编译 Release x86，那么可以输入如下命令：
 
 ```
 dotnet msbuild '/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj' -p:Configuration=Release;Platform=x86
 ```
+
+> 温馨提示：`PlatformToolset`必须选择`YY_Cross_GCC_1_0`。

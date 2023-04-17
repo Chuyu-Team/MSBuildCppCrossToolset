@@ -73,7 +73,11 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <VCTargetsPath14 Condition="'$(VCTargetsPath14)' == '' or ('$(VCTargetsPath14)' != '' and !exists('$(VCTargetsPath14)'))">$(MSBuildProgramFiles32)\MSBuild\Microsoft.Cpp\v4.0\V140\</VCTargetsPath14>
     <VCTargetsPath15 Condition="'$(VCTargetsPath15)' == '' or ('$(VCTargetsPath15)' != '' and !exists('$(VCTargetsPath15)'))">$(MSBuildExtensionsPath32)\Microsoft\VC\v150\</VCTargetsPath15>
     <VCTargetsPath16 Condition="'$(VCTargetsPath16)' == '' or ('$(VCTargetsPath16)' != '' and !exists('$(VCTargetsPath16)'))">$(MSBuildExtensionsPath32)\Microsoft\VC\v160\</VCTargetsPath16>
+    <!--
+    __Fix__:因为VCTargetsPath17后面会重新用到，但是我们现在就是 VCTargetsPath17，多此一举定义一边VCTargetsPath17没有太大意义。
     <VCTargetsPath17 Condition="'$(VCTargetsPath17)' == '' or ('$(VCTargetsPath17)' != '' and !exists('$(VCTargetsPath17)'))">$(MSBuildExtensionsPath32)\Microsoft\VC\v170\</VCTargetsPath17>
+    -->
+    <VCTargetsPath17 Condition="'$(VCTargetsPath17)' == '' or ('$(VCTargetsPath17)' != '' and !exists('$(VCTargetsPath17)'))">$(MSBuildThisFileDirectory)</VCTargetsPath17>
   </PropertyGroup>
   
   <PropertyGroup>
