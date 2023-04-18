@@ -12,8 +12,8 @@
 > 注意：不支持Windows，因为Windows下微软直接支持。
 
 ## 1.2. 兼容的编译器
-* GCC - YY_Cross_GCC_1_0 [正在进行]
-* CLang [尚未开始]
+* GCC - YY_Cross_GCC_1_0
+* CLang [正在进行]
 
 > 这些编译工具将作为平台工具集实现。
 

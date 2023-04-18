@@ -14,4 +14,8 @@
     <Folder Include="Targets\" />
   </ItemGroup>
 
+  <Import Project="..\Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.projitems" Label="Shared" />
+
+  <Import Project="..\Microsoft.Build.Shared\Microsoft.Build.Shared.projitems" Label="Shared" />
+
 </Project>

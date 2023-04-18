@@ -19,12 +19,12 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <Sysroot></Sysroot>
     <ClangTarget></ClangTarget>
     <ToolExe>g++</ToolExe>
-    <CCompileToolExe Condition="'$(RemoteCCompileToolExe)' == ''">g++</CCompileToolExe>
-    <CppCompileToolExe Condition="'$(RemoteCppCompileToolExe)' == ''">g++</CppCompileToolExe>
-    <LdToolExe Condition="'$(RemoteLdToolExe)' == ''">g++</LdToolExe>
-    <ArToolExe Condition="'$(RemoteArToolExe)' == ''">ar</ArToolExe>
-    <GdbserverToolExe Condition="'$(RemoteGdbserverToolExe)' == ''">gdbserver</GdbserverToolExe>
-    <GdbToolExe Condition="'$(RemoteGdbToolExe)' == ''">gdb</GdbToolExe>
+    <RemoteCCompileToolExe Condition="'$(RemoteCCompileToolExe)' == ''">g++</RemoteCCompileToolExe>
+    <RemoteCppCompileToolExe Condition="'$(RemoteCppCompileToolExe)' == ''">g++</RemoteCppCompileToolExe>
+    <RemoteLdToolExe Condition="'$(RemoteLdToolExe)' == ''">g++</RemoteLdToolExe>
+    <RemoteArToolExe Condition="'$(RemoteArToolExe)' == ''">ar</RemoteArToolExe>
+    <RemoteGdbserverToolExe Condition="'$(RemoteGdbserverToolExe)' == ''">gdbserver</RemoteGdbserverToolExe>
+    <RemoteGdbToolExe Condition="'$(RemoteGdbToolExe)' == ''">gdb</RemoteGdbToolExe>
     <!-- Set $(ExecutablePath) used by Microsoft.Cpp.CurrentVersion.targets's SetBuildDefaultEnvironmentVariables target to set the PATH env var -->
     <ExecutablePath>$(Path)</ExecutablePath>
     <_IsClang>false</_IsClang>

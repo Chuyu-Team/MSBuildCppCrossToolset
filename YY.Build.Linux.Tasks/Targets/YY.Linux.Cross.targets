@@ -14,7 +14,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 -->
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <UsingTask TaskName="Microsoft.Build.Linux.Cross.Tasks.Ar" AssemblyFile="$(MSBuildthisFileDirectory)YY.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Ar" AssemblyFile="$(MSBuildthisFileDirectory)YY.Build.Linux.Tasks.dll"/>
   <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Compile" AssemblyFile="$(MSBuildthisFileDirectory)YY.Build.Linux.Tasks.dll"/>
   <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Ld" AssemblyFile="$(MSBuildthisFileDirectory)YY.Build.Linux.Tasks.dll"/>
 
@@ -114,9 +114,36 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   <Target Name="ClCompile" Condition="'@(ClCompile)' != ''">
     <Compile Condition="'%(ClCompile.ExcludedFromBuild)'!='true'"
              Sources="@(ClCompile)"
+             AdditionalIncludeDirectories="%(ClCompile.AdditionalIncludeDirectories)"
+             DebugInformationFormat="%(ClCompile.DebugInformationFormat)"
              ObjectFileName="%(ClCompile.ObjectFileName)"
+             WarningLevel="%(ClCompile.WarningLevel)"
+             TreatWarningAsError="%(ClCompile.TreatWarningAsError)"
+             AdditionalWarning="%(ClCompile.AdditionalWarning)"
+             Verbose="%(ClCompile.Verbose)"
+             Optimization="%(ClCompile.Optimization)"
+             StrictAliasing="%(ClCompile.StrictAliasing)"
+             UnrollLoops="%(ClCompile.UnrollLoops)"
+             LinkTimeOptimization="%(ClCompile.LinkTimeOptimization)"
+             OmitFramePointers="%(ClCompile.OmitFramePointers)"
+             NoCommonBlocks="%(ClCompile.NoCommonBlocks)"
+             PreprocessorDefinitions="%(ClCompile.PreprocessorDefinitions)"
+             UndefinePreprocessorDefinitions="%(ClCompile.UndefinePreprocessorDefinitions)"
+             UndefineAllPreprocessorDefinitions="%(ClCompile.UndefineAllPreprocessorDefinitions)"
+             ShowIncludes="%(ClCompile.ShowIncludes)"
+             PositionIndependentCode="%(ClCompile.PositionIndependentCode)"
+             ThreadSafeStatics="%(ClCompile.ThreadSafeStatics)"
+             RelaxIEEE="%(ClCompile.RelaxIEEE)"
+             HideInlineMethods="%(ClCompile.HideInlineMethods)"
+             SymbolsHiddenByDefault="%(ClCompile.SymbolsHiddenByDefault)"
+             ExceptionHandling="%(ClCompile.ExceptionHandling)"
+             RuntimeTypeInfo="%(ClCompile.RuntimeTypeInfo)"
+             CLanguageStandard="%(ClCompile.CLanguageStandard)"
+             CppLanguageStandard="%(ClCompile.CppLanguageStandard)"
              CompileAs="%(ClCompile.CompileAs)"
-             ToolExe="g++"
+             ForcedIncludeFiles="%(ClCompile.ForcedIncludeFiles)"
+             EnableASAN="%(ClCompile.EnableASAN)"
+             ToolExe="%(ClCompile.RemoteCompileToolExe)"
              >
       
     </Compile>
@@ -134,45 +161,40 @@ $(CompileUpToDateFile)')" />
         <TimestampSurrogate Condition="'%(Link.TimestampSurrogate)' == ''">$(CompileUpToDateFile)</TimestampSurrogate>
       </Link>
     </ItemGroup>
-      <ItemGroup>
-          <Link Include="%(ClCommandLine.ObjectFileName)" Condition="'@(ClCommandLine)' != ''">
-              
-          </Link>
-      </ItemGroup>
       <Ld Condition="'@(Link)' != ''"
           Sources="@(Link)"
           OutputFile="%(Link.OutputFile)"
+          ShowProgress="%(Link.ShowProgress)"
+          Version="%(Link.Version)"
+          VerboseOutput="%(Link.VerboseOutput)"
+          Trace="%(Link.Trace)"
+          TraceSymbols="%(Link.TraceSymbols)"
+          PrintMap="%(Link.PrintMap)"
+          UnresolvedSymbolReferences="%(Link.UnresolvedSymbolReferences)"
+          OptimizeforMemory="%(Link.OptimizeforMemory)"
+          SharedLibrarySearchPath="%(Link.SharedLibrarySearchPath)"
+          AdditionalLibraryDirectories="%(Link.AdditionalLibraryDirectories)"
+          IgnoreSpecificDefaultLibraries="%(Link.IgnoreSpecificDefaultLibraries)"
+          IgnoreDefaultLibraries="%(Link.IgnoreDefaultLibraries)"
+          ForceUndefineSymbolReferences="%(Link.ForceUndefineSymbolReferences)"
+          DebuggerSymbolInformation="%(Link.DebuggerSymbolInformation)"
+          GenerateMapFile="%(Link.GenerateMapFile)"
+          Relocation="%(Link.Relocation)"
+          FunctionBinding="%(Link.FunctionBinding)"
+          NoExecStackRequired="%(Link.NoExecStackRequired)"
+          LinkDll="%(Link.LinkDll)"
+          WholeArchiveBegin="%(Link.WholeArchiveBegin)"
+          AdditionalOptions="%(Link.AdditionalOptions)"
+          AdditionalDependencies="%(Link.AdditionalDependencies)"
+          WholeArchiveEnd="%(Link.WholeArchiveEnd)"
+          LibraryDependencies="%(Link.LibraryDependencies)"
+          BuildingInIde="%(Link.BuildingInIde)"
+          EnableASAN="%(Link.EnableASAN)"
+          UseOfStl="%(Link.UseOfStl)"
           ToolExe="$(LdToolExe)"
           >
-          
       </Ld>
       
-      <!--
-    <Ld Condition="'@(Link)' != ''"
-      Sources="@(Link)"
-      OutputFile="%(Link.OutputFile)"
-      ShowProgress="%(Link.ShowProgress)"
-      Version="%(Link.Version)"
-      VerboseOutput="%(Link.VerboseOutput)"
-      Trace="%(Link.Trace)"
-      TraceSymbols="%(Link.TraceSymbols)"
-      PrintMap="%(Link.PrintMap)"
-      OptimizeForMemory="%(Link.OptimizeForMemory)"
-      SharedLibrarySearchPath="%(Link.SharedLibrarySearchPath)"
-      AdditionalLibraryDirectories="%(Link.AdditionalLibraryDirectories);@(SharedLibraryDirectories)"
-      IgnoreSpecificDefaultLibraries="%(Link.IgnoreSpecificDefaultLibraries)"
-      IgnoreDefaultLibraries="%(Link.IgnoreDefaultLibraries)"
-      AdditionalDependencies="%(Link.AdditionalDependencies)"
-      ForceUndefineSymbolReferences="%(Link.ForceUndefineSymbolReferences)"
-      LibraryDependencies="%(Link.LibraryDependencies);@(SharedLibrarySources)"
-      DebuggerSymbolInformation="%(Link.DebuggerSymbolInformation)"
-      GenerateMapFile="%(Link.GenerateMapFile)"
-      LinkDLL="%(Link.LinkDLL)"
-      AdditionalOptions="%(Link.AdditionalOptions)"
-      Timeout="$(RemoteLdCommmandTimeout)"
-        >
-      <Output TaskParameter="RemoteTargetPath" ItemName="RemoteTargetPath"/>
-    </Ld>-->
       <Message Text="$(MSBuildProjectFile) -&gt; $(TargetPath)" Importance="High"/>
 
       <WriteLinesToFile Overwrite="true" Condition="'@(ProjectReferenceToLink->HasMetadata(TimestampSurrogate))' != ''" Encoding="Unicode" File="$(TLogLocation)\link.read.1.tlog" Lines="@(Link->'^%(Fullpath)','|');@(ProjectReferenceToLink->'%(TimestampSurrogate)'->Distinct())" />
@@ -188,13 +210,6 @@ $(CompileUpToDateFile)')" />
     </ItemGroup>
 
     <Ar Condition="'@(Lib)' != ''"
-      ProjectDir="$(ProjectDir)"
-      ProjectFileName="$(ProjectFileName)"
-      RemoteProjectDir="$(_ResolvedRemoteProjectDir)"
-      IntermediateDir="$(IntDir)"
-      OutputDir ="$(OutDir)"
-      RemoteOutputDir="$(_ResolvedRemoteOutputDir)"
-      RemoteIntermediateDir="$(_ResolvedRemoteIntermediateDir)"
       Sources="@(Lib)"
       Command="%(Lib.Command)"
       CreateIndex="%(Lib.CreateIndex)"
@@ -204,15 +219,8 @@ $(CompileUpToDateFile)')" />
       SuppressStartupBanner="%(Lib.SuppressStartupBanner)"
       Verbose="%(Lib.Verbose)"
       OutputFile="%(Lib.OutputFile)"
-      RemoteToolExe="$(RemoteArToolExe)"
       AdditionalOptions="%(Lib.AdditionalOptions)"      
-      Timeout="$(RemoteArCommmandTimeout)"
-      UpToDateFile="$(LinkUpToDateFile)"
-      IsCompileUpToDate="$(IsCompileUpToDate)"
-      RemoteTarget="$(ResolvedWSLTarget)"
-      LocalRemoteCopySources="$(LocalRemoteCopySources)"
-      UseSSHCopy="$(UseSSHCopy)"
-      CopyOutputFile="$(RemoteLinkLocalCopyOutput)">
+      ToolExe="$(RemoteArToolExe)">
     </Ar>
 
     <WriteLinesToFile Overwrite="true" Condition="'@(ProjectReferenceToLink->HasMetadata(TimestampSurrogate))' != ''" Encoding="Unicode" File="$(TLogLocation)\Lib.read.1.tlog" Lines="@(Lib->'^%(Fullpath)','|');@(ProjectReferenceToLink->'%(TimestampSurrogate)'->Distinct())" />

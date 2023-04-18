@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.CppTasks.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YY.Build.Linux.Tasks", "YY.Build.Linux.Tasks\YY.Build.Linux.Tasks.csproj", "{099B1749-31F9-45D9-9F63-7B5661CC0F1B}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.Build.CPPTasks", "Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.shproj", "{687DCB03-A1DD-48F2-9A6A-5A7AC4B6F0AE}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.Build.Shared", "Microsoft.Build.Shared\Microsoft.Build.Shared.shproj", "{20CD5D23-441C-4EFF-8277-F9724E686C3F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,5 +31,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1862E59-07CA-42CE-89EE-4F2BBBB21670}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.projitems*{099b1749-31f9-45d9-9f63-7b5661cc0f1b}*SharedItemsImports = 5
+		Microsoft.Build.Shared\Microsoft.Build.Shared.projitems*{099b1749-31f9-45d9-9f63-7b5661cc0f1b}*SharedItemsImports = 5
+		Microsoft.Build.Shared\Microsoft.Build.Shared.projitems*{20cd5d23-441c-4eff-8277-f9724e686c3f}*SharedItemsImports = 13
+		Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.projitems*{687dcb03-a1dd-48f2-9a6a-5a7ac4b6f0ae}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

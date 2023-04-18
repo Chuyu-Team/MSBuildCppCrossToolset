@@ -15,6 +15,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Microsoft.Build.CPPTasks\**" />
+    <EmbeddedResource Remove="Microsoft.Build.CPPTasks\**" />
+    <None Remove="Microsoft.Build.CPPTasks\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.3.2" IncludeAssets="all" />
   </ItemGroup>
 

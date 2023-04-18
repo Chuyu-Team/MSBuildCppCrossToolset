@@ -1,12 +1,10 @@
-﻿using Microsoft.Build.Framework;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Build.CPPTasks;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Shared;
 
-namespace YY.Build.Linux.Tasks.Shared
+namespace Microsoft.Build.CPPTasks
 {
     public enum ToolSwitchType
     {
@@ -284,12 +282,12 @@ namespace YY.Build.Linux.Tasks.Shared
         {
             get
             {
-                ErrorUtilities.VerifyThrow(type == ToolSwitchType.Boolean, "InvalidType", "ToolSwitchType.Boolean");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(type == ToolSwitchType.Boolean, "InvalidType", "ToolSwitchType.Boolean");
                 return booleanValue;
             }
             set
             {
-                ErrorUtilities.VerifyThrow(type == ToolSwitchType.Boolean, "InvalidType", "ToolSwitchType.Boolean");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(type == ToolSwitchType.Boolean, "InvalidType", "ToolSwitchType.Boolean");
                 booleanValue = value;
             }
         }
@@ -298,12 +296,12 @@ namespace YY.Build.Linux.Tasks.Shared
         {
             get
             {
-                ErrorUtilities.VerifyThrow(type == ToolSwitchType.Integer, "InvalidType", "ToolSwitchType.Integer");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(type == ToolSwitchType.Integer, "InvalidType", "ToolSwitchType.Integer");
                 return number;
             }
             set
             {
-                ErrorUtilities.VerifyThrow(type == ToolSwitchType.Integer, "InvalidType", "ToolSwitchType.Integer");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(type == ToolSwitchType.Integer, "InvalidType", "ToolSwitchType.Integer");
                 number = value;
             }
         }
@@ -312,12 +310,12 @@ namespace YY.Build.Linux.Tasks.Shared
         {
             get
             {
-                ErrorUtilities.VerifyThrow(type == ToolSwitchType.StringArray || type == ToolSwitchType.StringPathArray, "InvalidType", "ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(type == ToolSwitchType.StringArray || type == ToolSwitchType.StringPathArray, "InvalidType", "ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
                 return stringList;
             }
             set
             {
-                ErrorUtilities.VerifyThrow(type == ToolSwitchType.StringArray || type == ToolSwitchType.StringPathArray, "InvalidType", "ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(type == ToolSwitchType.StringArray || type == ToolSwitchType.StringPathArray, "InvalidType", "ToolSwitchType.StringArray or ToolSwitchType.StringPathArray");
                 stringList = value;
             }
         }
@@ -326,12 +324,12 @@ namespace YY.Build.Linux.Tasks.Shared
         {
             get
             {
-                ErrorUtilities.VerifyThrow(type == ToolSwitchType.ITaskItem, "InvalidType", "ToolSwitchType.ITaskItem");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(type == ToolSwitchType.ITaskItem, "InvalidType", "ToolSwitchType.ITaskItem");
                 return taskItem;
             }
             set
             {
-                ErrorUtilities.VerifyThrow(type == ToolSwitchType.ITaskItem, "InvalidType", "ToolSwitchType.ITaskItem");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(type == ToolSwitchType.ITaskItem, "InvalidType", "ToolSwitchType.ITaskItem");
                 taskItem = value;
             }
         }
@@ -340,12 +338,12 @@ namespace YY.Build.Linux.Tasks.Shared
         {
             get
             {
-                ErrorUtilities.VerifyThrow(type == ToolSwitchType.ITaskItemArray, "InvalidType", "ToolSwitchType.ITaskItemArray");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(type == ToolSwitchType.ITaskItemArray, "InvalidType", "ToolSwitchType.ITaskItemArray");
                 return taskItemArray;
             }
             set
             {
-                ErrorUtilities.VerifyThrow(type == ToolSwitchType.ITaskItemArray, "InvalidType", "ToolSwitchType.ITaskItemArray");
+                Microsoft.Build.Shared.ErrorUtilities.VerifyThrow(type == ToolSwitchType.ITaskItemArray, "InvalidType", "ToolSwitchType.ITaskItemArray");
                 taskItemArray = value;
             }
         }
@@ -379,7 +377,6 @@ namespace YY.Build.Linux.Tasks.Shared
 
         public ToolSwitch()
         {
-            type = ToolSwitchType.Boolean;
         }
 
         public ToolSwitch(ToolSwitchType toolType)
@@ -388,133 +385,4 @@ namespace YY.Build.Linux.Tasks.Shared
         }
     }
 
-    public class CommandLineToolTask : Microsoft.Build.Utilities.ToolTask
-    {
-        protected Dictionary<string, ToolSwitch> ActiveToolSwitches = new Dictionary<string, ToolSwitch>(StringComparer.OrdinalIgnoreCase);
-
-        protected virtual string AlwaysAppend
-        {
-            get
-            {
-                return string.Empty;
-            }
-            set
-            {
-            }
-        }
-
-        protected override string ToolName
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        protected override string GenerateFullPathToTool()
-        {
-            // Todo Linux上只考虑 sh
-            return "sh";
-        }
-
-        public bool IsPropertySet(string propertyName)
-        {
-            return ActiveToolSwitches.ContainsKey(propertyName);
-        }
-
-        protected void AddActiveSwitchToolValue(ToolSwitch switchToAdd)
-        {
-            if (switchToAdd.Type != 0 || switchToAdd.BooleanValue)
-            {
-                if (switchToAdd.SwitchValue != string.Empty)
-                {
-                    ActiveToolSwitches.Add(switchToAdd.SwitchValue, switchToAdd);
-                }
-            }
-            else if (switchToAdd.ReverseSwitchValue != string.Empty)
-            {
-                ActiveToolSwitches.Add(switchToAdd.ReverseSwitchValue, switchToAdd);
-            }
-        }
-
-        protected string ReadSwitchMap(string propertyName, string[][] switchMap, string value)
-        {
-            if (switchMap != null)
-            {
-                for (int i = 0; i < switchMap.Length; i++)
-                {
-                    if (string.Equals(switchMap[i][0], value, StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        return switchMap[i][1];
-                    }
-                }
-                /*
-                if (!IgnoreUnknownSwitchValues)
-                {
-                    logPrivate.LogErrorFromResources("ArgumentOutOfRange", new object[2] { propertyName, value });
-                }
-                */
-            }
-            return string.Empty;
-        }
-
-        protected override string GenerateCommandLineCommands()
-        {
-            return GetCommandLine();
-        }
-
-        public string GetCommandLine()
-        {
-            var CommendLine = "";
-
-            foreach (var Switch in ActiveToolSwitches)
-            {
-                if (Switch.Value.Type == ToolSwitchType.Boolean)
-                {
-                    if (!Switch.Value.BooleanValue)
-                        continue;
-                }
-
-                if (Switch.Value.SwitchValue.Length != 0)
-                {
-                    if (CommendLine.Length != 0)
-                        CommendLine += ' ';
-
-                    CommendLine += Switch.Value.SwitchValue;
-                }
-
-
-                if (Switch.Value.Type == ToolSwitchType.File)
-                {
-                    if (Switch.Value.Value.Length != 0)
-                    {
-                        CommendLine += ' ';
-                        CommendLine += '\"';
-                        CommendLine += Switch.Value.Value;
-                        CommendLine += '\"';
-                    }
-                }
-                else if (Switch.Value.Type == ToolSwitchType.ITaskItemArray)
-                {
-                    foreach(var Item in Switch.Value.TaskItemArray)
-                    {
-                        CommendLine += ' ';
-                        CommendLine += '\"';
-                        CommendLine += Item.ItemSpec;
-                        CommendLine += '\"';
-                    }
-                }
-            }
-
-            var _AlwaysAppend = AlwaysAppend;
-
-            if (CommendLine.Length != 0 && _AlwaysAppend.Length != 0)
-            {
-                CommendLine += ' ';
-                CommendLine += _AlwaysAppend;
-            }
-
-            return CommendLine;
-        }
-    }
 }
