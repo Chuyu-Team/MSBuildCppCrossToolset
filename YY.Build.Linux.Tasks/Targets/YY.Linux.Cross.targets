@@ -191,7 +191,7 @@ $(CompileUpToDateFile)')" />
           BuildingInIde="%(Link.BuildingInIde)"
           EnableASAN="%(Link.EnableASAN)"
           UseOfStl="%(Link.UseOfStl)"
-          ToolExe="$(LdToolExe)"
+          ToolExe="$(RemoteLdToolExe)"
           >
       </Ld>
       

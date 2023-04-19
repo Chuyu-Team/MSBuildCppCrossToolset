@@ -28,6 +28,8 @@ MSBuild.exe "Build.proj"
     <!--启动编译-->
     <MSBuild Projects="@(ProjectReference)" StopOnFirstFailure="True" BuildInParallel="True" Properties="$(GlobalProperties)"/>
     
+    <RemoveDir Directories="$(MSBuildThisFileDirectory)\Release"/>
+
     <!--复制文件到产出目录-->
     <ItemGroup>
       <VCTargetsFiles Include="$(MSBuildThisFileDirectory)\VCTargets\**\*.*"/>

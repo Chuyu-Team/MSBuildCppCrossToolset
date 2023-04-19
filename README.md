@@ -1,8 +1,13 @@
 # 关于 MSBuildCppCrossToolset
 重要提示：VCTargets中的文件从 `Microsoft Visual Studio\?\?\MSBuild\Microsoft\VC` 提取，Microsoft拥有其所有权利。
+
 重要提示：本项目还未完工……
 
 本项目基于微软VCTargets修改，为MSBuild实现了跨平台编译vcxproj。
+
+未来开发计划：
+* [ ] 解决增量编译不生效问题。
+* [ ] 优化并行生成效率。
 
 # 1. 兼容性
 ## 1.1. 兼容的操作系统
@@ -12,10 +17,13 @@
 > 注意：不支持Windows，因为Windows下微软直接支持。
 
 ## 1.2. 兼容的编译器
-* GCC - YY_Cross_GCC_1_0
-* CLang [正在进行]
+| 编译器名称     | 对应的平台工具集
+| -------------- | -----------
+| GCC            | YY_Cross_GCC_1_0
+| Clang          | YY_Cross_Clang_1_0
 
-> 这些编译工具将作为平台工具集实现。
+> 由于这些编译工具将作为平台工具集实现，因此使用时需要给对应的vcxproj配置平台工具集（`PlatformToolset`）。
+
 
 ## 1.3. 兼容的平台
 * ARM
@@ -46,4 +54,4 @@ export VCTargetsPath=/home/john/Desktop/VCTargets/v170/
 dotnet msbuild '/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj' -p:Configuration=Release;Platform=x86
 ```
 
-> 温馨提示：`PlatformToolset`必须选择`YY_Cross_GCC_1_0`。
+> 温馨提示：`PlatformToolset` 必须从 1.2. 兼容的编译器小节中对应的平台工具集中选择，比如说想用GCC就设置`YY_Cross_GCC_1_0`。
