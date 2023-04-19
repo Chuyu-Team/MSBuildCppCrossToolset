@@ -1,0 +1,111 @@
+﻿name: Build
+
+on: [push, pull_request]
+
+jobs:
+  Build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: 初始化
+      working-directory: ${{github.workspace}}
+      run: |
+          $ProgramFiles = ${env:ProgramFiles(x86)}
+
+          if (-not $ProgramFiles)
+          {
+              $ProgramFiles = $env:ProgramFiles
+          }
+          
+          $BuiltInVsWhereExe = "$ProgramFiles\Microsoft Visual Studio\Installer\vswhere.exe"
+
+          if (-not (Test-Path $BuiltInVsWhereExe))
+          {
+              throw "找不到vswhere.exe！"
+          }
+          
+          Write-Output $BuiltInVsWhereExe
+          
+          $LatestVisualStudioRoot = & $BuiltInVsWhereExe -latest -prerelease -property installationPath
+          
+          if (-not (Test-Path $LatestVisualStudioRoot))
+          {
+              throw "找不到 VisualStudioRoot！"
+          }
+          
+          echo "LatestVisualStudioRoot=$LatestVisualStudioRoot" >> $env:GITHUB_ENV
+          
+          $MSBuildBinPath="$LatestVisualStudioRoot\MSBuild\Current\Bin"
+          
+          if (-not (Test-Path $MSBuildBinPath))
+          {
+              $installationVersion = & $BuiltInVsWhereExe -latest -prerelease -property installationVersion
+              $majorVersion = "$installationVersion".Split('.')[0]
+              
+              $MSBuildBinPath="$LatestVisualStudioRoot\MSBuild\$majorVersion.0\Bin"
+          }
+          
+          if (-not (Test-Path $MSBuildBinPath))
+          {
+              throw "找不到 MSBuildBinPath！"
+          }
+          
+          echo "MSBuildBinPath=$MSBuildBinPath" >> $env:GITHUB_ENV
+          
+          if($env:GITHUB_REF.StartsWith("refs/tags/v", "CurrentCultureIgnoreCase"))
+          {
+              $BuildVersion = $env:GITHUB_REF.Remove(0, 11);
+              echo "BuildVersion=$BuildVersion" >> $env:GITHUB_ENV
+          }
+
+    - name: 执行编译
+      working-directory: ${{github.workspace}}
+      shell: pwsh
+      run: |
+          # MSBuild 目录更新到 Path
+          $Env:Path="${{env.MSBuildBinPath}};${{env.LatestVisualStudioRoot}}\Common7\IDE\CommonExtensions\Microsoft\TestWindow;" + $Env:Path
+
+          # 编译项目
+          &msbuild Build.proj
+          if($lastexitcode -ne 0)
+          {
+              throw "编译失败！退出代码：$lastexitcode"
+          }
+
+    - name: 文件打包
+      working-directory: ${{github.workspace}}
+      shell: cmd
+      run: |
+          :: 打包Release
+          pushd Release
+          7z a -tzip MSBuildCppCrossToolset-${{env.BuildVersion}}-Binary.zip VCTargets
+          if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
+          popd
+          7z u -tzip Release\MSBuildCppCrossToolset-${{env.BuildVersion}}-Binary.zip LICENSE.txt README.md
+
+          if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
+
+    - uses: actions/upload-artifact@v2
+      with:
+        path: |
+            Release/*.zip
+
+    # 失败时我们收集一些信息，用于诊断
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: ErrorLog
+        path: |
+            Release/**/*.*
+
+    - uses: xresloader/upload-to-github-release@v1
+      if: contains(github.ref, 'tags/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: "Release/MSBuildCppCrossToolset-*.zip"
+        overwrite: true
+        tags: true
+        draft: false
