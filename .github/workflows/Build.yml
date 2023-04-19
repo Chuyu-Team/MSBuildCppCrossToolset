@@ -74,38 +74,16 @@ jobs:
               throw "编译失败！退出代码：$lastexitcode"
           }
 
-    - name: 文件打包
-      working-directory: ${{github.workspace}}
-      shell: cmd
-      run: |
-          :: 打包Release
-          pushd Release
-          7z a -tzip MSBuildCppCrossToolset-${{env.BuildVersion}}-Binary.zip VCTargets
-          if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
-          popd
-          7z u -tzip Release\MSBuildCppCrossToolset-${{env.BuildVersion}}-Binary.zip LICENSE.txt README.md
-
-          if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
-
     - uses: actions/upload-artifact@v2
       with:
+        name: ReleaseArtifact
         path: |
-            Release/*.zip
-
+            Release/**/*.*
+            UnitTest/bin/**/*.*
     # 失败时我们收集一些信息，用于诊断
     - uses: actions/upload-artifact@v2
       if: failure()
       with:
         name: ErrorLog
         path: |
-            Release/**/*.*
-
-    - uses: xresloader/upload-to-github-release@v1
-      if: contains(github.ref, 'tags/')
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        file: "Release/MSBuildCppCrossToolset-*.zip"
-        overwrite: true
-        tags: true
-        draft: false
+            /**/*.*
