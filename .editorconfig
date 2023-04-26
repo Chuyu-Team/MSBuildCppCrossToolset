@@ -1,0 +1,7 @@
+﻿root = true
+
+[ReadMe.md]
+charset = utf-8-bom
+end_of_line = crlf
+indent_style = space
+insert_final_newline = true
