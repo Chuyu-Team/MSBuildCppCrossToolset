@@ -7,12 +7,16 @@ using Microsoft.Build.Framework;
 // using Microsoft.Build.Linux.Tasks;
 using Microsoft.Build.Utilities;
 using System.Resources;
+using Microsoft.Build.Shared;
+using System.Text;
+using System;
 
 namespace YY.Build.Linux.Tasks.GCC
 {
-    public class Compile : Microsoft.Build.CPPTasks.VCToolTask
+    public class Compile : TrackedVCToolTask
     {
         public Compile()
+            : base(Microsoft.Build.CppTasks.Common.Properties.Microsoft_Build_CPPTasks_Strings.ResourceManager)
         {
             UseCommandProcessor = false;
 
@@ -50,17 +54,54 @@ namespace YY.Build.Linux.Tasks.GCC
             switchOrderList.Add("ForcedIncludeFiles");
             switchOrderList.Add("EnableASAN");
             switchOrderList.Add("AdditionalOptions");
+            switchOrderList.Add("MapFile");
 
             base.IgnoreUnknownSwitchValues = true;
         }
-        
+
+        private bool PreprocessToFile = false;
+        private bool MinimalRebuild = false;
+
         private ArrayList switchOrderList;
+
+        private Dictionary<string, ITaskItem> trackedInputFilesToRemove;
+
+        private Dictionary<string, ITaskItem> trackedOutputFilesToRemove;
 
         protected override ArrayList SwitchOrderList => switchOrderList;
 
         protected override string ToolName => "g++";
 
         protected override string AlwaysAppend => "-c";
+
+        protected override ITaskItem[] TrackedInputFiles => Sources;
+
+        protected override string TrackerIntermediateDirectory
+        {
+            get
+            {
+                if (TrackerLogDirectory != null)
+                {
+                    return TrackerLogDirectory;
+                }
+                return string.Empty;
+            }
+        }
+
+        private string[] objectFiles;
+
+        [Output]
+        public string[] ObjectFiles
+        {
+            get
+            {
+                return objectFiles;
+            }
+            set
+            {
+                objectFiles = value;
+            }
+        }
 
         [Required]
         public ITaskItem[] Sources
@@ -882,14 +923,482 @@ namespace YY.Build.Linux.Tasks.GCC
             }
         }
 
-        public override bool Execute()
+        protected override bool GenerateCostomCommandsAccordingToType(CommandLineBuilder builder, string switchName, bool dummyForBackwardCompatibility, CommandLineFormat format = CommandLineFormat.ForBuildLog, EscapeFormat escapeFormat = EscapeFormat.Default)
+        {
+            if (string.Equals(switchName, "MapFile", StringComparison.OrdinalIgnoreCase))
+            {
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.File);
+                toolSwitch.DisplayName = "MapFile";
+                toolSwitch.ArgumentRelationList = new ArrayList();
+                toolSwitch.SwitchValue = "-MD -MF ";
+                toolSwitch.Name = "MapFile";
+
+                if (IsPropertySet("ObjectFileName"))
+                {
+                    toolSwitch.Value = base.ActiveToolSwitches["ObjectFileName"].Value + ".map";
+                }
+                else if(Sources.Length !=0)
+                {
+                    toolSwitch.Value = Environment.ExpandEnvironmentVariables(Sources[0].ItemSpec) + ".map";
+                }
+                else
+                {
+                    return true;
+                }
+
+                GenerateCommandsAccordingToType(builder, toolSwitch, format, escapeFormat);
+                return true;
+            }
+            return false;
+        }
+
+        protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
         {
             foreach (var Item in Sources)
             {
                 Log.LogMessage(MessageImportance.High, Item.ItemSpec);
             }
 
-            return base.Execute();
+            return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
+        }
+
+        public virtual string TrackerLogDirectory
+        {
+            get
+            {
+                if (IsPropertySet("TrackerLogDirectory"))
+                {
+                    return base.ActiveToolSwitches["TrackerLogDirectory"].Value;
+                }
+                return null;
+            }
+            set
+            {
+                base.ActiveToolSwitches.Remove("TrackerLogDirectory");
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.Directory);
+                toolSwitch.DisplayName = "Tracker Log Directory";
+                toolSwitch.Description = "Tracker Log Directory.";
+                toolSwitch.ArgumentRelationList = new ArrayList();
+                toolSwitch.Value = VCToolTask.EnsureTrailingSlash(value);
+                base.ActiveToolSwitches.Add("TrackerLogDirectory", toolSwitch);
+                AddActiveSwitchToolValue(toolSwitch);
+            }
+        }
+
+        protected bool InputDependencyFilter(string fullInputPath)
+        {
+            if (fullInputPath.EndsWith(".PDB", StringComparison.OrdinalIgnoreCase) || fullInputPath.EndsWith(".IDB", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            return !trackedInputFilesToRemove.ContainsKey(fullInputPath);
+        }
+
+        protected bool OutputDependencyFilter(string fullOutputPath)
+        {
+            if (fullOutputPath.EndsWith(".TLH", StringComparison.OrdinalIgnoreCase) || fullOutputPath.EndsWith(".TLI", StringComparison.OrdinalIgnoreCase) || fullOutputPath.EndsWith(".DLL", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            return !trackedOutputFilesToRemove.ContainsKey(fullOutputPath);
+        }
+
+        protected override int PostExecuteTool(int exitCode)
+        {
+            if (base.MinimalRebuildFromTracking || base.TrackFileAccess)
+            {
+                base.SourceOutputs = new CanonicalTrackedOutputFiles(base.TLogWriteFiles);
+                base.SourceDependencies = new CanonicalTrackedInputFiles(base.TLogReadFiles, Sources, base.ExcludedInputPaths, base.SourceOutputs, UseMinimalRebuildOptimization, MaintainCompositeRootingMarkers);
+                DependencyFilter includeInTLog = OutputDependencyFilter;
+                DependencyFilter dependencyFilter = InputDependencyFilter;
+                trackedInputFilesToRemove = new Dictionary<string, ITaskItem>(StringComparer.OrdinalIgnoreCase);
+                if (base.TrackedInputFilesToIgnore != null)
+                {
+                    ITaskItem[] array = base.TrackedInputFilesToIgnore;
+                    foreach (ITaskItem taskItem in array)
+                    {
+                        trackedInputFilesToRemove.Add(taskItem.GetMetadata("FullPath"), taskItem);
+                    }
+                }
+                trackedOutputFilesToRemove = new Dictionary<string, ITaskItem>(StringComparer.OrdinalIgnoreCase);
+                if (base.TrackedOutputFilesToIgnore != null)
+                {
+                    ITaskItem[] array2 = base.TrackedOutputFilesToIgnore;
+                    foreach (ITaskItem taskItem2 in array2)
+                    {
+                        trackedOutputFilesToRemove.Add(taskItem2.GetMetadata("FullPath"), taskItem2);
+                    }
+                }
+                //if (PreprocessToFile)
+                //{
+                //    base.SourceOutputs.RemoveDependenciesFromEntryIfMissing(base.SourcesCompiled, preprocessOutput);
+                //    base.SourceDependencies.RemoveDependenciesFromEntryIfMissing(base.SourcesCompiled, preprocessOutput);
+                //}
+                //else
+                {
+                    base.SourceOutputs.RemoveDependenciesFromEntryIfMissing(base.SourcesCompiled);
+                    base.SourceDependencies.RemoveDependenciesFromEntryIfMissing(base.SourcesCompiled);
+                }
+                if (exitCode != 0 && !MinimalRebuild)
+                {
+                    ITaskItem[] array5;
+                    ITaskItem[] upToDateSources;
+                    if (!PreprocessToFile && base.SourcesCompiled.Length > 1)
+                    {
+                        KeyValuePair<string, bool>[] array3 = new KeyValuePair<string, bool>[]
+                        {
+                            new KeyValuePair<string, bool>("ObjectFile", value: true)
+                        };
+                        ITaskItem[] sources = Sources;
+                        foreach (ITaskItem taskItem3 in sources)
+                        {
+                            string sourceKey = FileTracker.FormatRootingMarker(taskItem3);
+                            KeyValuePair<string, bool>[] array4 = array3;
+                            for (int l = 0; l < array4.Length; l++)
+                            {
+                                KeyValuePair<string, bool> keyValuePair = array4[l];
+                                string metadata = taskItem3.GetMetadata(keyValuePair.Key);
+                                if (keyValuePair.Value && !string.IsNullOrEmpty(metadata))
+                                {
+                                    base.SourceOutputs.AddComputedOutputForSourceRoot(sourceKey, metadata);
+                                }
+                            }
+                        }
+                        array5 = base.SourceDependencies.ComputeSourcesNeedingCompilation();
+                        List<ITaskItem> list = new List<ITaskItem>();
+                        int num = 0;
+                        ITaskItem[] array6 = base.SourcesCompiled;
+                        foreach (ITaskItem taskItem4 in array6)
+                        {
+                            if (num >= array5.Length)
+                            {
+                                list.Add(taskItem4);
+                            }
+                            else if (!array5[num].Equals(taskItem4))
+                            {
+                                list.Add(taskItem4);
+                            }
+                            else
+                            {
+                                num++;
+                            }
+                        }
+                        upToDateSources = list.ToArray();
+                        ITaskItem[] sources2 = Sources;
+                        foreach (ITaskItem taskItem5 in sources2)
+                        {
+                            string sourceRoot = FileTracker.FormatRootingMarker(taskItem5);
+                            KeyValuePair<string, bool>[] array7 = array3;
+                            for (int num2 = 0; num2 < array7.Length; num2++)
+                            {
+                                KeyValuePair<string, bool> keyValuePair2 = array7[num2];
+                                string metadata2 = taskItem5.GetMetadata(keyValuePair2.Key);
+                                if (keyValuePair2.Value && !string.IsNullOrEmpty(metadata2))
+                                {
+                                    base.SourceOutputs.RemoveOutputForSourceRoot(sourceRoot, metadata2);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        array5 = base.SourcesCompiled;
+                        upToDateSources = new ITaskItem[0];
+                    }
+                    // base.SourceOutputs.RemoveEntriesForSource(array5, preprocessOutput);
+                    base.SourceOutputs.SaveTlog(includeInTLog);
+                    base.SourceDependencies.RemoveEntriesForSource(array5);
+                    base.SourceDependencies.SaveTlog(dependencyFilter);
+                    ConstructCommandTLog(upToDateSources, dependencyFilter);
+                }
+                //else if (PreprocessToFile)
+                //{
+                //    bool flag = true;
+                //    if (string.IsNullOrEmpty(PreprocessOutputPath))
+                //    {
+                //        ITaskItem[] array8 = base.SourcesCompiled;
+                //        foreach (ITaskItem source in array8)
+                //        {
+                //            flag = flag && MovePreprocessedOutput(source, base.SourceDependencies, base.SourceOutputs);
+                //        }
+                //    }
+                //    if (flag)
+                //    {
+                //        AddPdbToCompactOutputs(base.SourcesCompiled, base.SourceOutputs);
+                //        base.SourceOutputs.SaveTlog(includeInTLog);
+                //        base.SourceDependencies.SaveTlog(dependencyFilter);
+                //        ConstructCommandTLog(base.SourcesCompiled, dependencyFilter);
+                //    }
+                //}
+                else
+                {
+                    AddPdbToCompactOutputs(base.SourcesCompiled, base.SourceOutputs);
+                    RemoveTaskSpecificInputs(base.SourceDependencies);
+                    base.SourceOutputs.SaveTlog(includeInTLog);
+                    base.SourceDependencies.SaveTlog(dependencyFilter);
+                    ConstructCommandTLog(base.SourcesCompiled, dependencyFilter);
+                }
+                TrackedVCToolTask.DeleteEmptyFile(base.TLogWriteFiles);
+                TrackedVCToolTask.DeleteEmptyFile(base.TLogReadFiles);
+                TrackedVCToolTask.DeleteFiles(base.TLogDeleteFiles);
+            }
+            //else if (PreprocessToFile)
+            //{
+            //    bool flag2 = true;
+            //    if (string.IsNullOrEmpty(PreprocessOutputPath))
+            //    {
+            //        ITaskItem[] array9 = base.SourcesCompiled;
+            //        foreach (ITaskItem source2 in array9)
+            //        {
+            //            flag2 = flag2 && MovePreprocessedOutput(source2, null, null);
+            //        }
+            //    }
+            //    if (!flag2)
+            //    {
+            //        exitCode = -1;
+            //    }
+            //}
+            return exitCode;
+        }
+
+        protected void ConstructCommandTLog(ITaskItem[] upToDateSources, DependencyFilter inputFilter)
+        {
+            IDictionary<string, string> dictionary = MapSourcesToCommandLines();
+            string text = GenerateCommandLineExceptSwitches(new string[1] { "Sources" }, CommandLineFormat.ForTracking);
+            if (upToDateSources != null)
+            {
+                foreach (ITaskItem taskItem in upToDateSources)
+                {
+                    string metadata = taskItem.GetMetadata("FullPath");
+                    if (inputFilter == null || inputFilter(metadata))
+                    {
+                        dictionary[FileTracker.FormatRootingMarker(taskItem)] = text + " " + metadata/*.ToUpperInvariant()*/;
+                    }
+                    else
+                    {
+                        dictionary.Remove(FileTracker.FormatRootingMarker(taskItem));
+                    }
+                }
+            }
+            WriteSourcesToCommandLinesTable(dictionary);
+        }
+
+
+        protected void AddPdbToCompactOutputs(ITaskItem[] sources, CanonicalTrackedOutputFiles compactOutputs)
+        {
+            // todo: gcc的符号？？
+        }
+
+        protected void ComputeObjectFiles()
+        {
+            ObjectFiles = new string[Sources.Length];
+            int num = 0;
+            ITaskItem[] sources = Sources;
+            foreach (ITaskItem taskItem in sources)
+            {
+                ObjectFiles[num] = Helpers.GetOutputFileName(taskItem.ItemSpec, ObjectFileName, "o");
+                taskItem.SetMetadata("ObjectFile", ObjectFiles[num]);
+                num++;
+            }
+        }
+
+        protected override void SaveTracking()
+        {
+            if(ObjectFiles == null)
+                ComputeObjectFiles();
+
+            // 保存Write文件
+            {
+                string WriteFilePath = TLogWriteFiles[0].GetMetadata("FullPath");
+                Directory.CreateDirectory(Path.GetDirectoryName(WriteFilePath));
+                using StreamWriter WriteFileWriter = FileUtilities.OpenWrite(WriteFilePath, append: true, Encoding.Unicode);
+
+                KeyValuePair<string, bool>[] array = new KeyValuePair<string, bool>[]
+                {
+                    new KeyValuePair<string, bool>("ObjectFile", value: true)
+                };
+
+                foreach (ITaskItem taskItem in Sources)
+                {
+                    string sourceKey = FileTracker.FormatRootingMarker(taskItem);
+                    WriteFileWriter.WriteLine("^" + sourceKey);
+                    KeyValuePair<string, bool>[] array2 = array;
+                    for (int j = 0; j < array2.Length; j++)
+                    {
+                        KeyValuePair<string, bool> keyValuePair = array2[j];
+                        string metadata = taskItem.GetMetadata(keyValuePair.Key);
+                        if (keyValuePair.Value && !string.IsNullOrEmpty(metadata))
+                        {
+                            FileUtilities.UpdateFileExistenceCache(metadata);
+                            WriteFileWriter.WriteLine(metadata);
+                        }
+                    }
+                }
+            }
+
+            // 保存Read文件
+            {
+                string ReadFilePath = TLogReadFiles[0].GetMetadata("FullPath");
+                Directory.CreateDirectory(Path.GetDirectoryName(ReadFilePath));
+                using StreamWriter WriteFileWriter = FileUtilities.OpenWrite(ReadFilePath, append: true, Encoding.Unicode);
+
+                GCCMapReader MapReader = new GCCMapReader();
+
+                foreach (ITaskItem taskItem in Sources)
+                {
+                    if (!MapReader.Init(ObjectFileName + ".map"))
+                        continue;
+
+                    string sourceKey = FileTracker.FormatRootingMarker(taskItem);
+                    WriteFileWriter.WriteLine("^" + sourceKey);
+
+                    for(; ; )
+                    {
+                        var Tmp = MapReader.ReadLine();
+                        if (Tmp == null)
+                            break;
+
+                        if (Tmp.Length == 0)
+                            continue;
+
+                        WriteFileWriter.WriteLine(FileUtilities.NormalizePath(Tmp));
+                    }
+                }
+            }
+        }
+
+        protected internal override bool ComputeOutOfDateSources()
+        {
+            if (base.MinimalRebuildFromTracking || base.TrackFileAccess)
+            {
+                AssignDefaultTLogPaths();
+            }
+
+#if __REMOVE
+            if (PreprocessToFile)
+            {
+                ComputePreprocessedOutputFiles();
+            }
+#endif
+            if (base.MinimalRebuildFromTracking && !ForcedRebuildRequired())
+            {
+                base.SourceOutputs = new CanonicalTrackedOutputFiles(this, base.TLogWriteFiles, constructOutputsFromTLogs: false);
+                ComputeObjectFiles();
+#if __REMOVE
+                ComputeBrowseInformationFiles();
+                ComputeXmlDocumentationFiles();
+#endif
+                KeyValuePair<string, bool>[] array = new KeyValuePair<string, bool>[]
+                {
+                    new KeyValuePair<string, bool>("ObjectFile", value: true)
+                    // new KeyValuePair<string, bool>("BrowseInformationFile", BrowseInformation),
+                    // new KeyValuePair<string, bool>("XMLDocumentationFileName", GenerateXMLDocumentationFiles)
+                };
+#if __REMOVE
+                if (PreprocessToFile)
+                {
+                    if (string.IsNullOrEmpty(PreprocessOutputPath))
+                    {
+                        base.RootSource = FileTracker.FormatRootingMarker(Sources, preprocessOutput);
+                        base.SourceOutputs.AddComputedOutputsForSourceRoot(base.RootSource, preprocessOutput);
+                    }
+                    array[0] = new KeyValuePair<string, bool>("PreprocessOutputFile", value: true);
+                }
+#endif
+                ITaskItem[] sources = Sources;
+                foreach (ITaskItem taskItem in sources)
+                {
+                    string sourceKey = FileTracker.FormatRootingMarker(taskItem);
+                    KeyValuePair<string, bool>[] array2 = array;
+                    for (int j = 0; j < array2.Length; j++)
+                    {
+                        KeyValuePair<string, bool> keyValuePair = array2[j];
+                        string metadata = taskItem.GetMetadata(keyValuePair.Key);
+                        if (keyValuePair.Value && !string.IsNullOrEmpty(metadata))
+                        {
+                            base.SourceOutputs.AddComputedOutputForSourceRoot(sourceKey, metadata);
+                            if (File.Exists(taskItem.GetMetadata("ObjectFile")) && !File.Exists(metadata))
+                            {
+                                File.Delete(taskItem.GetMetadata("ObjectFile"));
+                            }
+                        }
+                    }
+                }
+
+#if __REMOVE
+                if (IsPropertySet("PrecompiledHeader") && PrecompiledHeader == "Create" && IsPropertySet("PrecompiledHeaderOutputFile"))
+                {
+                    ITaskItem[] sources2 = Sources;
+                    foreach (ITaskItem source in sources2)
+                    {
+                        string sourceKey2 = FileTracker.FormatRootingMarker(source);
+                        base.SourceOutputs.AddComputedOutputForSourceRoot(sourceKey2, PrecompiledHeaderOutputFile);
+                    }
+                }
+#endif
+                base.SourceDependencies = new CanonicalTrackedInputFiles(this, base.TLogReadFiles, Sources, base.ExcludedInputPaths, base.SourceOutputs, useMinimalRebuildOptimization: true, MaintainCompositeRootingMarkers);
+                ITaskItem[] sourcesOutOfDateThroughTracking = base.SourceDependencies.ComputeSourcesNeedingCompilation();
+                List<ITaskItem> sourcesWithChangedCommandLines = GenerateSourcesOutOfDateDueToCommandLine();
+                base.SourcesCompiled = MergeOutOfDateSourceLists(sourcesOutOfDateThroughTracking, sourcesWithChangedCommandLines);
+                if (base.SourcesCompiled.Length == 0)
+                {
+                    base.SkippedExecution = true;
+                    return base.SkippedExecution;
+                }
+                if (!MinimalRebuild || PreprocessToFile)
+                {
+                    base.SourceDependencies.RemoveEntriesForSource(base.SourcesCompiled);
+                    base.SourceDependencies.SaveTlog();
+                    if (base.DeleteOutputOnExecute)
+                    {
+                        TrackedVCToolTask.DeleteFiles(base.SourceOutputs.OutputsForSource(base.SourcesCompiled, searchForSubRootsInCompositeRootingMarkers: false));
+                    }
+                    base.SourceOutputs = new CanonicalTrackedOutputFiles(this, base.TLogWriteFiles);
+                    base.SourceOutputs.RemoveEntriesForSource(base.SourcesCompiled /*, preprocessOutput*/);
+                    base.SourceOutputs.SaveTlog();
+                    IDictionary<string, string> dictionary = MapSourcesToCommandLines();
+                    ITaskItem[] array3 = base.SourcesCompiled;
+                    foreach (ITaskItem source2 in array3)
+                    {
+                        dictionary.Remove(FileTracker.FormatRootingMarker(source2));
+                    }
+                    WriteSourcesToCommandLinesTable(dictionary);
+                }
+                AssignOutOfDateSources(base.SourcesCompiled);
+            }
+            else
+            {
+                base.SourcesCompiled = Sources;
+            }
+            if (string.IsNullOrEmpty(base.RootSource))
+            {
+#if __REMOVE
+                if (PreprocessToFile && string.IsNullOrEmpty(PreprocessOutputPath))
+                {
+                    if (!base.MinimalRebuildFromTracking)
+                    {
+                        base.RootSource = FileTracker.FormatRootingMarker(Sources, preprocessOutput);
+                    }
+                }else 
+#endif
+                if (base.TrackFileAccess)
+                {
+                    base.RootSource = FileTracker.FormatRootingMarker(base.SourcesCompiled);
+                }
+            }
+
+#if __REMOVE
+            if (base.UseMsbuildResourceManager && !EnableCLServerMode && IsSetToTrue("MultiProcessorCompilation"))
+            {
+                int num = base.BuildEngine9.RequestCores(base.SourcesCompiled.Length);
+                if (ProcessorNumber == 0 || ProcessorNumber > num)
+                {
+                    ProcessorNumber = num;
+                }
+            }
+#endif
+            base.SkippedExecution = false;
+            return base.SkippedExecution;
         }
     }
 }

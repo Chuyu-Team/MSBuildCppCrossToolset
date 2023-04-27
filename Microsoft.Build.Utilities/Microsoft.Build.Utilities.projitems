@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>b3183ec4-afd6-47b6-93c5-ffb42f82af96</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Microsoft.Build.Utilities</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CanonicalTrackedFilesHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanonicalTrackedInputFiles.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanonicalTrackedOutputFiles.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DependencyFilter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DependencyTableCache.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DependencyTableCacheEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TrackedDependencies.cs" />
+  </ItemGroup>
+</Project>

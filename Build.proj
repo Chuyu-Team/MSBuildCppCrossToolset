@@ -36,7 +36,6 @@ MSBuild.exe "Build.proj"
     </ItemGroup>
     <Copy SourceFiles="@(VCTargetsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\%(RecursiveDir)%(Filename)%(Extension)" />
     <Copy SourceFiles="$(MSBuildThisFileDirectory)\Microsoft.Build.CppTasks.Common\bin\Release\net6.0\Microsoft.Build.CppTasks.Common.dll" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170" />
-    <Copy SourceFiles="$(MSBuildThisFileDirectory)\YY.Build.Linux.Tasks\bin\Release\net6.0\YY.Build.Linux.Tasks.dll" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0" />
       
     <ItemGroup>
       <PlatformsRootFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Linux.Tasks\Targets\*.*"/>

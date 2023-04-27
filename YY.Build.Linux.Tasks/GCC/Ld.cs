@@ -17,6 +17,7 @@ namespace YY.Build.Linux.Tasks.GCC
     public class Ld : Microsoft.Build.CPPTasks.VCToolTask
     {
         public Ld()
+            : base(Microsoft.Build.CppTasks.Common.Properties.Microsoft_Build_CPPTasks_Strings.ResourceManager)
         {
             switchOrderList = new ArrayList();
             switchOrderList.Add("OutputFile");

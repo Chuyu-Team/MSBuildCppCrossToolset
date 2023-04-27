@@ -59,5 +59,1330 @@ namespace Microsoft.Build.CppTasks.Common.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查找类似 Element &lt;{0}&gt; has an invalid value of &quot;{1}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string ArgumentOutOfRange {
+            get {
+                return ResourceManager.GetString("ArgumentOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Switch &lt;{0}&gt; requires an argument. 的本地化字符串。
+        /// </summary>
+        internal static string ArgumentRequired {
+            get {
+                return ResourceManager.GetString("ArgumentRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0}Reference &apos;{1}&apos;=&apos;{2}&apos;  is ignored as &apos;{1}&apos;=&apos;{3}&apos; already exists.  的本地化字符串。
+        /// </summary>
+        internal static string BMIAlreadyReferenced {
+            get {
+                return ResourceManager.GetString("BMIAlreadyReferenced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Building header unit {0} as {1} imports it. 的本地化字符串。
+        /// </summary>
+        internal static string BuildingHeaderUnit {
+            get {
+                return ResourceManager.GetString("BuildingHeaderUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8078: Cannot delete old &apos;{0}&apos; tlog files: {1} 的本地化字符串。
+        /// </summary>
+        internal static string CannotDeleteTlogs {
+            get {
+                return ResourceManager.GetString("CannotDeleteTlogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Forcing recompile of all source files due to missing PDB &quot;{0}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string CL_RebuildingNoPDB {
+            get {
+                return ResourceManager.GetString("CL.RebuildingNoPDB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Expected &quot;{0}&quot; but got &quot;{1}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string CommandLineDiffer {
+            get {
+                return ResourceManager.GetString("CommandLineDiffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Compiling... 的本地化字符串。
+        /// </summary>
+        internal static string Compiling {
+            get {
+                return ResourceManager.GetString("Compiling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8017: A circular dependency has been detected while executing custom build commands for item &quot;{0}&quot;. This may cause incremental build to work incorrectly. 的本地化字符串。
+        /// </summary>
+        internal static string CustomBuild_CircularDepedencyDetected {
+            get {
+                return ResourceManager.GetString("CustomBuild.CircularDepedencyDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8066: Custom build for &apos;{0}&apos; exited with code {1}. 的本地化字符串。
+        /// </summary>
+        internal static string CustomBuild_ExitCodeError {
+            get {
+                return ResourceManager.GetString("CustomBuild.ExitCodeError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8062: Custom build for item &quot;{0}&quot; specifies invalid path &quot;{1}&quot; as an additional dependency. This may cause incremental build to work incorrectly. 的本地化字符串。
+        /// </summary>
+        internal static string CustomBuild_InvalidDependency {
+            get {
+                return ResourceManager.GetString("CustomBuild.InvalidDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8063: Custom build for item &quot;{0}&quot; specifies invalid path &quot;{1}&quot; as an output. This may cause incremental build to work incorrectly. 的本地化字符串。
+        /// </summary>
+        internal static string CustomBuild_InvalidOutput {
+            get {
+                return ResourceManager.GetString("CustomBuild.InvalidOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8064: Custom build for item &quot;{0}&quot; succeeded, but specified dependency &quot;{1}&quot; does not exist. This may cause incremental build to work incorrectly. 的本地化字符串。
+        /// </summary>
+        internal static string CustomBuild_MissingDependency {
+            get {
+                return ResourceManager.GetString("CustomBuild.MissingDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8065: Custom build for item &quot;{0}&quot; succeeded, but specified output &quot;{1}&quot; has not been created. This may cause incremental build to work incorrectly. 的本地化字符串。
+        /// </summary>
+        internal static string CustomBuild_MissingOutput {
+            get {
+                return ResourceManager.GetString("CustomBuild.MissingOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8018: No outputs specified for item &quot;{0}&quot;. Its custom build command will be skipped. 的本地化字符串。
+        /// </summary>
+        internal static string CustomBuild_NoOutputs {
+            get {
+                return ResourceManager.GetString("CustomBuild.NoOutputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Performing Custom Build Step 的本地化字符串。
+        /// </summary>
+        internal static string CustomBuildStepMessage {
+            get {
+                return ResourceManager.GetString("CustomBuildStepMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Required file &quot;{0}&quot; is missing. 的本地化字符串。
+        /// </summary>
+        internal static string Error_MissingFile {
+            get {
+                return ResourceManager.GetString("Error.MissingFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Unable to open file {0} because {1} 的本地化字符串。
+        /// </summary>
+        internal static string FileNotOpen {
+            get {
+                return ResourceManager.GetString("FileNotOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB3098: &quot;{1}&quot; task received an invalid value for the &quot;{0}&quot; parameter. 的本地化字符串。
+        /// </summary>
+        internal static string General_InvalidValue {
+            get {
+                return ResourceManager.GetString("General.InvalidValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Error generating command line switch for &apos;{0}&apos; with value &apos;{1}&apos;: {2} 的本地化字符串。
+        /// </summary>
+        internal static string GenerateCommandLineError {
+            get {
+                return ResourceManager.GetString("GenerateCommandLineError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Remote deployment might be slow/inefficient. {0} 的本地化字符串。
+        /// </summary>
+        internal static string GenerateDesktopDeployRecipeFileException {
+            get {
+                return ResourceManager.GetString("GenerateDesktopDeployRecipeFileException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &quot;The build of &apos;{0}&apos; depends on &apos;{1}&apos; which is produced by the build of &apos;{2}&apos;. The items cannot be built in parallel.&quot; 的本地化字符串。
+        /// </summary>
+        internal static string GetOutOfDateItems_ItemDependsOnAnotherItemOutput {
+            get {
+                return ResourceManager.GetString("GetOutOfDateItems.ItemDependsOnAnotherItemOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Source file &apos;{0}&apos; is not up-to-date: list of dependencies has changed since the last build. 的本地化字符串。
+        /// </summary>
+        internal static string GetOutOfDateItems_RebuildingSourceDependenciesChanged {
+            get {
+                return ResourceManager.GetString("GetOutOfDateItems.RebuildingSourceDependenciesChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Source file &apos;{0}&apos; is not up-to-date: list of outputs has changed since the last build. 的本地化字符串。
+        /// </summary>
+        internal static string GetOutOfDateItems_RebuildingSourceOutputsChanged {
+            get {
+                return ResourceManager.GetString("GetOutOfDateItems.RebuildingSourceOutputsChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Element &lt;{0}&gt; has invalid type of &quot;{1}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string ImproperType {
+            get {
+                return ResourceManager.GetString("ImproperType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Internal Error has occurred. Most likely a bug. 的本地化字符串。
+        /// </summary>
+        internal static string InternalError {
+            get {
+                return ResourceManager.GetString("InternalError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Expecting &quot;{0}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string InvalidType {
+            get {
+                return ResourceManager.GetString("InvalidType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB3511: &quot;{0}&quot; is an invalid value for the &quot;Importance&quot; parameter. Valid values are: High, Normal and Low. 的本地化字符串。
+        /// </summary>
+        internal static string Message_InvalidImportance {
+            get {
+                return ResourceManager.GetString("Message.InvalidImportance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 To improve incremental build performance for managed components, please make sure that the &apos;VC++ Directories-&gt;Reference Directories&apos; points to all the paths which contain the referenced managed assemblies. 的本地化字符串。
+        /// </summary>
+        internal static string MetaGenInfoReferenceDirectories {
+            get {
+                return ResourceManager.GetString("MetaGenInfoReferenceDirectories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Element &lt;{0}&gt; does not contain the required attribute &quot;{1}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string MissingAttribute {
+            get {
+                return ResourceManager.GetString("MissingAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Missing required argument &lt;{0}&gt; for property &lt;{1}&gt;. 的本地化字符串。
+        /// </summary>
+        internal static string MissingRequiredArgument {
+            get {
+                return ResourceManager.GetString("MissingRequiredArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Missing required argument &lt;{0}&gt; for property &lt;{1}&gt; which is set to {2}. 的本地化字符串。
+        /// </summary>
+        internal static string MissingRequiredArgumentWithValue {
+            get {
+                return ResourceManager.GetString("MissingRequiredArgumentWithValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Xml file must start with the root element &lt;{0}&gt;. 的本地化字符串。
+        /// </summary>
+        internal static string MissingRootElement {
+            get {
+                return ResourceManager.GetString("MissingRootElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8074: Cannot read Module Dependencies file {0}: {1} The build order might be incorrect. 的本地化字符串。
+        /// </summary>
+        internal static string ModuleDependencies_JsonReadingError {
+            get {
+                return ResourceManager.GetString("ModuleDependencies.JsonReadingError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8067: Unexpected number of sources &apos;{0}&apos; in Module Dependencies file &apos;{1}&apos;. Only one source data is currenty supported. 的本地化字符串。
+        /// </summary>
+        internal static string ModuleDependencies_UnexpectedJsonData {
+            get {
+                return ResourceManager.GetString("ModuleDependencies.UnexpectedJsonData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Unable to move file &quot;{0}&quot; to &quot;{1}&quot;. {2} 的本地化字符串。
+        /// </summary>
+        internal static string Move_Error {
+            get {
+                return ResourceManager.GetString("Move.Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Moving file from &quot;{0}&quot; to &quot;{1}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string Move_FileComment {
+            get {
+                return ResourceManager.GetString("Move.FileComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} will run on {1} out of {2} file(s) in {4} batches.  Startup phase took {3}ms. 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_AddDone {
+            get {
+                return ResourceManager.GetString("MultiTool.AddDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Adding source &quot;{0}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_AddSource {
+            get {
+                return ResourceManager.GetString("MultiTool.AddSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Adding source &quot;{0}&quot; with dependency on &quot;{1}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_AddSourceWithDep {
+            get {
+                return ResourceManager.GetString("MultiTool.AddSourceWithDep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Building with &quot;{0}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_BuildingWith {
+            get {
+                return ResourceManager.GetString("MultiTool.BuildingWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Cannot build the following source files because there is a cyclic dependency between them: {0}. 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_CyclicDependency {
+            get {
+                return ResourceManager.GetString("MultiTool.CyclicDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MultiToolTask has encounted an issue scheduling task because one or more tasks still remains but none could be started.  Please check the inputs and their dependency to avoid cirular loops. 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_DependencyIssue {
+            get {
+                return ResourceManager.GetString("MultiTool.DependencyIssue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Cleanup phase took {0}ms. 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_PostExecuteToolTiming {
+            get {
+                return ResourceManager.GetString("MultiTool.PostExecuteToolTiming", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 All Sources must have the same TrackerLogDirectory ({0},{1}). 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_SameTrackerLogDirectory {
+            get {
+                return ResourceManager.GetString("MultiTool.SameTrackerLogDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Source &quot;{0}&quot; doesn&apos;t match previous command line.
+        ///*** Previous command line: &apos;{1}&apos;
+        ///*** Current  command line: &apos;{2}&apos; 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_SourceNotMatchCommand {
+            get {
+                return ResourceManager.GetString("MultiTool.SourceNotMatchCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Source &quot;{0}&quot; is out of date. 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_SourceOutOfDate {
+            get {
+                return ResourceManager.GetString("MultiTool.SourceOutOfDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} task found. 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_TaskFound {
+            get {
+                return ResourceManager.GetString("MultiTool.TaskFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Task &apos;{0}&apos; took {1}ms. 的本地化字符串。
+        /// </summary>
+        internal static string MultiTool_TaskStatus {
+            get {
+                return ResourceManager.GetString("MultiTool.TaskStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Tracking command: 的本地化字符串。
+        /// </summary>
+        internal static string Native_TrackingCommandMessage {
+            get {
+                return ResourceManager.GetString("Native_TrackingCommandMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0}Referencing &apos;{1}&apos;=&apos;{2}&apos;. 的本地化字符串。
+        /// </summary>
+        internal static string ReferencingBMI {
+            get {
+                return ResourceManager.GetString("ReferencingBMI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Scanning sources for module dependencies... 的本地化字符串。
+        /// </summary>
+        internal static string Scanning {
+            get {
+                return ResourceManager.GetString("Scanning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB5003: Failed to create a temporary file. Temporary files folder is full or its path is incorrect. {0} 的本地化字符串。
+        /// </summary>
+        internal static string Shared_FailedCreatingTempFile {
+            get {
+                return ResourceManager.GetString("Shared.FailedCreatingTempFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Parameter &quot;{0}&quot; cannot be null. 的本地化字符串。
+        /// </summary>
+        internal static string Shared_ParameterCannotBeNull {
+            get {
+                return ResourceManager.GetString("Shared.ParameterCannotBeNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Parameter &quot;{0}&quot; cannot have zero length. 的本地化字符串。
+        /// </summary>
+        internal static string Shared_ParameterCannotHaveZeroLength {
+            get {
+                return ResourceManager.GetString("Shared.ParameterCannotHaveZeroLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Parameters &quot;{0}&quot; and &quot;{1}&quot; must have the same number of elements. 的本地化字符串。
+        /// </summary>
+        internal static string Shared_ParametersMustHaveTheSameLength {
+            get {
+                return ResourceManager.GetString("Shared.ParametersMustHaveTheSameLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} depends on {1} 的本地化字符串。
+        /// </summary>
+        internal static string SourceDependsOnSource {
+            get {
+                return ResourceManager.GetString("SourceDependsOnSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8071: Cannot parse tool output &apos;{0}&apos; with regex &apos;{1}&apos;: {2} 的本地化字符串。
+        /// </summary>
+        internal static string TrackedVCToolTask_CannotParseToolOutput {
+            get {
+                return ResourceManager.GetString("TrackedVCToolTask.CannotParseToolOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8016: Can not turn on Unicode output for &quot;{0}&quot;. Some Unicode characters will be improperly displayed. 的本地化字符串。
+        /// </summary>
+        internal static string TrackedVCToolTask_CreateUnicodeOutputPipeFailed {
+            get {
+                return ResourceManager.GetString("TrackedVCToolTask.CreateUnicodeOutputPipeFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 All source files are not up-to-date:  command line has changed since the last build. 的本地化字符串。
+        /// </summary>
+        internal static string TrackedVCToolTask_RebuildingAllSourcesCommandLineChanged {
+            get {
+                return ResourceManager.GetString("TrackedVCToolTask.RebuildingAllSourcesCommandLineChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8014: All source files are not up-to-date:  forcing a rebuild of all sources due to an error with the tracking logs. {0} 的本地化字符串。
+        /// </summary>
+        internal static string TrackedVCToolTask_RebuildingDueToInvalidTLog {
+            get {
+                return ResourceManager.GetString("TrackedVCToolTask.RebuildingDueToInvalidTLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8015: All source files are not up-to-date:  forcing a rebuild of all source files due to the contents of &apos;{0}&apos; being invalid. 的本地化字符串。
+        /// </summary>
+        internal static string TrackedVCToolTask_RebuildingDueToInvalidTLogContents {
+            get {
+                return ResourceManager.GetString("TrackedVCToolTask.RebuildingDueToInvalidTLogContents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 All source files are not up-to-date: missing command TLog &quot;{0}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string TrackedVCToolTask_RebuildingNoCommandTLog {
+            get {
+                return ResourceManager.GetString("TrackedVCToolTask.RebuildingNoCommandTLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Source file &quot;{0}&quot; is not up-to-date: command line has changed since the last build. 的本地化字符串。
+        /// </summary>
+        internal static string TrackedVCToolTask_RebuildingSourceCommandLineChanged {
+            get {
+                return ResourceManager.GetString("TrackedVCToolTask.RebuildingSourceCommandLineChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &quot;The following files previously generated for unity build were deleted as they are no longer used: {0}.  的本地化字符串。
+        /// </summary>
+        internal static string Unity_CleanupOldUnityFiles {
+            get {
+                return ResourceManager.GetString("Unity_CleanupOldUnityFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &quot;Minimum Number of Sources in a Unity File&quot; ({0}) cannot be more than &quot;Maximum Number of Sources in a Unity File&quot; ({1}).  的本地化字符串。
+        /// </summary>
+        internal static string Unity_MinMoreThanMax {
+            get {
+                return ResourceManager.GetString("Unity_MinMoreThanMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8001: &quot;{0}&quot; is an invalid value for the &quot;Code&quot; parameter. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_InvalidCode {
+            get {
+                return ResourceManager.GetString("VCMessage.InvalidCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8000: &quot;{0}&quot; is an invalid value for the &quot;Type&quot; parameter. Valid values are: Warning and Error. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_InvalidType {
+            get {
+                return ResourceManager.GetString("VCMessage.InvalidType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8002: Specified platform toolset ({0}) is not compatible with the targeted .NET Framework version ({1}). Please set TargetFrameworkVersion to one of the supported values (&apos;v2.0&apos;, &apos;v3.0&apos;, &apos;v3.5&apos;). 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8002 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8002", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8003: The {0} property is not defined. Some build tools may not be found. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8003 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8003", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8004: {0} Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the {1} Directory. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8004 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8004", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8005: The property &apos;{0}&apos; doesn&apos;t exist.  Skipping... 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8005 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8005", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8006: The Platform for project &apos;{0}&apos; is invalid.  Platform=&apos;{1}&apos;. This error may also appear if some other project is trying to follow a project-to-project reference to this project, this project has been unloaded or is not included in the solution, and the referencing project does not build using the same or an equivalent Platform. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8006 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8006", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8007: The Platform for project &apos;{0}&apos; is invalid.  Platform=&apos;{1}&apos;. You may be seeing this message because you are trying to build a project without a solution file, and have specified a non-default Platform that doesn&apos;t exist for this project. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8007 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8007", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8008: Specified platform toolset ({0}) is not installed or invalid. Please make sure that a supported PlatformToolset value is selected. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8008 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8008", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8009: .NET Framework 2.0/3.0/3.5 target the v90 platform toolset. Please make sure that Visual Studio 2008 is installed on the machine. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8009 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8009", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8010: Specified platform toolset (v90) requires Visual Studio 2008. Please make sure that Visual Studio 2008 is installed on the machine. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8010 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8010", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8011: Failed to register output. Please try enabling Per-user Redirection or register the component from a command prompt with elevated permissions. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8011 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8011", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8012: {0}({1}) does not match the {2}&apos;s OutputFile property value ({3}). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %({4}.OutputFile). 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8012 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8012", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8013: This project doesn&apos;t contain the Configuration and Platform combination of {0}. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8013 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8013", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8016: This project does not support the current Configuration Type ({0}). 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8016 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8016", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8019: This build is consuming a component &quot;{0}&quot; that is not packaged because the component is not coming from a Windows Store app project &quot;{1}&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8019 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8019", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8020: The build tools for {0} (Platform Toolset = &apos;{1}&apos;) cannot be found. To build using the {1} build tools, please install {0} build tools.  Alternatively, you may upgrade to the current Visual Studio tools by selecting the Project menu or right-click the solution, and then selecting &quot;Retarget solution&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8020 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8020", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8020: The build tools for &apos;{2}&apos; application Type {0} (Platform Toolset = &apos;{1}&apos;) cannot be found. Please install the workflow for this application type and include the build tools for the  的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8020_AppType {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8020_AppType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8021: The value &apos;{0}&apos; of the variable &apos;{1}&apos; is incompatible with the value &apos;{2}&apos; of the variable &apos;{3}&apos;. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8021 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8021", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8022: Building Desktop applications for the {0} platform is not supported. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8022 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8022", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8023: Execution path ({0}) could not be found. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8023 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8023", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8024: Using static version of the C++ runtime library is not supported. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8024 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8024", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8025: Using legacy manifest embedding because of {0} on Manifest Tool is set. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8025 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8025", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8026: Static analysis is not supported with the current platform toolset. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8026 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8026", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8027: Two or more files with the name of {0} will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are {1}. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8027 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8027", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8028: The intermediate directory ({1}) contains files shared from another project ({0}).  This can lead to incorrect clean and rebuild behavior. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8028 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8028", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8029: The Intermediate directory or Output directory cannot reside under the Temporary directory as it could lead to issues with incremental build. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8029 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8029", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8030: The linker switch &quot;Minimum Required Version&quot; requires &quot;SubSystem&quot; to be set.  Without &quot;SubSystem&quot;, the &quot;Minimum Required Version&quot; would not be passed to linker and could prevent to the output binary from running on older Operating Systems. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8030 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8030", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8031: Building an MFC project for a non-Unicode character set is deprecated. You must change the project property to Unicode or download an additional library. See https://go.microsoft.com/fwlink/p/?LinkId=286820 for more information. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8031 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8031", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8032: The Platform or PlatformToolset is not available from a 64bit environment.  Consider building from 32bit environment instead. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8032 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8032", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} -&gt; {1} (Partial PDB) 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8033 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8033", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8033: Cannot determine a remote location corresponding to {0} directory on local machine. Some files might not be found during remote build. Please change the properties to use relative paths or add a local-remote folders mapping in Tools - Options - Cross Platform – C++ - iOS - Mapping. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8033_RemoteBuild_MissingDirectoryMapping {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8033.RemoteBuild.MissingDirectoryMapping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} -&gt; {1} (Full PDB) 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8034 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8034", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0} -&gt; {1} (Partial -&gt; Full PDB) 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8035 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8035", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8035: Root folder for local relative paths is not defined, but relative path {0} is used. Please change it to a full path or define root folder. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8035_RemoteBuild_MissingRootFolderForLocalRelativePaths {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8035.RemoteBuild.MissingRootFolderForLocalRelativePaths", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8036: The Windows SDK version {0} was not found. Install the required version of Windows SDK or change the SDK version in the project property pages or by right-clicking the solution and selecting &quot;Retarget solution&quot;. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8036 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8036", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8037: The Windows SDK version {0} for Desktop C++ {1} Apps was not found. Install the required version of Windows SDK or change the SDK version in the project property pages or by right-clicking the solution and selecting &quot;Retarget solution&quot;.  的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8037 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8037", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8038: Platform Toolset is not defined. Please select one of the available Platform Toolsets in the Project Properties UI. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8038 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8038", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Warning: Full debug symbol generation from partial PDBs is not supported for static libraries. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8039 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8039", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8040: Spectre-mitigated libraries are required for this project. Install them from the Visual Studio installer (Individual components tab) for any toolsets and architectures being used. Learn more: https://aka.ms/Ofhn4c 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8040 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8040", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8041: {0} libraries are required for this project. Install them from the Visual Studio installer (Individual Components tab) for any toolsets and architectures being used. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8041 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8041", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8042: {0} libraries with Spectre Mitigations are required for this project. Install them from the Visual Studio installer (Individual components tab) for any toolsets and architectures being used. Learn more: https://aka.ms/Ofhn4c 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8042 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8042", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8051: Support for targeting Windows XP is deprecated and will not be present in future releases of Visual Studio. Please see https://go.microsoft.com/fwlink/?linkid=2023588 for more information. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8051 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8051", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8053: /clr (common language runtime) not supported by clang-cl. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8053 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8053", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8054: /ZW (WinRT language extensions) not supported by clang-cl. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8054 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8054", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8055: /openmp (OpenMP language extensions) not supported not supported by clang-cl. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8055 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8055", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8056: /experimental:module not supported by clang-cl. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8056 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8056", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8057: &apos;C++ Clang tools for Windows (15.0.1 - x64/x86)&apos; component is not installed in Visual Studio.  Open the &apos;Visual Studio Installer&apos; and install &apos;C++ Clang tools for Windows (15.0.1 - x64/x86)&apos; under the &apos;Desktop development with C++&apos; workload.  Learn more: https://aka.ms/AA55s5p  的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8057 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8057", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8058: -fsanitize=address (Enable Address Sanitizer) not supported by platform &apos;{0}&apos;. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8058 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8058", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8059: -fsanitize=address (Enable Address Sanitizer) is incompatible with option &apos;{0}&apos;. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8059 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8059", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8060: Microsoft Code Analysis is not supported by clang-cl. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8060 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8060", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8061: No tool enabled for Code Analysis. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8061 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8061", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8072: /std:c++latest (MSVC preview - features from the latest C++ working draft ) not supported by clang-cl. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8072 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8072", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8073: Cannot find LLVM toolset version &apos;{0}&apos;: the folder &apos;{1}&apos; does not exist. Please make sure LLVM toolset version &apos;{0}&apos; is installed or choose another toolset version. Learn more: https://aka.ms/AA55s5p 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8073 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8073", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8075: We do not support building UWP AppContainer applications for ARM64EC. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8075 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8075", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8076: Only ARM, ARM64 and ARM64EC platforms are supported. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8076 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8076", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8077: Some files are set to compile as C++/CLI, but &apos;Enable CLR Support for Individual Files&apos; property is not defined. See &apos;Advanced Property Page&apos; documentation for more details. 的本地化字符串。
+        /// </summary>
+        internal static string VCMessage_MSB8077 {
+            get {
+                return ResourceManager.GetString("VCMessage.MSB8077", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Adding the project to the build agent... 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_AddingProject {
+            get {
+                return ResourceManager.GetString("VCRemote.AddingProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Adding the sources to the build agent... 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_AddingSources {
+            get {
+                return ResourceManager.GetString("VCRemote.AddingSources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Remote build failed, a remote machine has not been configured for build or the connection was lost. If a machine was not paired, please pair it by using the instructions in this link: {0} 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_BuildFailed {
+            get {
+                return ResourceManager.GetString("VCRemote.BuildFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Remote build failed, please see the Output Window - Build output for more details. 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_BuildFailedSeeOutputWindow {
+            get {
+                return ResourceManager.GetString("VCRemote.BuildFailedSeeOutputWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Building the project on the build agent... 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_BuildingProject {
+            get {
+                return ResourceManager.GetString("VCRemote.BuildingProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Building the source maps... 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_BuildingSourceMap {
+            get {
+                return ResourceManager.GetString("VCRemote.BuildingSourceMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0}.vcxproj -&gt; host: {1}  output: {2}/{3}{4} 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_BuildOutput {
+            get {
+                return ResourceManager.GetString("VCRemote.BuildOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Build started on the build agent. 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_BuildStarted {
+            get {
+                return ResourceManager.GetString("VCRemote.BuildStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Copying remote build output to: {0}. 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_CopyingBuildOutput {
+            get {
+                return ResourceManager.GetString("VCRemote.CopyingBuildOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The file &apos;{0}&apos; will not be added to the build agent because it is invalid. 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_FileInvalid {
+            get {
+                return ResourceManager.GetString("VCRemote.FileInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The file &apos;{0}&apos; will not be added to the build agent because it does not exist. 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_FileNotExist {
+            get {
+                return ResourceManager.GetString("VCRemote.FileNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Finished adding the project to the build agent. 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_FinishedAddingProject {
+            get {
+                return ResourceManager.GetString("VCRemote.FinishedAddingProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Finished adding the sources to the build agent. 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_FinishedAddingSources {
+            get {
+                return ResourceManager.GetString("VCRemote.FinishedAddingSources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Finished building the project on the build agent. 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_FinishedBuildingProject {
+            get {
+                return ResourceManager.GetString("VCRemote.FinishedBuildingProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Finished copying remote build output. 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_FinishedCopyingBuildOutput {
+            get {
+                return ResourceManager.GetString("VCRemote.FinishedCopyingBuildOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Remote output directory: {0} 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_RemoteOutputDirectory {
+            get {
+                return ResourceManager.GetString("VCRemote.RemoteOutputDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Remote project: {0} 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_RemoteProject {
+            get {
+                return ResourceManager.GetString("VCRemote.RemoteProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Remote project directory: {0} 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_RemoteProjectDirectory {
+            get {
+                return ResourceManager.GetString("VCRemote.RemoteProjectDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Waiting for the build to finish on the build agent... 的本地化字符串。
+        /// </summary>
+        internal static string VCRemote_WaitingForBuildToFinish {
+            get {
+                return ResourceManager.GetString("VCRemote.WaitingForBuildToFinish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8052: MSVC Toolset Version &apos;{0}&apos; is not compatible with &apos;{1}&apos; Platform Toolset. Please either change Platform Toolset to {2} or MSVC Toolset Version (VCToolsVersion property) to  the version with the format &apos;{3}*.*&apos;. To use default MSVC Toolset Version for a given Platform Toolset don&apos;t set VCToolsVersion property. 的本地化字符串。
+        /// </summary>
+        internal static string VCToolsVersionDoesNotMatchPlatformToolset {
+            get {
+                return ResourceManager.GetString("VCToolsVersionDoesNotMatchPlatformToolset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 MSB8070: Cannot find MSVC toolset version &apos;{0}&apos;: the folder &apos;{1}&apos; does not exist. Please make sure MSVC toolset version &apos;{0}&apos; is  installed or choose another toolset version. 的本地化字符串。
+        /// </summary>
+        internal static string VCToolsVersionNotInstaled {
+            get {
+                return ResourceManager.GetString("VCToolsVersionNotInstaled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Unable to create Xaml task.  Compilation failed.  {0} 的本地化字符串。
+        /// </summary>
+        internal static string XamlTaskCreationFailed {
+            get {
+                return ResourceManager.GetString("XamlTaskCreationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Unable to parse Xaml task.  {0} 的本地化字符串。
+        /// </summary>
+        internal static string XamlTaskParseFailed {
+            get {
+                return ResourceManager.GetString("XamlTaskParseFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Xml Error: {0}. 的本地化字符串。
+        /// </summary>
+        internal static string XmlError {
+            get {
+                return ResourceManager.GetString("XmlError", resourceCulture);
+            }
+        }
     }
 }

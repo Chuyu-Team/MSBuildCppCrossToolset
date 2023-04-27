@@ -18,6 +18,7 @@ namespace YY.Build.Linux.Tasks.GCC
         protected override string ToolName => "ar";
 
         public Ar()
+            : base(Microsoft.Build.CppTasks.Common.Properties.Microsoft_Build_CPPTasks_Strings.ResourceManager)
         {
             switchOrderList = new ArrayList();
             switchOrderList.Add("Command");

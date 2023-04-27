@@ -14,9 +14,9 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 -->
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Ar" AssemblyFile="$(MSBuildthisFileDirectory)YY.Build.Linux.Tasks.dll"/>
-  <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Compile" AssemblyFile="$(MSBuildthisFileDirectory)YY.Build.Linux.Tasks.dll"/>
-  <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Ld" AssemblyFile="$(MSBuildthisFileDirectory)YY.Build.Linux.Tasks.dll"/>
+  <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Ar" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Compile" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Ld" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
 
   <!--
   Linux.Cross.Common.targets 内部写死了一些远程编译的Task，所以我们不引入。
@@ -143,16 +143,14 @@ Copyright (C) Microsoft Corporation. All rights reserved.
              CompileAs="%(ClCompile.CompileAs)"
              ForcedIncludeFiles="%(ClCompile.ForcedIncludeFiles)"
              EnableASAN="%(ClCompile.EnableASAN)"
+             TrackerLogDirectory="$(TLogLocation)"
+             TLogReadFiles="$(TLogLocation)\compile.read.1.tlog"
+             TLogWriteFiles="$(TLogLocation)\compile.write.1.tlog"
+             TrackFileAccess ="$(TrackFileAccess)"
+             MinimalRebuildFromTracking ="%(ClCompile.MinimalRebuildFromTracking)"
              ToolExe="%(ClCompile.RemoteCompileToolExe)"
              >
-      
     </Compile>
-          
-    <WriteLinesToFile Overwrite="true" Encoding="Unicode" File="$(TLogLocation)\compile.read.1.tlog" Lines="@(ClCompile->'^%(Fullpath)');@(ClInclude->'^%(fullpath)')" />
-
-    <!-- The following new line is intentional. -->
-    <WriteLinesToFile Overwrite="true" Encoding="Unicode" File="$(TLogLocation)\compile.write.1.tlog" Lines="@(ClCompile->'^%(Fullpath)
-$(CompileUpToDateFile)')" />
   </Target>
 
   <Target Name="Link">

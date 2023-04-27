@@ -8,19 +8,17 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+    <Optimize>False</Optimize>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Microsoft.Build.CPPTasks\**" />
-    <EmbeddedResource Remove="Microsoft.Build.CPPTasks\**" />
-    <None Remove="Microsoft.Build.CPPTasks\**" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.3.2" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.3.2" IncludeAssets="all" />
   </ItemGroup>
 
@@ -38,5 +36,15 @@
       <LastGenOutput>Microsoft.Build.CPPTasks.Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <Import Project="..\Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.projitems" Label="Shared" />
+
+  <Import Project="..\Microsoft.Build.Shared\Microsoft.Build.Shared.projitems" Label="Shared" />
+
+  <Import Project="..\Microsoft.Build.Utilities\Microsoft.Build.Utilities.projitems" Label="Shared" />
+
+  <Import Project="..\Microsoft.Build.Framework\Microsoft.Build.Framework.projitems" Label="Shared" />
+
+  <Import Project="..\YY.Build.Linux.Tasks\YY.Build.Linux.Tasks.projitems" Label="Shared" />
 
 </Project>

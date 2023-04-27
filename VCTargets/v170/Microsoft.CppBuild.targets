@@ -525,6 +525,10 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <PropertyGroup>
       <_Tmp>$(TMP)</_Tmp>
       <_Temp>$(TEMP)</_Temp>
+      <!--Fix Start Linux系统没有Tmp环境变量，所以使用一下 /var/tmp/。-->
+      <_Tmp Condition="'$(_Tmp)' == '' and Exists('/var/tmp')">/var/tmp/</_Tmp>
+      <_Temp Condition="'$(_Temp)' == '' and Exists('/var/tmp')">/var/tmp/</_Temp>
+      <!--Fix End-->      
       <_Tmp Condition="'$(_Tmp)' != '' and !HasTrailingSlash('$(_Tmp)')">$(_Tmp)\</_Tmp>
       <_Temp Condition="'$(_Temp)' != '' and !HasTrailingSlash('$(_Temp)')">$(_Temp)\</_Temp>
     </PropertyGroup>

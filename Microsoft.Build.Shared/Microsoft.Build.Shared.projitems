@@ -10,5 +10,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ErrorUtilities.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EscapingUtilities.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExceptionHandling.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileMatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileSystem\FileSystems.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileSystem\ManagedFileSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileTracker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileUtilities.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FileUtilitiesRegex.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MSBuildConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ReuseableStringBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringBuilderCache.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VCUtilities.cs" />
   </ItemGroup>
 </Project>

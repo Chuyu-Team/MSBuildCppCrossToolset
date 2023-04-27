@@ -10,8 +10,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ArgumentRelation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GetOutOfDateItems.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MsbuildTaskUtilities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PropertyRelation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ToolSwitch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TrackedVCToolTask.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)VCToolTask.cs" />
   </ItemGroup>
 </Project>

@@ -5,11 +5,15 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Build.CppTasks.Common", "Microsoft.Build.CppTasks.Common\Microsoft.Build.CppTasks.Common.csproj", "{DE6F93AA-4289-46FC-BBA2-98ED16BD1AF2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YY.Build.Linux.Tasks", "YY.Build.Linux.Tasks\YY.Build.Linux.Tasks.csproj", "{099B1749-31F9-45D9-9F63-7B5661CC0F1B}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.Build.CPPTasks", "Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.shproj", "{687DCB03-A1DD-48F2-9A6A-5A7AC4B6F0AE}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.Build.Shared", "Microsoft.Build.Shared\Microsoft.Build.Shared.shproj", "{20CD5D23-441C-4EFF-8277-F9724E686C3F}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.Build.Utilities", "Microsoft.Build.Utilities\Microsoft.Build.Utilities.shproj", "{B3183EC4-AFD6-47B6-93C5-FFB42F82AF96}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.Build.Framework", "Microsoft.Build.Framework\Microsoft.Build.Framework.shproj", "{4BA607BE-24E1-46F8-A210-EED2B04C836B}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "YY.Build.Linux.Tasks", "YY.Build.Linux.Tasks\YY.Build.Linux.Tasks.shproj", "{8D4550A9-DEFB-4705-9DCA-873B81497C9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +25,6 @@ Global
 		{DE6F93AA-4289-46FC-BBA2-98ED16BD1AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE6F93AA-4289-46FC-BBA2-98ED16BD1AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE6F93AA-4289-46FC-BBA2-98ED16BD1AF2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{099B1749-31F9-45D9-9F63-7B5661CC0F1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{099B1749-31F9-45D9-9F63-7B5661CC0F1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{099B1749-31F9-45D9-9F63-7B5661CC0F1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{099B1749-31F9-45D9-9F63-7B5661CC0F1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -33,9 +33,15 @@ Global
 		SolutionGuid = {C1862E59-07CA-42CE-89EE-4F2BBBB21670}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.projitems*{099b1749-31f9-45d9-9f63-7b5661cc0f1b}*SharedItemsImports = 5
-		Microsoft.Build.Shared\Microsoft.Build.Shared.projitems*{099b1749-31f9-45d9-9f63-7b5661cc0f1b}*SharedItemsImports = 5
 		Microsoft.Build.Shared\Microsoft.Build.Shared.projitems*{20cd5d23-441c-4eff-8277-f9724e686c3f}*SharedItemsImports = 13
+		Microsoft.Build.Framework\Microsoft.Build.Framework.projitems*{4ba607be-24e1-46f8-a210-eed2b04c836b}*SharedItemsImports = 13
 		Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.projitems*{687dcb03-a1dd-48f2-9a6a-5a7ac4b6f0ae}*SharedItemsImports = 13
+		YY.Build.Linux.Tasks\YY.Build.Linux.Tasks.projitems*{8d4550a9-defb-4705-9dca-873b81497c9d}*SharedItemsImports = 13
+		Microsoft.Build.Utilities\Microsoft.Build.Utilities.projitems*{b3183ec4-afd6-47b6-93c5-ffb42f82af96}*SharedItemsImports = 13
+		Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
+		Microsoft.Build.Framework\Microsoft.Build.Framework.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
+		Microsoft.Build.Shared\Microsoft.Build.Shared.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
+		Microsoft.Build.Utilities\Microsoft.Build.Utilities.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
+		YY.Build.Linux.Tasks\YY.Build.Linux.Tasks.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

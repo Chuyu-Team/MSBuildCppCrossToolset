@@ -188,7 +188,8 @@ namespace Microsoft.Build.CPPTasks
 
         protected bool IgnoreUnknownSwitchValues { get; set; }
 
-        protected VCToolTask()
+        protected VCToolTask(ResourceManager taskResources)
+            : base(taskResources)
         {
 #if __REMOVE
             cancelEventName = "MSBuildConsole_CancelEvent" + Guid.NewGuid().ToString("N");
@@ -275,6 +276,11 @@ namespace Microsoft.Build.CPPTasks
             return GenerateCommandLineCommandsExceptSwitches(new string[0], format, escapeFormat);
         }
 
+        protected virtual bool GenerateCostomCommandsAccordingToType(CommandLineBuilder builder, string switchName, bool dummyForBackwardCompatibility, CommandLineFormat format = CommandLineFormat.ForBuildLog, EscapeFormat escapeFormat = EscapeFormat.Default)
+        {
+            return false;
+        }
+
         protected virtual string /*GenerateResponseFileCommandsExceptSwitches*/GenerateCommandLineCommandsExceptSwitches(string[] switchesToRemove, CommandLineFormat format = CommandLineFormat.ForBuildLog, EscapeFormat escapeFormat = EscapeFormat.Default)
         {
             bool flag = false;
@@ -307,6 +313,10 @@ namespace Microsoft.Build.CPPTasks
                     {
                         GenerateCommandsAccordingToType(commandLineBuilder, toolSwitch, dummyForBackwardCompatibility: false, format, escapeFormat);
                     }
+                }
+                else if(GenerateCostomCommandsAccordingToType(commandLineBuilder, switchOrder, dummyForBackwardCompatibility : false, format, escapeFormat))
+                {
+                    // 已经处理
                 }
                 else if (string.Equals(switchOrder, "additionaloptions", StringComparison.OrdinalIgnoreCase))
                 {
@@ -360,6 +370,7 @@ namespace Microsoft.Build.CPPTasks
 #if __REMOVE
             VCTaskNativeMethods.SetEvent(cancelEvent);
 #endif
+            base.Cancel();
         }
 
         protected bool VerifyRequiredArgumentsArePresent(ToolSwitch property, bool throwOnError)
@@ -595,9 +606,7 @@ namespace Microsoft.Build.CPPTasks
             catch (Exception ex)
             {
                 base.Log.LogErrorFromResources("GenerateCommandLineError", toolSwitch.Name, toolSwitch.ValueAsString, ex.Message);
-#if __REMOVE
                 ex.RethrowIfCritical();
-#endif
             }
         }
 
@@ -890,10 +899,10 @@ namespace Microsoft.Build.CPPTasks
             for (int j = 0; j < toolSwitch.TaskItemArray.Length; j++)
             {
                 array[j] = new TaskItem(Environment.ExpandEnvironmentVariables(toolSwitch.TaskItemArray[j].ItemSpec));
-                if (format == CommandLineFormat.ForTracking)
-                {
-                    array[j].ItemSpec = array[j].ItemSpec.ToUpperInvariant();
-                }
+                //if (format == CommandLineFormat.ForTracking)
+                //{
+                //    array[j].ItemSpec = array[j].ItemSpec.ToUpperInvariant();
+                //}
             }
             builder.AppendSwitchIfNotNull(toolSwitch.SwitchValue, array, toolSwitch.Separator);
         }
@@ -927,10 +936,10 @@ namespace Microsoft.Build.CPPTasks
             {
                 string text = Environment.ExpandEnvironmentVariables(toolSwitch.Value);
                 text = text.Trim();
-                if (format == CommandLineFormat.ForTracking)
-                {
-                    text = text.ToUpperInvariant();
-                }
+                //if (format == CommandLineFormat.ForTracking)
+                //{
+                //    text = text.ToUpperInvariant();
+                //}
                 if (!text.StartsWith("\"", StringComparison.Ordinal))
                 {
                     text = "\"" + text;
@@ -968,10 +977,10 @@ namespace Microsoft.Build.CPPTasks
                 string text = ((!toolSwitch.StringList[i].StartsWith("\"", StringComparison.Ordinal) || !toolSwitch.StringList[i].EndsWith("\"", StringComparison.Ordinal)) ? Environment.ExpandEnvironmentVariables(toolSwitch.StringList[i]) : Environment.ExpandEnvironmentVariables(toolSwitch.StringList[i].Substring(1, toolSwitch.StringList[i].Length - 2)));
                 if (!string.IsNullOrEmpty(text))
                 {
-                    if (format == CommandLineFormat.ForTracking)
-                    {
-                        text = text.ToUpperInvariant();
-                    }
+                    //if (format == CommandLineFormat.ForTracking)
+                    //{
+                    //    text = text.ToUpperInvariant();
+                    //}
                     if (escapeFormat.HasFlag(EscapeFormat.EscapeTrailingSlash) && text.IndexOfAny(anyOf) == -1 && text.EndsWith("\\", StringComparison.Ordinal) && !text.EndsWith("\\\\", StringComparison.Ordinal))
                     {
                         text += "\\";
