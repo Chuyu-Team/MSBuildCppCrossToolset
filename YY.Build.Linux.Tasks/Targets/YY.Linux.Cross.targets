@@ -202,8 +202,11 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   
   <Target Name="Lib">
     <ItemGroup>
+      <!--These objects are removed because lib.exe can only remove objects from an existing lib. -->
+      <Lib Remove="%(Lib.RemoveObjects)" Condition="'%(Lib.RemoveObjects)' != ''"/>
       <Lib>
-        <TimestampSurrogate Condition="'%(Lib.TimestampSurrogate)' == ''">$(CompileUpToDateFile)</TimestampSurrogate>
+        <MinimalRebuildFromTracking Condition="'$(_BuildActionType)' != 'Build' or '$(ForceRebuild)' == 'true'">false</MinimalRebuildFromTracking>
+        <ExcludedInputPaths>$(ExcludePath)</ExcludedInputPaths>
       </Lib>
     </ItemGroup>
 
@@ -217,13 +220,15 @@ Copyright (C) Microsoft Corporation. All rights reserved.
       SuppressStartupBanner="%(Lib.SuppressStartupBanner)"
       Verbose="%(Lib.Verbose)"
       OutputFile="%(Lib.OutputFile)"
-      AdditionalOptions="%(Lib.AdditionalOptions)"      
+      AdditionalOptions="%(Lib.AdditionalOptions)"
+      TrackerLogDirectory="$(TLogLocation)"
+      TLogReadFiles="$(TLogLocation)\lib.read.1.tlog"
+      TLogWriteFiles="$(TLogLocation)\lib.write.1.tlog"
+      TrackFileAccess ="$(TrackFileAccess)"
+      MinimalRebuildFromTracking ="%(Lib.MinimalRebuildFromTracking)"
       ToolExe="$(RemoteArToolExe)">
     </Ar>
-
-    <WriteLinesToFile Overwrite="true" Condition="'@(ProjectReferenceToLink->HasMetadata(TimestampSurrogate))' != ''" Encoding="Unicode" File="$(TLogLocation)\Lib.read.1.tlog" Lines="@(Lib->'^%(Fullpath)','|');@(ProjectReferenceToLink->'%(TimestampSurrogate)'->Distinct())" />
-
-    <WriteLinesToFile Overwrite="true" Encoding="Unicode" File="$(TLogLocation)\lib.write.1.tlog" Lines="@(Lib->'^%(Fullpath)');$(LinkUpToDateFile)" />
+    <Message Text="$(MSBuildProjectFile) -&gt; $(TargetPath)" Importance="High"/>
   </Target>
 
    <!-- Local build/link commands executed using MSBuild Exec task-->

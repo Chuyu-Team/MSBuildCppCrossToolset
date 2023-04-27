@@ -203,6 +203,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
       <Command>Replacement</Command>
       <CreateIndex>true</CreateIndex>
       <NoWarnOnCreate>true</NoWarnOnCreate>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
     </Lib>
     <LibFullPathTemp>
       <TimestampSurrogate>$(LastBuildState)</TimestampSurrogate>

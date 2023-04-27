@@ -1,5 +1,6 @@
 ﻿using Microsoft.Build.CPPTasks;
 using Microsoft.Build.Framework;
+using Microsoft.Build.Shared;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace YY.Build.Linux.Tasks.GCC
 {
-    public class Ar : Microsoft.Build.CPPTasks.VCToolTask
+    public class Ar : TrackedVCToolTask
     {
         private ArrayList switchOrderList;
 
@@ -281,5 +282,80 @@ namespace YY.Build.Linux.Tasks.GCC
             }
         }
 
+        protected override ITaskItem[] TrackedInputFiles => Sources;
+
+        protected override bool MaintainCompositeRootingMarkers => true;
+
+        protected override string TrackerIntermediateDirectory
+        {
+            get
+            {
+                if (TrackerLogDirectory != null)
+                {
+                    return TrackerLogDirectory;
+                }
+                return string.Empty;
+            }
+        }
+
+        public virtual string TrackerLogDirectory
+        {
+            get
+            {
+                if (IsPropertySet("TrackerLogDirectory"))
+                {
+                    return base.ActiveToolSwitches["TrackerLogDirectory"].Value;
+                }
+                return null;
+            }
+            set
+            {
+                base.ActiveToolSwitches.Remove("TrackerLogDirectory");
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.Directory);
+                toolSwitch.DisplayName = "Tracker Log Directory";
+                toolSwitch.Description = "Tracker log directory.";
+                toolSwitch.ArgumentRelationList = new ArrayList();
+                toolSwitch.Value = VCToolTask.EnsureTrailingSlash(value);
+                base.ActiveToolSwitches.Add("TrackerLogDirectory", toolSwitch);
+                AddActiveSwitchToolValue(toolSwitch);
+            }
+        }
+
+        protected override void SaveTracking()
+        {
+            string SourceKey = "^";
+
+            foreach (ITaskItem taskItem in Sources)
+            {
+                if (SourceKey.Length > 1)
+                    SourceKey += '|';
+
+                SourceKey += FileTracker.FormatRootingMarker(taskItem);
+            }
+
+            // 保存Write文件
+            {
+                string WriteFilePath = TLogWriteFiles[0].GetMetadata("FullPath");
+                Directory.CreateDirectory(Path.GetDirectoryName(WriteFilePath));
+                using StreamWriter WriteFileWriter = FileUtilities.OpenWrite(WriteFilePath, append: true, Encoding.Unicode);
+
+                WriteFileWriter.WriteLine(SourceKey);
+                WriteFileWriter.WriteLine(OutputFile);
+            }
+
+            // 保存Read文件
+            {
+                string ReadFilePath = TLogReadFiles[0].GetMetadata("FullPath");
+                Directory.CreateDirectory(Path.GetDirectoryName(ReadFilePath));
+                using StreamWriter ReadFileWriter = FileUtilities.OpenWrite(ReadFilePath, append: true, Encoding.Unicode);
+
+                ReadFileWriter.WriteLine(SourceKey);
+
+                foreach (ITaskItem taskItem in Sources)
+                {
+                    ReadFileWriter.WriteLine(FileTracker.FormatRootingMarker(taskItem));
+                }
+            }
+        }
     }
 }
