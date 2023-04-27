@@ -17,7 +17,7 @@ export VCTargetsPath=/home/mouri/Workspace/MSBuildCppCrossToolsetRelease/VCTarge
 假设项目位置为 `/home/mouri/Workspace/MSBuildCppCrossToolsetWorkspace/Samples/MSBuildCppCrossToolsetSamples.sln`。并且编译 Release x86，那么可以输入如下命令：
 
 ```
-dotnet build '/home/mouri/Workspace/MSBuildCppCrossToolsetWorkspace/Samples/MSBuildCppCrossToolsetSamples.sln' -p:Configuration=Release;Platform=x86
+dotnet build '/home/mouri/Workspace/MSBuildCppCrossToolsetWorkspace/Samples/MSBuildCppCrossToolsetSamples.sln' '-p:Configuration=Release;Platform=x86'
 ```
 
 ## 示例列表

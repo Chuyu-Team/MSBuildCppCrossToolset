@@ -1,81 +1,81 @@
-# ¹ØÓÚ MSBuildCppCrossToolset - ÔÚLinux¡¢MacOSÖĞ±àÒëvcxproj
+ï»¿# å…³äº MSBuildCppCrossToolset - åœ¨Linuxã€MacOSä¸­ç¼–è¯‘vcxproj
 [![license](https://img.shields.io/github/license/Chuyu-Team/MSBuildCppCrossToolset)](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/blob/master/LICENSE)
 ![downloads](https://img.shields.io/github/downloads/Chuyu-Team/MSBuildCppCrossToolset/total)
 [![contributors](https://img.shields.io/github/contributors-anon/Chuyu-Team/MSBuildCppCrossToolset)](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/graphs/contributors)
 [![release](https://img.shields.io/github/v/release/Chuyu-Team/MSBuildCppCrossToolset?include_prereleases)](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/releases)
 [![Build](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/actions/workflows/Build.yml/badge.svg)](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/actions/workflows/Build.yml)
 
-ÖØÒªÌáÊ¾£ºVCTargetsÖĞµÄÎÄ¼ş´Ó `Microsoft Visual Studio\?\?\MSBuild\Microsoft\VC` ÌáÈ¡£¬MicrosoftÓµÓĞÆäËùÓĞÈ¨Àû¡£
+é‡è¦æç¤ºï¼šVCTargetsä¸­çš„æ–‡ä»¶ä» `Microsoft Visual Studio\?\?\MSBuild\Microsoft\VC` æå–ï¼ŒMicrosoftæ‹¥æœ‰å…¶æ‰€æœ‰æƒåˆ©ã€‚
 
-ÖØÒªÌáÊ¾£º±¾ÏîÄ¿»¹Î´Íê¹¤¡­¡­
+é‡è¦æç¤ºï¼šæœ¬é¡¹ç›®è¿˜æœªå®Œå·¥â€¦â€¦
 
-±¾ÏîÄ¿»ùÓÚÎ¢ÈíVCTargetsĞŞ¸Ä£¬ÎªMSBuildÊµÏÖÁË¿çÆ½Ì¨±àÒëvcxproj¡£Ïà¹ØVSÅäÖÃ¸ß¶È³éÏóÍ³Ò»£¬²¢ÓëÄ¿±ê±àÒëÆ÷¹¦ÄÜÒ»±ÈÒ»Ó³Éä¡£
+æœ¬é¡¹ç›®åŸºäºå¾®è½¯VCTargetsä¿®æ”¹ï¼Œä¸ºMSBuildå®ç°äº†è·¨å¹³å°ç¼–è¯‘vcxprojã€‚ç›¸å…³VSé…ç½®é«˜åº¦æŠ½è±¡ç»Ÿä¸€ï¼Œå¹¶ä¸ç›®æ ‡ç¼–è¯‘å™¨åŠŸèƒ½ä¸€æ¯”ä¸€æ˜ å°„ã€‚
 
-> ¾Ù¸öÀı×Ó£º´úÂëÍêÈ«ÓÅ»¯£¨FullÑ¡Ïî£©£¬Î¢Èí±àÒëÆ÷Ê±ÖĞÓ³ÉäÎª `-Ox`£¬¶øÊ¹ÓÃGCCÊ±ÔòÓ³ÉäÎª`-O3`¡£
+> ä¸¾ä¸ªä¾‹å­ï¼šä»£ç å®Œå…¨ä¼˜åŒ–ï¼ˆFullé€‰é¡¹ï¼‰ï¼Œå¾®è½¯ç¼–è¯‘å™¨æ—¶ä¸­æ˜ å°„ä¸º `-Ox`ï¼Œè€Œä½¿ç”¨GCCæ—¶åˆ™æ˜ å°„ä¸º`-O3`ã€‚
 
-Î´À´¿ª·¢¼Æ»®£º
-* [ ] ½â¾öÔöÁ¿±àÒë²»ÉúĞ§ÎÊÌâ¡£
-* [ ] ÓÅ»¯²¢ĞĞÉú³ÉĞ§ÂÊ¡£
-* [ ] µ¥Ôª²âÊÔ¡£
+æœªæ¥å¼€å‘è®¡åˆ’ï¼š
+* [ ] è§£å†³å¢é‡ç¼–è¯‘ä¸ç”Ÿæ•ˆé—®é¢˜ã€‚
+* [ ] ä¼˜åŒ–å¹¶è¡Œç”Ÿæˆæ•ˆç‡ã€‚
+* [ ] å•å…ƒæµ‹è¯•ã€‚
 
-# 1. ¼æÈİĞÔ
-## 1.1. ¼æÈİµÄ²Ù×÷ÏµÍ³
+# 1. å…¼å®¹æ€§
+## 1.1. å…¼å®¹çš„æ“ä½œç³»ç»Ÿ
 * Linux
-* MacOS£¨¼Æ»®£©
+* MacOSï¼ˆè®¡åˆ’ï¼‰
 
-> ×¢Òâ£º²»Ö§³ÖWindows£¬ÒòÎªWindowsÏÂÎ¢ÈíÖ±½ÓÖ§³Ö¡£
+> æ³¨æ„ï¼šä¸æ”¯æŒWindowsï¼Œå› ä¸ºWindowsä¸‹å¾®è½¯ç›´æ¥æ”¯æŒã€‚
 
-## 1.2. ¼æÈİµÄ±àÒëÆ÷
-| ±àÒëÆ÷Ãû³Æ     | ¶ÔÓ¦µÄÆ½Ì¨¹¤¾ß¼¯
+## 1.2. å…¼å®¹çš„ç¼–è¯‘å™¨
+| ç¼–è¯‘å™¨åç§°     | å¯¹åº”çš„å¹³å°å·¥å…·é›†
 | -------------- | -----------
 | GCC            | YY_Cross_GCC_1_0
 | Clang          | YY_Cross_Clang_1_0
 
-> ÓÉÓÚÕâĞ©±àÒë¹¤¾ß½«×÷ÎªÆ½Ì¨¹¤¾ß¼¯ÊµÏÖ£¬Òò´ËÊ¹ÓÃÊ±ĞèÒª¸ø¶ÔÓ¦µÄvcxprojÅäÖÃÆ½Ì¨¹¤¾ß¼¯£¨`PlatformToolset`£©¡£
+> ç”±äºè¿™äº›ç¼–è¯‘å·¥å…·å°†ä½œä¸ºå¹³å°å·¥å…·é›†å®ç°ï¼Œå› æ­¤ä½¿ç”¨æ—¶éœ€è¦ç»™å¯¹åº”çš„vcxprojé…ç½®å¹³å°å·¥å…·é›†ï¼ˆ`PlatformToolset`ï¼‰ã€‚
 
 
-## 1.3. ¼æÈİµÄÆ½Ì¨
+## 1.3. å…¼å®¹çš„å¹³å°
 * ARM
 * ARM64
 * MIPS
 * x64(AMD64)
 * x86
 
-# 2. Ê¹ÓÃ·½Ê½
-# 2.1. °²×° .NET SDK
-ÏÂÔØµØÖ·£ºhttps://dotnet.microsoft.com/zh-cn/download
+# 2. ä½¿ç”¨æ–¹å¼
+# 2.1. å®‰è£… .NET SDK
+ä¸‹è½½åœ°å€ï¼šhttps://dotnet.microsoft.com/zh-cn/download
 
-> ±ØĞëÑ¡Ôñ .NET 6.0»òÕß¸ü¸ß°æ±¾¡£
+> å¿…é¡»é€‰æ‹© .NET 6.0æˆ–è€…æ›´é«˜ç‰ˆæœ¬ã€‚
 
-## 2.2. ÅäÖÃ MSBuildCppCrossToolset
-Ê×ÏÈ£¬ÎÒÃÇ´Ó[Release](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/releases)²úÎïÏÂÔØMSBuildCppCrossToolset²¢½âÑ¹¡£
+## 2.2. é…ç½® MSBuildCppCrossToolset
+é¦–å…ˆï¼Œæˆ‘ä»¬ä»[Release](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/releases)äº§ç‰©ä¸‹è½½MSBuildCppCrossToolsetå¹¶è§£å‹ã€‚
 
-¼ÙÉè×îÖÕ½âÑ¹Ä¿Â¼ÊÇ`/home/john/Desktop/VCTargets`¡£ÎÒÃÇÖ´ĞĞÏÂÃæÕâÌõÃüÁî£º
+å‡è®¾æœ€ç»ˆè§£å‹ç›®å½•æ˜¯`/home/john/Desktop/VCTargets`ã€‚æˆ‘ä»¬æ‰§è¡Œä¸‹é¢è¿™æ¡å‘½ä»¤ï¼š
 
 ```
 export VCTargetsPath=/home/john/Desktop/VCTargets/v170/
 ```
 
-Ëü½«ÁÙÊ±Ìí¼Ó`VCTargetsPath`»·¾³±äÁ¿£¬Èç¹ûĞèÒª³Ö¾ÃÅäÖÃ£¬Çë×ÔĞĞĞŞ¸ÄÏµÍ³ÅäÖÃ¡£
+å®ƒå°†ä¸´æ—¶æ·»åŠ `VCTargetsPath`ç¯å¢ƒå˜é‡ï¼Œå¦‚æœéœ€è¦æŒä¹…é…ç½®ï¼Œè¯·è‡ªè¡Œä¿®æ”¹ç³»ç»Ÿé…ç½®ã€‚
 
-## 2.3. ±àÒëvcxprojÏîÄ¿
-¼ÙÉèÏîÄ¿Î»ÖÃ£º `/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj`¡£²¢ÇÒ±àÒë Release x86£¬ÄÇÃ´¿ÉÒÔÊäÈëÈçÏÂÃüÁî£º
+## 2.3. ç¼–è¯‘vcxprojé¡¹ç›®
+å‡è®¾é¡¹ç›®ä½ç½®ï¼š `/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj`ã€‚å¹¶ä¸”ç¼–è¯‘ Release x86ï¼Œé‚£ä¹ˆå¯ä»¥è¾“å…¥å¦‚ä¸‹å‘½ä»¤ï¼š
 
 ```
-dotnet msbuild '/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj' -p:Configuration=Release;Platform=x86
+dotnet msbuild '/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj' '-p:Configuration=Release;Platform=x86'
 ```
 
-> ÎÂÜ°ÌáÊ¾£º`PlatformToolset` ±ØĞë´Ó 1.2. ¼æÈİµÄ±àÒëÆ÷Ğ¡½ÚÖĞ¶ÔÓ¦µÄÆ½Ì¨¹¤¾ß¼¯ÖĞÑ¡Ôñ£¬±ÈÈçËµÏëÓÃGCC¾ÍÉèÖÃ`YY_Cross_GCC_1_0`¡£
+> æ¸©é¦¨æç¤ºï¼š`PlatformToolset` å¿…é¡»ä» 1.2. å…¼å®¹çš„ç¼–è¯‘å™¨å°èŠ‚ä¸­å¯¹åº”çš„å¹³å°å·¥å…·é›†ä¸­é€‰æ‹©ï¼Œæ¯”å¦‚è¯´æƒ³ç”¨GCCå°±è®¾ç½®`YY_Cross_GCC_1_0`ã€‚
 
-# 3. ÎÒÔõÃ´×Ô¼º±àÒë MSBuildCppCrossToolset£¿
-> ÎÂÜ°ÌáÊ¾£ºÆÕÍ¨ÓÃ»§ÎŞĞè¹ØĞÄÈçºÎ±àÒë MSBuildCppCrossToolset¡£Ö»ĞèÒª´ÓRelease²úÎïÖĞÏÂÔØ¼´¿É¡£
+# 3. æˆ‘æ€ä¹ˆè‡ªå·±ç¼–è¯‘ MSBuildCppCrossToolsetï¼Ÿ
+> æ¸©é¦¨æç¤ºï¼šæ™®é€šç”¨æˆ·æ— éœ€å…³å¿ƒå¦‚ä½•ç¼–è¯‘ MSBuildCppCrossToolsetã€‚åªéœ€è¦ä»Releaseäº§ç‰©ä¸­ä¸‹è½½å³å¯ã€‚
 
-×¢Òâ£º±àÒëMSBuildCppCrossToolsetĞèÒª°²×°`.NET 6.0 SDK`¡£
+æ³¨æ„ï¼šç¼–è¯‘MSBuildCppCrossToolsetéœ€è¦å®‰è£…`.NET 6.0 SDK`ã€‚
 
-¼ÙÉèMSBuildCppCrossToolsetÏîÄ¿Ô´´úÂë´æ·ÅÔÚ: `D:\MSBuildCppCrossToolset`
+å‡è®¾MSBuildCppCrossToolseté¡¹ç›®æºä»£ç å­˜æ”¾åœ¨: `D:\MSBuildCppCrossToolset`
 ```
-# Ò²¿ÉÒÔÊ¹ÓÃ dotnet CLI±àÒë
+# ä¹Ÿå¯ä»¥ä½¿ç”¨ dotnet CLIç¼–è¯‘
 msbuild D:\MSBuildCppCrossToolset\Build.proj
 ```
 
-Ö´ĞĞ³É¹¦ºó£¬ReleaseÄ¿Â¼¾ÍÊÇÊä³ö²úÎï¡£
+æ‰§è¡ŒæˆåŠŸåï¼ŒReleaseç›®å½•å°±æ˜¯è¾“å‡ºäº§ç‰©ã€‚
