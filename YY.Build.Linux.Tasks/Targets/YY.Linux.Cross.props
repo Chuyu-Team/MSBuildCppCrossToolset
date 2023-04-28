@@ -197,6 +197,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
       <FunctionBinding Condition="'$(PlatformTarget)' == 'x86'">false</FunctionBinding>
       <NoExecStackRequired>true</NoExecStackRequired>
       <LinkDLL Condition="'$(ConfigurationType)' == 'DynamicLibrary'">true</LinkDLL>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
     </Link>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>

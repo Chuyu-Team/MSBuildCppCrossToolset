@@ -985,6 +985,14 @@ namespace YY.Build.Linux.Tasks.GCC
             }
         }
 
+        protected override string CommandTLogName
+        {
+            get
+            {
+                return "compile." + base.CommandTLogName;
+            }
+        }
+
         protected bool InputDependencyFilter(string fullInputPath)
         {
             if (fullInputPath.EndsWith(".PDB", StringComparison.OrdinalIgnoreCase) || fullInputPath.EndsWith(".IDB", StringComparison.OrdinalIgnoreCase))

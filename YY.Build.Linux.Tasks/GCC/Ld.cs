@@ -11,10 +11,12 @@ using Microsoft.Build.Framework;
 // using Microsoft.Build.Linux.Tasks;
 using Microsoft.Build.Utilities;
 using System.Text.RegularExpressions;
+using Microsoft.Build.Shared;
+using System.IO;
 
 namespace YY.Build.Linux.Tasks.GCC
 {
-    public class Ld : Microsoft.Build.CPPTasks.VCToolTask
+    public class Ld : TrackedVCToolTask
     {
         public Ld()
             : base(Microsoft.Build.CppTasks.Common.Properties.Microsoft_Build_CPPTasks_Strings.ResourceManager)
@@ -59,6 +61,18 @@ namespace YY.Build.Linux.Tasks.GCC
         private static Regex _fileLineTextExpression = new Regex("^\\s*(?<FILENAME>[^:]*):(((?<LINE>\\d*):)?)(\\s*(?<CATEGORY>(fatal error|error|warning|note)):)?\\s*(?<TEXT>.*)$", RegexOptions.IgnoreCase | RegexOptions.Compiled, TimeSpan.FromMilliseconds(100.0));
 
         protected override string ToolName => "ld";
+
+        protected override ITaskItem[] TrackedInputFiles => Sources;
+
+        protected override bool MaintainCompositeRootingMarkers => true;
+
+        protected override string CommandTLogName
+        {
+            get
+            {
+                return "ld." + base.CommandTLogName;
+            }
+        }
 
         public string OutputFile
         {
@@ -762,6 +776,143 @@ namespace YY.Build.Linux.Tasks.GCC
                 toolSwitch.MultipleValues = true;
                 base.ActiveToolSwitches.Add("UseOfStl", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
+            }
+        }
+
+        protected override string TrackerIntermediateDirectory
+        {
+            get
+            {
+                if (TrackerLogDirectory != null)
+                {
+                    return TrackerLogDirectory;
+                }
+                return string.Empty;
+            }
+        }
+
+        public virtual string TrackerLogDirectory
+        {
+            get
+            {
+                if (IsPropertySet("TrackerLogDirectory"))
+                {
+                    return base.ActiveToolSwitches["TrackerLogDirectory"].Value;
+                }
+                return null;
+            }
+            set
+            {
+                base.ActiveToolSwitches.Remove("TrackerLogDirectory");
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.Directory);
+                toolSwitch.DisplayName = "Tracker Log Directory";
+                toolSwitch.Description = "Tracker log directory.";
+                toolSwitch.ArgumentRelationList = new ArrayList();
+                toolSwitch.Value = VCToolTask.EnsureTrailingSlash(value);
+                base.ActiveToolSwitches.Add("TrackerLogDirectory", toolSwitch);
+                AddActiveSwitchToolValue(toolSwitch);
+            }
+        }
+
+        protected override bool GenerateCostomCommandsAccordingToType(CommandLineBuilder builder, string switchName, bool dummyForBackwardCompatibility, CommandLineFormat format = CommandLineFormat.ForBuildLog, EscapeFormat escapeFormat = EscapeFormat.Default)
+        {
+            if (MinimalRebuildFromTracking == true && string.Equals(switchName, "Trace", StringComparison.OrdinalIgnoreCase))
+            {
+                // MinimalRebuildFromTracking开启时，强制将 Trace 认为是开启的。
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.Boolean);
+                toolSwitch.DisplayName = "Trace";
+                toolSwitch.Description = "The --trace option tells the linker to output the input files as are processed.";
+                toolSwitch.ArgumentRelationList = new ArrayList();
+                toolSwitch.SwitchValue = "-Wl,--trace";
+                toolSwitch.Name = "Trace";
+                toolSwitch.BooleanValue = true;
+
+                GenerateCommandsAccordingToType(builder, toolSwitch, format, escapeFormat);
+                return true;
+            }
+            return false;
+        }
+
+        private HashSet<string> ReadObjectFiles;
+
+        protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
+        {
+            ReadObjectFiles = null;
+
+            if (MinimalRebuildFromTracking == true)
+            {
+                ReadObjectFiles = new HashSet<string>();
+            }
+
+            return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
+        }
+
+        protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance)
+        {
+            do
+            {
+                if (StandardOutputImportanceToUse != messageImportance)
+                    break;
+
+                if (ReadObjectFiles == null)
+                    break;
+
+                if (singleLine.Length == 0)
+                    break;
+
+                if(singleLine[0] != '/' || singleLine.Contains(": "))
+                    break;
+
+                try
+                {
+                    var ObjPath = FileUtilities.NormalizePath(singleLine);
+                    ReadObjectFiles.Add(ObjPath);
+                    // Trace如果本身没有开启，那么不向其输出搜索内容，避免内容太多形成干扰。
+                    if (!Trace)
+                        return;
+                } catch
+                {
+                }
+                
+            } while (false);
+            
+            base.LogEventsFromTextOutput(singleLine, messageImportance);
+        }
+
+        protected override void SaveTracking()
+        {
+            string SourceKey = "^";
+
+            foreach (ITaskItem taskItem in Sources)
+            {
+                if (SourceKey.Length != 1)
+                    SourceKey += '|';
+
+                SourceKey += FileTracker.FormatRootingMarker(taskItem);
+            }
+
+            // 保存Write文件
+            {
+                string WriteFilePath = TLogWriteFiles[0].GetMetadata("FullPath");
+                Directory.CreateDirectory(Path.GetDirectoryName(WriteFilePath));
+                using StreamWriter WriteFileWriter = FileUtilities.OpenWrite(WriteFilePath, append: true, Encoding.Unicode);
+
+                WriteFileWriter.WriteLine(SourceKey);
+                WriteFileWriter.WriteLine(OutputFile);
+            }
+
+            // 保存Read文件
+            {
+                string ReadFilePath = TLogReadFiles[0].GetMetadata("FullPath");
+                Directory.CreateDirectory(Path.GetDirectoryName(ReadFilePath));
+                using StreamWriter ReadFileWriter = FileUtilities.OpenWrite(ReadFilePath, append: true, Encoding.Unicode);
+
+                ReadFileWriter.WriteLine(SourceKey);
+
+                foreach (var FilePath in ReadObjectFiles)
+                {
+                    ReadFileWriter.WriteLine(FilePath);
+                }
             }
         }
     }

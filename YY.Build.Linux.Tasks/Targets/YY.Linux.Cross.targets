@@ -154,50 +154,51 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   </Target>
 
   <Target Name="Link">
-    <ItemGroup>
-      <Link>
-        <TimestampSurrogate Condition="'%(Link.TimestampSurrogate)' == ''">$(CompileUpToDateFile)</TimestampSurrogate>
-      </Link>
-    </ItemGroup>
-      <Ld Condition="'@(Link)' != ''"
-          Sources="@(Link)"
-          OutputFile="%(Link.OutputFile)"
-          ShowProgress="%(Link.ShowProgress)"
-          Version="%(Link.Version)"
-          VerboseOutput="%(Link.VerboseOutput)"
-          Trace="%(Link.Trace)"
-          TraceSymbols="%(Link.TraceSymbols)"
-          PrintMap="%(Link.PrintMap)"
-          UnresolvedSymbolReferences="%(Link.UnresolvedSymbolReferences)"
-          OptimizeforMemory="%(Link.OptimizeforMemory)"
-          SharedLibrarySearchPath="%(Link.SharedLibrarySearchPath)"
-          AdditionalLibraryDirectories="%(Link.AdditionalLibraryDirectories)"
-          IgnoreSpecificDefaultLibraries="%(Link.IgnoreSpecificDefaultLibraries)"
-          IgnoreDefaultLibraries="%(Link.IgnoreDefaultLibraries)"
-          ForceUndefineSymbolReferences="%(Link.ForceUndefineSymbolReferences)"
-          DebuggerSymbolInformation="%(Link.DebuggerSymbolInformation)"
-          GenerateMapFile="%(Link.GenerateMapFile)"
-          Relocation="%(Link.Relocation)"
-          FunctionBinding="%(Link.FunctionBinding)"
-          NoExecStackRequired="%(Link.NoExecStackRequired)"
-          LinkDll="%(Link.LinkDll)"
-          WholeArchiveBegin="%(Link.WholeArchiveBegin)"
-          AdditionalOptions="%(Link.AdditionalOptions)"
-          AdditionalDependencies="%(Link.AdditionalDependencies)"
-          WholeArchiveEnd="%(Link.WholeArchiveEnd)"
-          LibraryDependencies="%(Link.LibraryDependencies)"
-          BuildingInIde="%(Link.BuildingInIde)"
-          EnableASAN="%(Link.EnableASAN)"
-          UseOfStl="%(Link.UseOfStl)"
-          ToolExe="$(RemoteLdToolExe)"
-          >
-      </Ld>
-      
-      <Message Text="$(MSBuildProjectFile) -&gt; $(TargetPath)" Importance="High"/>
-
-      <WriteLinesToFile Overwrite="true" Condition="'@(ProjectReferenceToLink->HasMetadata(TimestampSurrogate))' != ''" Encoding="Unicode" File="$(TLogLocation)\link.read.1.tlog" Lines="@(Link->'^%(Fullpath)','|');@(ProjectReferenceToLink->'%(TimestampSurrogate)'->Distinct())" />
-
-    <WriteLinesToFile Overwrite="true" Encoding="Unicode" File="$(TLogLocation)\link.write.1.tlog" Lines="@(Link->'^%(Fullpath)','|');$(LinkUpToDateFile)" />
+    <PropertyGroup>
+        <Link_MinimalRebuildFromTracking Condition="'@(Link->AnyHaveMetadataValue('MinimalRebuildFromTracking', 'false'))' == 'true'">false</Link_MinimalRebuildFromTracking>
+        <Link_MinimalRebuildFromTracking Condition="'$(_BuildActionType)' != 'Build' or '$(ForceRebuild)' == 'true'" >false</Link_MinimalRebuildFromTracking>
+        <Link_MinimalRebuildFromTracking Condition="'$(Link_MinimalRebuildFromTracking)' == ''">true</Link_MinimalRebuildFromTracking>
+    </PropertyGroup>
+    <Ld Condition="'@(Link)' != ''"
+        Sources="@(Link)"
+        OutputFile="%(Link.OutputFile)"
+        ShowProgress="%(Link.ShowProgress)"
+        Version="%(Link.Version)"
+        VerboseOutput="%(Link.VerboseOutput)"
+        Trace="%(Link.Trace)"
+        TraceSymbols="%(Link.TraceSymbols)"
+        PrintMap="%(Link.PrintMap)"
+        UnresolvedSymbolReferences="%(Link.UnresolvedSymbolReferences)"
+        OptimizeforMemory="%(Link.OptimizeforMemory)"
+        SharedLibrarySearchPath="%(Link.SharedLibrarySearchPath)"
+        AdditionalLibraryDirectories="%(Link.AdditionalLibraryDirectories)"
+        IgnoreSpecificDefaultLibraries="%(Link.IgnoreSpecificDefaultLibraries)"
+        IgnoreDefaultLibraries="%(Link.IgnoreDefaultLibraries)"
+        ForceUndefineSymbolReferences="%(Link.ForceUndefineSymbolReferences)"
+        DebuggerSymbolInformation="%(Link.DebuggerSymbolInformation)"
+        GenerateMapFile="%(Link.GenerateMapFile)"
+        Relocation="%(Link.Relocation)"
+        FunctionBinding="%(Link.FunctionBinding)"
+        NoExecStackRequired="%(Link.NoExecStackRequired)"
+        LinkDll="%(Link.LinkDll)"
+        WholeArchiveBegin="%(Link.WholeArchiveBegin)"
+        AdditionalOptions="%(Link.AdditionalOptions)"
+        AdditionalDependencies="%(Link.AdditionalDependencies)"
+        WholeArchiveEnd="%(Link.WholeArchiveEnd)"
+        LibraryDependencies="%(Link.LibraryDependencies)"
+        BuildingInIde="%(Link.BuildingInIde)"
+        EnableASAN="%(Link.EnableASAN)"
+        UseOfStl="%(Link.UseOfStl)"
+        TrackerLogDirectory="$(TLogLocation)"
+        TLogReadFiles="$(TLogLocation)\link.read.1.tlog"
+        TLogWriteFiles="$(TLogLocation)\link.write.1.tlog"
+        TrackFileAccess ="$(TrackFileAccess)"
+        MinimalRebuildFromTracking ="$(Link_MinimalRebuildFromTracking)"
+        ToolExe="$(RemoteLdToolExe)"
+        >
+      <Output TaskParameter="SkippedExecution" PropertyName="LinkSkippedExecution" />
+    </Ld>
+    <Message Text="$(MSBuildProjectFile) -&gt; $(TargetPath)" Importance="High"/>
   </Target>
   
   <Target Name="Lib">

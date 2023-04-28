@@ -290,7 +290,11 @@ namespace Microsoft.Build.CPPTasks
             CommandLineBuilder commandLineBuilder = new CommandLineBuilder(quoteHyphensOnCommandLine: true);
             foreach (string switchOrder in SwitchOrderList)
             {
-                if (IsPropertySet(switchOrder))
+                if (GenerateCostomCommandsAccordingToType(commandLineBuilder, switchOrder, dummyForBackwardCompatibility: false, format, escapeFormat))
+                {
+                    // 已经处理
+                }
+                else if(IsPropertySet(switchOrder))
                 {
                     ToolSwitch toolSwitch = activeToolSwitches[switchOrder];
                     if (!VerifyDependenciesArePresent(toolSwitch) || !VerifyRequiredArgumentsArePresent(toolSwitch, throwOnError: false))
@@ -313,11 +317,7 @@ namespace Microsoft.Build.CPPTasks
                     {
                         GenerateCommandsAccordingToType(commandLineBuilder, toolSwitch, dummyForBackwardCompatibility: false, format, escapeFormat);
                     }
-                }
-                else if(GenerateCostomCommandsAccordingToType(commandLineBuilder, switchOrder, dummyForBackwardCompatibility : false, format, escapeFormat))
-                {
-                    // 已经处理
-                }
+                } 
                 else if (string.Equals(switchOrder, "additionaloptions", StringComparison.OrdinalIgnoreCase))
                 {
                     BuildAdditionalArgs(commandLineBuilder);
