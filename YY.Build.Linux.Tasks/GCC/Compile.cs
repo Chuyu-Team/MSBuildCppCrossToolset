@@ -122,6 +122,7 @@ namespace YY.Build.Linux.Tasks.GCC
                 toolSwitch.Required = true;
                 toolSwitch.ArgumentRelationList = new ArrayList();
                 toolSwitch.TaskItemArray = value;
+                toolSwitch.TaskItemFullPath = true;
                 base.ActiveToolSwitches.Add("Sources", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }

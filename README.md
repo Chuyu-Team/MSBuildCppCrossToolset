@@ -13,8 +13,8 @@
 
 > 举个例子：代码完全优化（Full选项），微软编译器时中映射为 `-Ox`，而使用GCC时则映射为`-O3`。
 
-未来开发计划：
-* [ ] 解决增量编译不生效问题。
+目前开发计划：
+* [x] [Fea 5](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/issues/5), 添加最小化生成支持。
 * [ ] 优化并行生成效率。
 * [ ] 单元测试。
 

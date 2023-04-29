@@ -915,18 +915,37 @@ namespace Microsoft.Build.CPPTasks
                 ITaskItem[] taskItemArray = toolSwitch.TaskItemArray;
                 foreach (ITaskItem taskItem in taskItemArray)
                 {
+#if __REMOVE
                     builder.AppendSwitchIfNotNull(toolSwitch.SwitchValue, Environment.ExpandEnvironmentVariables(taskItem.ItemSpec));
+#else
+                    var ExpandItemSpec =Environment.ExpandEnvironmentVariables(toolSwitch.TaskItem.ItemSpec);
+                    if(toolSwitch.TaskItemFullPath)
+                    {
+                        ExpandItemSpec = FileUtilities.NormalizePath(ExpandItemSpec);
+                    }
+
+                    builder.AppendSwitchIfNotNull(toolSwitch.SwitchValue, ExpandItemSpec);
+#endif
                 }
                 return;
             }
             ITaskItem[] array = new ITaskItem[toolSwitch.TaskItemArray.Length];
             for (int j = 0; j < toolSwitch.TaskItemArray.Length; j++)
             {
+#if __REMOVE
                 array[j] = new TaskItem(Environment.ExpandEnvironmentVariables(toolSwitch.TaskItemArray[j].ItemSpec));
-                //if (format == CommandLineFormat.ForTracking)
-                //{
-                //    array[j].ItemSpec = array[j].ItemSpec.ToUpperInvariant();
-                //}
+                if (format == CommandLineFormat.ForTracking)
+                {
+                    array[j].ItemSpec = array[j].ItemSpec.ToUpperInvariant();
+                }
+#else
+                var ExpandItemSpec = Environment.ExpandEnvironmentVariables(toolSwitch.TaskItemArray[j].ItemSpec);
+                if (toolSwitch.TaskItemFullPath)
+                {
+                    ExpandItemSpec = FileUtilities.NormalizePath(ExpandItemSpec);
+                }
+                array[j] = new TaskItem(ExpandItemSpec);
+#endif
             }
             builder.AppendSwitchIfNotNull(toolSwitch.SwitchValue, array, toolSwitch.Separator);
         }
@@ -935,7 +954,16 @@ namespace Microsoft.Build.CPPTasks
         {
             if (!string.IsNullOrEmpty(toolSwitch.TaskItem.ItemSpec))
             {
+#if __REMOVE
                 builder.AppendFileNameIfNotNull(Environment.ExpandEnvironmentVariables(toolSwitch.TaskItem.ItemSpec + toolSwitch.Separator));
+#else
+                var ExpandItemSpec = Environment.ExpandEnvironmentVariables(toolSwitch.TaskItem.ItemSpec);
+                if(toolSwitch.TaskItemFullPath)
+                {
+                    ExpandItemSpec = FileUtilities.NormalizePath(ExpandItemSpec);
+                }
+                builder.AppendFileNameIfNotNull(ExpandItemSpec + toolSwitch.Separator);
+#endif
             }
         }
 
