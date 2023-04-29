@@ -115,7 +115,13 @@ namespace Microsoft.Build.CPPTasks
 
         public bool UseMsbuildResourceManager { get; set; }
 
+#if __REMOVE
         protected override Encoding ResponseFileEncoding => Encoding.Unicode;
+#else
+        // Linux下文件普遍采用没文件头的UTF8，否则容易引入兼容性问题。
+        private UTF8Encoding UTF8NoBom = new UTF8Encoding(false);
+        protected override Encoding ResponseFileEncoding => UTF8NoBom;
+#endif
 
         protected virtual ArrayList SwitchOrderList => null;
 
@@ -250,8 +256,7 @@ namespace Microsoft.Build.CPPTasks
             return text2;
         }
 
-        // Linux下对 ResponseFile 支持不好，所以与 CommandLine 调换。
-        protected virtual string /*GenerateCommandLineCommandsExceptSwitches*/GenerateResponseFileCommandsExceptSwitches(string[] switchesToRemove, CommandLineFormat format = CommandLineFormat.ForBuildLog, EscapeFormat escapeFormat = EscapeFormat.Default)
+        protected virtual string GenerateCommandLineCommandsExceptSwitches(string[] switchesToRemove, CommandLineFormat format = CommandLineFormat.ForBuildLog, EscapeFormat escapeFormat = EscapeFormat.Default)
         {
             return string.Empty;
         }
@@ -281,7 +286,7 @@ namespace Microsoft.Build.CPPTasks
             return false;
         }
 
-        protected virtual string /*GenerateResponseFileCommandsExceptSwitches*/GenerateCommandLineCommandsExceptSwitches(string[] switchesToRemove, CommandLineFormat format = CommandLineFormat.ForBuildLog, EscapeFormat escapeFormat = EscapeFormat.Default)
+        protected virtual string GenerateResponseFileCommandsExceptSwitches(string[] switchesToRemove, CommandLineFormat format = CommandLineFormat.ForBuildLog, EscapeFormat escapeFormat = EscapeFormat.Default)
         {
             bool flag = false;
             AddDefaultsToActiveSwitchList();
@@ -360,6 +365,25 @@ namespace Microsoft.Build.CPPTasks
 
         protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
         {
+#if __REMOVE
+#else
+            // 由于创建响应文件速度需要额外IO，所以我们特别判断，如果命令行总长度小于2048(Linux支持2048长度问题不大)则不创建响应文件了。
+            if(responseFileCommands.Length != 0 && responseFileCommands.Length + commandLineCommands.Length + 1 < 2048)
+            {
+                if(commandLineCommands.Length != 0)
+                {
+                    commandLineCommands += ' ';
+                    commandLineCommands += responseFileCommands;
+                }
+                else
+                {
+                    commandLineCommands = responseFileCommands;
+                }
+
+                responseFileCommands = "";
+            }
+#endif
+
             ResolvedPathToTool = Environment.ExpandEnvironmentVariables(pathToTool);
             return base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
         }
