@@ -18,9 +18,9 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   <PropertyGroup>
     <LinuxCommonTargetsPath>$(VCTargetsPath)\Application Type\$(ApplicationType)\$(ApplicationTypeRevision)\</LinuxCommonTargetsPath>
     <!-- PlatformToolset when none is provided. -->
-    <PlatformToolset Condition="'$(PlatformToolset)' == ''">Remote_GCC_1_0</PlatformToolset>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">YY_Cross_GCC_1_0</PlatformToolset>
     <!-- Fallback PlatformToolset to use when a given toolset is not installed -->
-    <DefaultPlatformToolset>Remote_GCC_1_0</DefaultPlatformToolset>
+    <DefaultPlatformToolset>YY_Cross_GCC_1_0</DefaultPlatformToolset>
     <UseOfStl Condition="'$(UseOfStl)' == ''">libstdc++_shared</UseOfStl>
     <ConfigurationType Condition="'$(ConfigurationType)' == ''">Application</ConfigurationType>
     <TargetOSAndVersion Condition="'$(TargetLinuxPlatform)' != 'Raspberry'">Linux</TargetOSAndVersion>

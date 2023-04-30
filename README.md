@@ -28,7 +28,7 @@
 ## 1.2. 兼容的编译器
 | 编译器名称     | 对应的平台工具集
 | -------------- | -----------
-| GCC            | YY_Cross_GCC_1_0
+| GCC            | YY_Cross_GCC_1_0(Linux默认)
 | Clang          | YY_Cross_Clang_1_0
 
 > 由于这些编译工具将作为平台工具集实现，因此使用时需要给对应的vcxproj配置平台工具集（`PlatformToolset`）。
@@ -65,7 +65,7 @@ export VCTargetsPath=/home/john/Desktop/VCTargets/v170/
 dotnet msbuild '/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj' '-p:Configuration=Release;Platform=x86'
 ```
 
-> 温馨提示：`PlatformToolset` 必须从 1.2. 兼容的编译器小节中对应的平台工具集中选择，比如说想用GCC就设置`YY_Cross_GCC_1_0`。
+> 温馨提示：`PlatformToolset` 必须从 1.2. 兼容的编译器小节中对应的平台工具集中选择，比如说想用GCC就设置`YY_Cross_GCC_1_0`。如果为空则根据平台自动选择。
 
 # 3. 我怎么自己编译 MSBuildCppCrossToolset？
 > 温馨提示：普通用户无需关心如何编译 MSBuildCppCrossToolset。只需要从Release产物中下载即可。
