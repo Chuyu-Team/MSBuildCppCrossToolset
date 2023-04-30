@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace YY.Build.Linux.Tasks.GCC
+namespace YY.Build.Cross.Tasks.Cross
 {
     // 用于读取GCC -MD 生成的Map文件。
     internal class GCCMapReader

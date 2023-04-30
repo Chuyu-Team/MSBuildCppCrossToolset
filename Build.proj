@@ -38,8 +38,8 @@ MSBuild.exe "Build.proj"
     <Copy SourceFiles="$(MSBuildThisFileDirectory)\Microsoft.Build.CppTasks.Common\bin\Release\net6.0\Microsoft.Build.CppTasks.Common.dll" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170" />
       
     <ItemGroup>
-      <PlatformsRootFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Linux.Tasks\Targets\*.*"/>
-      <PlatformsFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Linux.Tasks\Targets\Platforms\**\*.*"/>
+      <PlatformsRootFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Cross.Tasks\Targets\Linux\*.*"/>
+      <PlatformsFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Cross.Tasks\Targets\Linux\Platforms\**\*.*"/>
     </ItemGroup>
     <Copy SourceFiles="@(PlatformsRootFiles)" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0" />
     <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\ARM\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />

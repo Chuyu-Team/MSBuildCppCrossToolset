@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YY.Build.Linux.Tasks.GCC
+namespace YY.Build.Cross.Tasks.Cross
 {
     public class Ar : TrackedVCToolTask
     {

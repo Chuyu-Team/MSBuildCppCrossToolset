@@ -13,7 +13,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.Build.Utilities",
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.Build.Framework", "Microsoft.Build.Framework\Microsoft.Build.Framework.shproj", "{4BA607BE-24E1-46F8-A210-EED2B04C836B}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "YY.Build.Linux.Tasks", "YY.Build.Linux.Tasks\YY.Build.Linux.Tasks.shproj", "{8D4550A9-DEFB-4705-9DCA-873B81497C9D}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "YY.Build.Cross.Tasks", "YY.Build.Cross.Tasks\YY.Build.Cross.Tasks.shproj", "{8D4550A9-DEFB-4705-9DCA-873B81497C9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,12 +36,12 @@ Global
 		Microsoft.Build.Shared\Microsoft.Build.Shared.projitems*{20cd5d23-441c-4eff-8277-f9724e686c3f}*SharedItemsImports = 13
 		Microsoft.Build.Framework\Microsoft.Build.Framework.projitems*{4ba607be-24e1-46f8-a210-eed2b04c836b}*SharedItemsImports = 13
 		Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.projitems*{687dcb03-a1dd-48f2-9a6a-5a7ac4b6f0ae}*SharedItemsImports = 13
-		YY.Build.Linux.Tasks\YY.Build.Linux.Tasks.projitems*{8d4550a9-defb-4705-9dca-873b81497c9d}*SharedItemsImports = 13
+		YY.Build.Cross.Tasks\YY.Build.Cross.Tasks.projitems*{8d4550a9-defb-4705-9dca-873b81497c9d}*SharedItemsImports = 13
 		Microsoft.Build.Utilities\Microsoft.Build.Utilities.projitems*{b3183ec4-afd6-47b6-93c5-ffb42f82af96}*SharedItemsImports = 13
 		Microsoft.Build.CPPTasks\Microsoft.Build.CPPTasks.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
 		Microsoft.Build.Framework\Microsoft.Build.Framework.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
 		Microsoft.Build.Shared\Microsoft.Build.Shared.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
 		Microsoft.Build.Utilities\Microsoft.Build.Utilities.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
-		YY.Build.Linux.Tasks\YY.Build.Linux.Tasks.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
+		YY.Build.Cross.Tasks\YY.Build.Cross.Tasks.projitems*{de6f93aa-4289-46fc-bba2-98ed16bd1af2}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

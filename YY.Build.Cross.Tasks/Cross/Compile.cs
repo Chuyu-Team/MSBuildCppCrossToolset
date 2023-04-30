@@ -11,7 +11,7 @@ using Microsoft.Build.Shared;
 using System.Text;
 using System;
 
-namespace YY.Build.Linux.Tasks.GCC
+namespace YY.Build.Cross.Tasks.Cross
 {
     public class Compile : TrackedVCToolTask
     {

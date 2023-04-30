@@ -14,9 +14,9 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 -->
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Ar" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
-  <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Compile" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
-  <UsingTask TaskName="YY.Build.Linux.Tasks.GCC.Ld" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  <UsingTask TaskName="YY.Build.Cross.Tasks.Cross.Ar" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  <UsingTask TaskName="YY.Build.Cross.Tasks.Cross.Compile" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  <UsingTask TaskName="YY.Build.Cross.Tasks.Cross.Ld" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
 
   <!--
   Linux.Cross.Common.targets 内部写死了一些远程编译的Task，所以我们不引入。

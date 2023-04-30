@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Build.Shared;
 using System.IO;
 
-namespace YY.Build.Linux.Tasks.GCC
+namespace YY.Build.Cross.Tasks.Cross
 {
     public class Ld : TrackedVCToolTask
     {

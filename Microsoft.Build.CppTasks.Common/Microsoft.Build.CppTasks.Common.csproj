@@ -45,6 +45,6 @@
 
   <Import Project="..\Microsoft.Build.Framework\Microsoft.Build.Framework.projitems" Label="Shared" />
 
-  <Import Project="..\YY.Build.Linux.Tasks\YY.Build.Linux.Tasks.projitems" Label="Shared" />
+  <Import Project="..\YY.Build.Cross.Tasks\YY.Build.Cross.Tasks.projitems" Label="Shared" />
 
 </Project>
