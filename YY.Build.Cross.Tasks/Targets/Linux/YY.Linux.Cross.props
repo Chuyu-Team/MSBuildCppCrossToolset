@@ -173,17 +173,17 @@ Copyright (C) Microsoft Corporation. All rights reserved.
       <PrecompiledHeaderOutputFileDirectory>$(IntDir)</PrecompiledHeaderOutputFileDirectory>
       <PrecompiledHeaderOutputFile></PrecompiledHeaderOutputFile>
       <PrecompiledHeaderCompileAs>CompileAsCpp</PrecompiledHeaderCompileAs>
-      <CLanguageStandard>c11</CLanguageStandard>
-      <CppLanguageStandard>c++11</CppLanguageStandard>
+      <LanguageStandard_C>c11</LanguageStandard_C>
+      <LanguageStandard>c++11</LanguageStandard>
       <ObjCAutomaticRefCounting>true</ObjCAutomaticRefCounting>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
-      <ShowProgress>false</ShowProgress>
+      <LinkStatus>false</LinkStatus>
       <Version>false</Version>
-      <VerboseOutput>false</VerboseOutput>
+      <ShowProgress>NotSet</ShowProgress>
       <Trace>false</Trace>
-      <PrintMap>false</PrintMap>
+      <GenerateMapFile>false</GenerateMapFile>
       <IncrementalLink>false</IncrementalLink>
       <IgnoreDefaultLibraries>false</IgnoreDefaultLibraries>
       <UnresolvedSymbolReferences>true</UnresolvedSymbolReferences>

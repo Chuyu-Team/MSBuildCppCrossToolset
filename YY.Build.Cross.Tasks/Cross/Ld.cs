@@ -23,12 +23,12 @@ namespace YY.Build.Cross.Tasks.Cross
         {
             switchOrderList = new ArrayList();
             switchOrderList.Add("OutputFile");
-            switchOrderList.Add("ShowProgress");
+            switchOrderList.Add("LinkStatus");
             switchOrderList.Add("Version");
-            switchOrderList.Add("VerboseOutput");
+            switchOrderList.Add("ShowProgress");
             switchOrderList.Add("Trace");
             switchOrderList.Add("TraceSymbols");
-            switchOrderList.Add("PrintMap");
+            switchOrderList.Add("GenerateMapFile");
             switchOrderList.Add("UnresolvedSymbolReferences");
             switchOrderList.Add("OptimizeforMemory");
             switchOrderList.Add("SharedLibrarySearchPath");
@@ -37,7 +37,7 @@ namespace YY.Build.Cross.Tasks.Cross
             switchOrderList.Add("IgnoreDefaultLibraries");
             switchOrderList.Add("ForceUndefineSymbolReferences");
             switchOrderList.Add("DebuggerSymbolInformation");
-            switchOrderList.Add("GenerateMapFile");
+            switchOrderList.Add("MapFileName");
             switchOrderList.Add("Relocation");
             switchOrderList.Add("FunctionBinding");
             switchOrderList.Add("NoExecStackRequired");
@@ -99,27 +99,27 @@ namespace YY.Build.Cross.Tasks.Cross
             }
         }
 
-        public bool ShowProgress
+        public bool LinkStatus
         {
             get
             {
-                if (IsPropertySet("ShowProgress"))
+                if (IsPropertySet("LinkStatus"))
                 {
-                    return base.ActiveToolSwitches["ShowProgress"].BooleanValue;
+                    return base.ActiveToolSwitches["LinkStatus"].BooleanValue;
                 }
                 return false;
             }
             set
             {
-                base.ActiveToolSwitches.Remove("ShowProgress");
+                base.ActiveToolSwitches.Remove("LinkStatus");
                 ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.Boolean);
-                toolSwitch.DisplayName = "Show Progress";
+                toolSwitch.DisplayName = "LinkStatus";
                 toolSwitch.Description = "Prints Linker Progress Messages.";
                 toolSwitch.ArgumentRelationList = new ArrayList();
                 toolSwitch.SwitchValue = "-Wl,--stats";
-                toolSwitch.Name = "ShowProgress";
+                toolSwitch.Name = "LinkStatus";
                 toolSwitch.BooleanValue = value;
-                base.ActiveToolSwitches.Add("ShowProgress", toolSwitch);
+                base.ActiveToolSwitches.Add("LinkStatus", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }
@@ -149,31 +149,49 @@ namespace YY.Build.Cross.Tasks.Cross
             }
         }
 
-        public virtual bool VerboseOutput
+        public string ShowProgress
         {
             get
             {
-                if (IsPropertySet("VerboseOutput"))
+                if (IsPropertySet("ShowProgress"))
                 {
-                    return base.ActiveToolSwitches["VerboseOutput"].BooleanValue;
+                    return base.ActiveToolSwitches["ShowProgress"].Value;
                 }
-                return false;
+                return null;
             }
             set
             {
-                base.ActiveToolSwitches.Remove("VerboseOutput");
-                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.Boolean);
-                toolSwitch.DisplayName = "Enable Verbose Output";
-                toolSwitch.Description = "The -verbose option tells the linker to output verbose messages for debugging.";
+                base.ActiveToolSwitches.Remove("ShowProgress");
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.String);
+                toolSwitch.DisplayName = "Show Progress";
+                toolSwitch.Description = "Prints Linker Progress Messages.";
                 toolSwitch.ArgumentRelationList = new ArrayList();
-                toolSwitch.SwitchValue = "-Wl,--verbose";
-                toolSwitch.Name = "VerboseOutput";
-                toolSwitch.BooleanValue = value;
-                base.ActiveToolSwitches.Add("VerboseOutput", toolSwitch);
+                // toolSwitch.SwitchValue = "-Wl,--stats";
+                string[][] switchMap = new string[][]
+                {
+                    new string[2] { "NotSet", "" },
+                    new string[2] { "LinkVerbose", "-Wl,--verbose" },
+                    new string[2] { "LinkVerboseLib", "" },
+                    new string[2] { "LinkVerboseICF", "" }, // 仅兼容MSVC需要
+                    new string[2] { "LinkVerboseREF", "" }, // 仅兼容MSVC需要
+                    new string[2] { "LinkVerboseSAFESEH", "" }, // 仅兼容MSVC需要
+                    new string[2] { "LinkVerboseCLR", "" }, // 仅兼容MSVC需要
+
+                    // Linux工具集兼容
+                    new string[2] { "true", "-Wl,--stats" },
+                    new string[2] { "false", "" },
+                };
+
+                toolSwitch.SwitchValue = ReadSwitchMap("ShowProgress", switchMap, value);
+                toolSwitch.Name = "ShowProgress";
+                toolSwitch.Value = value;
+                toolSwitch.MultipleValues = true;
+                base.ActiveToolSwitches.Add("ShowProgress", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }
 
+        // 仅兼容Linux工具集
         public bool Trace
         {
             get
@@ -191,7 +209,11 @@ namespace YY.Build.Cross.Tasks.Cross
                 toolSwitch.DisplayName = "Trace";
                 toolSwitch.Description = "The --trace option tells the linker to output the input files as are processed.";
                 toolSwitch.ArgumentRelationList = new ArrayList();
-                toolSwitch.SwitchValue = "-Wl,--trace";
+                // XCode的ld不支持 `--trace`，但是支持 `-t`
+                // Linux下的ld能同时支持 `--trace` 与 `-t`
+                // 所以我们最终改成 -t
+                // toolSwitch.SwitchValue = "-Wl,--trace";
+                toolSwitch.SwitchValue = "-Wl,-t";
                 toolSwitch.Name = "Trace";
                 toolSwitch.BooleanValue = value;
                 base.ActiveToolSwitches.Add("Trace", toolSwitch);
@@ -224,27 +246,27 @@ namespace YY.Build.Cross.Tasks.Cross
             }
         }
 
-        public bool PrintMap
+        public bool GenerateMapFile
         {
             get
             {
-                if (IsPropertySet("PrintMap"))
+                if (IsPropertySet("GenerateMapFile"))
                 {
-                    return base.ActiveToolSwitches["PrintMap"].BooleanValue;
+                    return base.ActiveToolSwitches["GenerateMapFile"].BooleanValue;
                 }
                 return false;
             }
             set
             {
-                base.ActiveToolSwitches.Remove("PrintMap");
+                base.ActiveToolSwitches.Remove("GenerateMapFile");
                 ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.Boolean);
                 toolSwitch.DisplayName = "Print Map";
                 toolSwitch.Description = "The --print-map option tells the linker to output a link map.";
                 toolSwitch.ArgumentRelationList = new ArrayList();
                 toolSwitch.SwitchValue = "-Wl,--print-map";
-                toolSwitch.Name = "PrintMap";
+                toolSwitch.Name = "GenerateMapFile";
                 toolSwitch.BooleanValue = value;
-                base.ActiveToolSwitches.Add("PrintMap", toolSwitch);
+                base.ActiveToolSwitches.Add("GenerateMapFile", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }
@@ -458,27 +480,27 @@ namespace YY.Build.Cross.Tasks.Cross
             }
         }
 
-        public virtual string GenerateMapFile
+        public virtual string MapFileName
         {
             get
             {
-                if (IsPropertySet("GenerateMapFile"))
+                if (IsPropertySet("MapFileName"))
                 {
-                    return base.ActiveToolSwitches["GenerateMapFile"].Value;
+                    return base.ActiveToolSwitches["MapFileName"].Value;
                 }
                 return null;
             }
             set
             {
-                base.ActiveToolSwitches.Remove("GenerateMapFile");
+                base.ActiveToolSwitches.Remove("MapFileName");
                 ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.String);
                 toolSwitch.DisplayName = "Map File Name";
                 toolSwitch.Description = "The Map option tells the linker to create a map file with the user specified name.";
                 toolSwitch.ArgumentRelationList = new ArrayList();
-                toolSwitch.Name = "GenerateMapFile";
+                toolSwitch.Name = "MapFileName";
                 toolSwitch.Value = value;
                 toolSwitch.SwitchValue = "-Wl,-Map=";
-                base.ActiveToolSwitches.Add("GenerateMapFile", toolSwitch);
+                base.ActiveToolSwitches.Add("MapFileName", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }
@@ -814,26 +836,31 @@ namespace YY.Build.Cross.Tasks.Cross
             }
         }
 
-        protected override bool GenerateCostomCommandsAccordingToType(CommandLineBuilder builder, string switchName, bool dummyForBackwardCompatibility, CommandLineFormat format = CommandLineFormat.ForBuildLog, EscapeFormat escapeFormat = EscapeFormat.Default)
-        {
-            if (MinimalRebuildFromTracking == true && string.Equals(switchName, "Trace", StringComparison.OrdinalIgnoreCase))
-            {
-                // MinimalRebuildFromTracking开启时，强制将 Trace 认为是开启的。
-                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.Boolean);
-                toolSwitch.DisplayName = "Trace";
-                toolSwitch.Description = "The --trace option tells the linker to output the input files as are processed.";
-                toolSwitch.ArgumentRelationList = new ArrayList();
-                toolSwitch.SwitchValue = "-Wl,--trace";
-                toolSwitch.Name = "Trace";
-                toolSwitch.BooleanValue = true;
-
-                GenerateCommandsAccordingToType(builder, toolSwitch, format, escapeFormat);
-                return true;
-            }
-            return false;
-        }
-
         private HashSet<string> ReadObjectFiles;
+        private bool? PrintTrace;
+
+        protected override void ValidateRelations()
+        {
+            if(PrintTrace == null)
+            {
+                PrintTrace = Trace;
+
+                if (GenerateMapFile)
+                    MinimalRebuildFromTracking = false;
+
+                if (MinimalRebuildFromTracking && IsPropertySet("ShowProgress"))
+                {
+                    if(base.ActiveToolSwitches["ShowProgress"].SwitchValue.Length !=0)
+                    {
+                        MinimalRebuildFromTracking = false;
+                    }
+                }
+
+                // 因为最小构建必须要求开启 Trace，否则无法跟踪依赖的使用情况。
+                if (MinimalRebuildFromTracking && Trace == false)
+                    Trace = true;
+            }
+        }
 
         protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
         {
@@ -868,7 +895,7 @@ namespace YY.Build.Cross.Tasks.Cross
                     var ObjPath = FileUtilities.NormalizePath(singleLine);
                     ReadObjectFiles.Add(ObjPath);
                     // Trace如果本身没有开启，那么不向其输出搜索内容，避免内容太多形成干扰。
-                    if (!Trace)
+                    if (PrintTrace != null && PrintTrace == false)
                         return;
                 } catch
                 {

@@ -35,6 +35,10 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <Link>
       <ImportLibrary>%(Link.OutputFile)</ImportLibrary>
       <AdditionalLibraryDirectories>$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      
+      <!--微软Linux工具集兼容-->
+      <MapFileName Condition="'%(Link.GenerateMapFile)' != '' and '%(Link.GenerateMapFile)' != 'true' and '%(Link.GenerateMapFile)' != 'false'">%(Link.GenerateMapFile)</MapFileName>
+      <GenerateMapFile Condition="'%(Link.PrintMap)' == 'true'">true</GenerateMapFile>
     </Link>
   </ItemDefinitionGroup>
 
@@ -75,13 +79,17 @@ Copyright (C) Microsoft Corporation. All rights reserved.
       <ClCompile>
         <!-- Still unknown extension, assume C++ -->
         <CompileAs Condition="'%(ClCompile.CompileAs)' == 'Default'">CompileAsCpp</CompileAs>
+          
+        <!--兼容微软的Linux工具集-->
+        <LanguageStandard_C Condition="'%(ClCompile.CLanguageStandard)' != ''">%(ClCompile.CLanguageStandard)</LanguageStandard_C>
+        <LanguageStandard Condition="'%(ClCompile.CppLanguageStandard)' != ''">%(ClCompile.CppLanguageStandard)</LanguageStandard>          
       </ClCompile>
 
       <ClCompile>
         <!-- Only Pass C++ standard to Cpp files -->
         <!-- C/ObjC share the same standard, and C++/ObjC++ share the same standard -->
-        <CLanguageStandard Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp'"></CLanguageStandard>
-        <CppLanguageStandard Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'"></CppLanguageStandard>
+        <LanguageStandard_C Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp'"></LanguageStandard_C>
+        <LanguageStandard Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'"></LanguageStandard>
         <!-- GCC does not allow Wno-pointer-sign for C++ -->
         <CAdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp'"></CAdditionalWarning>
         <CppAdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'"></CppAdditionalWarning>
@@ -138,8 +146,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.
              SymbolsHiddenByDefault="%(ClCompile.SymbolsHiddenByDefault)"
              ExceptionHandling="%(ClCompile.ExceptionHandling)"
              RuntimeTypeInfo="%(ClCompile.RuntimeTypeInfo)"
-             CLanguageStandard="%(ClCompile.CLanguageStandard)"
-             CppLanguageStandard="%(ClCompile.CppLanguageStandard)"
+             LanguageStandard_C="%(ClCompile.LanguageStandard_C)"
+             LanguageStandard="%(ClCompile.LanguageStandard)"
              CompileAs="%(ClCompile.CompileAs)"
              ForcedIncludeFiles="%(ClCompile.ForcedIncludeFiles)"
              EnableASAN="%(ClCompile.EnableASAN)"
@@ -164,10 +172,10 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         OutputFile="%(Link.OutputFile)"
         ShowProgress="%(Link.ShowProgress)"
         Version="%(Link.Version)"
-        VerboseOutput="%(Link.VerboseOutput)"
+        LinkStatus="%(Link.LinkStatus)"
         Trace="%(Link.Trace)"
         TraceSymbols="%(Link.TraceSymbols)"
-        PrintMap="%(Link.PrintMap)"
+        MapFileName="%(Link.MapFileName)"
         UnresolvedSymbolReferences="%(Link.UnresolvedSymbolReferences)"
         OptimizeforMemory="%(Link.OptimizeforMemory)"
         SharedLibrarySearchPath="%(Link.SharedLibrarySearchPath)"

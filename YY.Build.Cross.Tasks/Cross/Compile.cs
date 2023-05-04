@@ -49,8 +49,8 @@ namespace YY.Build.Cross.Tasks.Cross
             switchOrderList.Add("SymbolsHiddenByDefault");
             switchOrderList.Add("ExceptionHandling");
             switchOrderList.Add("RuntimeTypeInfo");
-            switchOrderList.Add("CLanguageStandard");
-            switchOrderList.Add("CppLanguageStandard");
+            switchOrderList.Add("LanguageStandard_C");
+            switchOrderList.Add("LanguageStandard");
             switchOrderList.Add("ForcedIncludeFiles");
             switchOrderList.Add("EnableASAN");
             switchOrderList.Add("AdditionalOptions");
@@ -227,10 +227,16 @@ namespace YY.Build.Cross.Tasks.Cross
                 toolSwitch.DisplayName = "Warning Level";
                 toolSwitch.Description = "Select how strict you want the compiler to be about code errors.  Other flags should be added directly to Additional Options. (/w, /Weverything).";
                 toolSwitch.ArgumentRelationList = new ArrayList();
-                string[][] switchMap = new string[2][]
+                string[][] switchMap = new string[][]
                 {
                     new string[2] { "TurnOffAllWarnings", "-w" },
-                    new string[2] { "EnableAllWarnings", "-Wall" }
+                    new string[2] { "Level1", "-Wall" },
+                    new string[2] { "Level2", "-Wall" },
+                    new string[2] { "Level3", "-Wall" },
+                    new string[2] { "Level4", "-Wall - Wextra" },
+
+                    // 微软Linux工作集附带，顺道兼容一下。
+                    new string[2] { "EnableAllWarnings", "-Wall" },
                 };
                 toolSwitch.SwitchValue = ReadSwitchMap("WarningLevel", switchMap, value);
                 toolSwitch.Name = "WarningLevel";
@@ -719,8 +725,15 @@ namespace YY.Build.Cross.Tasks.Cross
                 toolSwitch.DisplayName = "Enable C++ Exceptions";
                 toolSwitch.Description = "Specifies the model of exception handling to be used by the compiler.";
                 toolSwitch.ArgumentRelationList = new ArrayList();
-                string[][] switchMap = new string[2][]
+                string[][] switchMap = new string[][]
                 {
+                    // 特意兼容微软
+                    new string[2] { "false", "-fno-exceptions" },
+                    new string[2] { "Async", "-fexceptions" },
+                    new string[2] { "Sync", "-fexceptions" },
+                    new string[2] { "SyncCThrow", "-fexceptions" },
+
+                    // 微软Linux工具集附带，顺道也兼容一下。
                     new string[2] { "Disabled", "-fno-exceptions" },
                     new string[2] { "Enabled", "-fexceptions" }
                 };
@@ -759,119 +772,134 @@ namespace YY.Build.Cross.Tasks.Cross
             }
         }
 
-        public string CLanguageStandard
+        public string LanguageStandard_C
         {
             get
             {
-                if (IsPropertySet("CLanguageStandard"))
+                if (IsPropertySet("LanguageStandard_C"))
                 {
-                    return base.ActiveToolSwitches["CLanguageStandard"].Value;
+                    return base.ActiveToolSwitches["LanguageStandard_C"].Value;
                 }
                 return null;
             }
             set
             {
-                base.ActiveToolSwitches.Remove("CLanguageStandard");
+                base.ActiveToolSwitches.Remove("LanguageStandard_C");
                 ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.String);
                 toolSwitch.DisplayName = "C Language Standard";
                 toolSwitch.Description = "Determines the C language standard.";
                 toolSwitch.ArgumentRelationList = new ArrayList();
-                string[][] switchMap = new string[8][]
+                string[][] switchMap = new string[][]
                 {
                     new string[2] { "Default", "" },
+                    new string[2] { "stdc11", "-std=c11" },
+                    new string[2] { "stdc17", "-std=c17" },
+
+                    // Linux工具集兼容
                     new string[2] { "c89", "-std=c89" },
+                    new string[2] { "gnu90", "-std=gnu90" }, // 附加
                     new string[2] { "iso9899:199409", "-std=iso9899:199409" },
                     new string[2] { "c99", "-std=c99" },
                     new string[2] { "c11", "-std=c11" },
+                    new string[2] { "c2x", "-std=c2x" }, // 附加
                     new string[2] { "gnu89", "-std=gnu89" },
                     new string[2] { "gnu99", "-std=gnu99" },
-                    new string[2] { "gnu11", "-std=gnu11" }
+                    new string[2] { "gnu11", "-std=gnu11" },
+                    new string[2] { "gnu17", "-std=gnu17" }, // 附加
                 };
-                toolSwitch.SwitchValue = ReadSwitchMap("CLanguageStandard", switchMap, value);
-                toolSwitch.Name = "CLanguageStandard";
+                toolSwitch.SwitchValue = ReadSwitchMap("LanguageStandard_C", switchMap, value);
+                toolSwitch.Name = "LanguageStandard_C";
                 toolSwitch.Value = value;
                 toolSwitch.MultipleValues = true;
-                base.ActiveToolSwitches.Add("CLanguageStandard", toolSwitch);
+                base.ActiveToolSwitches.Add("LanguageStandard_C", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }
 
-        public string CppLanguageStandard
-	    {
-		    get
-		    {
-			    if (IsPropertySet("CppLanguageStandard"))
-			    {
-				    return base.ActiveToolSwitches["CppLanguageStandard"].Value;
-			    }
-			    return null;
-		    }
-		    set
-		    {
-			    base.ActiveToolSwitches.Remove("CppLanguageStandard");
-			    ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.String);
-			    toolSwitch.DisplayName = "C++ Language Standard";
-			    toolSwitch.Description = "Determines the C++ language standard.";
-			    toolSwitch.ArgumentRelationList = new ArrayList();
-			    string[][] switchMap = new string[17][]
-			    {
-				    new string[2] { "Default", "" },
-				    new string[2] { "c++98", "-std=c++98" },
-				    new string[2] { "c++03", "-std=c++03" },
-				    new string[2] { "c++11", "-std=c++11" },
-				    new string[2] { "c++1y", "-std=c++14" },
-				    new string[2] { "c++14", "-std=c++14" },
-				    new string[2] { "c++17", "-std=c++17" },
-				    new string[2] { "c++2a", "-std=c++2a" },
-				    new string[2] { "c++20", "-std=c++20" },
-				    new string[2] { "gnu++98", "-std=gnu++98" },
-				    new string[2] { "gnu++03", "-std=gnu++03" },
-				    new string[2] { "gnu++11", "-std=gnu++11" },
-				    new string[2] { "gnu++1y", "-std=gnu++1y" },
-				    new string[2] { "gnu++14", "-std=gnu++14" },
-				    new string[2] { "gnu++1z", "-std=gnu++1z" },
-				    new string[2] { "gnu++17", "-std=gnu++17" },
-				    new string[2] { "gnu++20", "-std=gnu++20" }
-			    };
-			    toolSwitch.SwitchValue = ReadSwitchMap("CppLanguageStandard", switchMap, value);
-			    toolSwitch.Name = "CppLanguageStandard";
-			    toolSwitch.Value = value;
-			    toolSwitch.MultipleValues = true;
-			    base.ActiveToolSwitches.Add("CppLanguageStandard", toolSwitch);
-			    AddActiveSwitchToolValue(toolSwitch);
-		    }
-	    }
-
-        public string CompileAs
+        public string LanguageStandard
         {
-	        get
-	        {
-		        if (IsPropertySet("CompileAs"))
-		        {
-			        return base.ActiveToolSwitches["CompileAs"].Value;
-		        }
-		        return null;
-	        }
-	        set
-	        {
-		        base.ActiveToolSwitches.Remove("CompileAs");
-		        ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.String);
-		        toolSwitch.DisplayName = "Compile As";
-		        toolSwitch.Description = "Select compile language option for .c and .cpp files.  'Default' will detect based on .c or .cpp extention. (-x c, -x c++)";
-		        toolSwitch.ArgumentRelationList = new ArrayList();
-		        string[][] switchMap = new string[3][]
-		        {
-			        new string[2] { "Default", "" },
-			        new string[2] { "CompileAsC", "-x c" },
-			        new string[2] { "CompileAsCpp", "-x c++" }
-		        };
-		        toolSwitch.SwitchValue = ReadSwitchMap("CompileAs", switchMap, value);
-		        toolSwitch.Name = "CompileAs";
-		        toolSwitch.Value = value;
-		        toolSwitch.MultipleValues = true;
-		        base.ActiveToolSwitches.Add("CompileAs", toolSwitch);
-		        AddActiveSwitchToolValue(toolSwitch);
-	        }
+            get
+            {
+                if (IsPropertySet("LanguageStandard"))
+                {
+                    return base.ActiveToolSwitches["LanguageStandard"].Value;
+                }
+                return null;
+            }
+            set
+            {
+                base.ActiveToolSwitches.Remove("LanguageStandard");
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.String);
+                toolSwitch.DisplayName = "C++ Language Standard";
+                toolSwitch.Description = "Determines the C++ language standard.";
+                toolSwitch.ArgumentRelationList = new ArrayList();
+                string[][] switchMap = new string[][]
+                {
+                    new string[2] { "Default", "" },
+                    new string[2] { "stdcpp14", "-std=c++14" },
+                    new string[2] { "stdcpp17", "-std=c++17" },
+                    new string[2] { "stdcpp20", "-std=c++20" },
+                    new string[2] { "stdcpplatest", "-std=c++2b" },
+
+                    // Linux工具集兼容
+                    new string[2] { "c++98", "-std=c++98" },
+                    new string[2] { "c++03", "-std=c++03" },
+                    new string[2] { "c++11", "-std=c++11" },
+                    new string[2] { "c++1y", "-std=c++14" },
+                    new string[2] { "c++14", "-std=c++14" },
+                    new string[2] { "c++17", "-std=c++17" },
+                    new string[2] { "c++2a", "-std=c++2a" },
+                    new string[2] { "c++20", "-std=c++20" },
+                    new string[2] { "c++2b", "-std=c++2b" }, // 附加
+                    new string[2] { "gnu++98", "-std=gnu++98" },
+                    new string[2] { "gnu++03", "-std=gnu++03" },
+                    new string[2] { "gnu++11", "-std=gnu++11" },
+                    new string[2] { "gnu++1y", "-std=gnu++1y" },
+                    new string[2] { "gnu++14", "-std=gnu++14" },
+                    new string[2] { "gnu++1z", "-std=gnu++1z" },
+                    new string[2] { "gnu++17", "-std=gnu++17" },
+                    new string[2] { "gnu++20", "-std=gnu++20" },
+                    new string[2] { "gnu++2b", "-std=gnu++2b" }, // 附加
+                };
+                toolSwitch.SwitchValue = ReadSwitchMap("LanguageStandard", switchMap, value);
+                toolSwitch.Name = "LanguageStandard";
+                toolSwitch.Value = value;
+                toolSwitch.MultipleValues = true;
+                base.ActiveToolSwitches.Add("LanguageStandard", toolSwitch);
+                AddActiveSwitchToolValue(toolSwitch);
+            }
+        }
+
+        public virtual string CompileAs
+        {
+            get
+            {
+                if (IsPropertySet("CompileAs"))
+                {
+                    return base.ActiveToolSwitches["CompileAs"].Value;
+                }
+                return null;
+            }
+            set
+            {
+                base.ActiveToolSwitches.Remove("CompileAs");
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.String);
+                toolSwitch.DisplayName = "Compile As";
+                toolSwitch.Description = "Select compile language option for .c and .cpp files.  'Default' will detect based on .c or .cpp extention. (-x c, -x c++)";
+                toolSwitch.ArgumentRelationList = new ArrayList();
+                string[][] switchMap = new string[3][]
+                {
+                    new string[2] { "Default", "" },
+                    new string[2] { "CompileAsC", "-x c" },
+                    new string[2] { "CompileAsCpp", "-x c++" }
+                };
+                toolSwitch.SwitchValue = ReadSwitchMap("CompileAs", switchMap, value);
+                toolSwitch.Name = "CompileAs";
+                toolSwitch.Value = value;
+                toolSwitch.MultipleValues = true;
+                base.ActiveToolSwitches.Add("CompileAs", toolSwitch);
+                AddActiveSwitchToolValue(toolSwitch);
+            }
         }
 
         public string[] ForcedIncludeFiles
