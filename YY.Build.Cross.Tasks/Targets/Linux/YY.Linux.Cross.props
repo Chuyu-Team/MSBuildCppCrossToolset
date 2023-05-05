@@ -149,7 +149,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
       <StrictAliasing>false</StrictAliasing>
       <ProgramDatabaseFileName>$(IntDir)</ProgramDatabaseFileName>
       <UnrollLoops>false</UnrollLoops>
-      <LinkTimeOptimization>false</LinkTimeOptimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
       <NoCommonBlocks>false</NoCommonBlocks>
       <OmitFramePointers Condition="'$(UseDebugLibraries)' == 'true'">false</OmitFramePointers>
       <OmitFramePointers Condition="'$(UseDebugLibraries)' != 'true'">true</OmitFramePointers>
@@ -157,7 +157,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
       <ObjCExceptionHandling>Disabled</ObjCExceptionHandling>
       <MakeStringsReadOnly>true</MakeStringsReadOnly>
       <ThreadSafeStatics>Yes</ThreadSafeStatics>
-      <RelaxIEEE>false</RelaxIEEE>
+      <FloatingPointModel>Precise</FloatingPointModel>
       <HideInlineMethods>false</HideInlineMethods>
       <PositionIndependentCode Condition="'$(ConfigurationType)' != 'DynamicLibrary'">false</PositionIndependentCode>
       <PositionIndependentCode Condition="'$(ConfigurationType)' == 'DynamicLibrary'">true</PositionIndependentCode>

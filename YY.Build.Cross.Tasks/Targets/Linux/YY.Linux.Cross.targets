@@ -71,9 +71,11 @@ Copyright (C) Microsoft Corporation. All rights reserved.
       <ClCompile>
         <!--<ClangForcedIncludeFiles>%(ClCompile.ForcedIncludeFiles)</ClangForcedIncludeFiles>-->
         <PrecompiledHeaderFile Condition="'%(ClCompile.PrecompiledHeader)' != 'Use'"></PrecompiledHeaderFile>
-        <!--<MinimalRebuildFromTracking Condition="'$(_BuildActionType)' != 'Build' or '$(ForceRebuild)' == 'true'">false</MinimalRebuildFromTracking>-->
+        <MinimalRebuildFromTracking Condition="'$(_BuildActionType)' != 'Build' or '$(ForceRebuild)' == 'true'">false</MinimalRebuildFromTracking>
         <WarningLevel Condition="'%(WarningLevel)' == 'Level1' or '%(WarningLevel)' == 'Level2' or '%(WarningLevel)' == 'Level3'">EnableAllWarnings</WarningLevel>
         <CompileAs Condition="'%(ClCompile.CompileAs)' == 'Default' and '%(ClCompile.Extension)' == '.c'">CompileAsC</CompileAs>
+        <WholeProgramOptimization Condition="'%(ClCompile.LinkTimeOptimization)' == 'true'">true</WholeProgramOptimization>
+        <FloatingPointModel Condition="'%(ClCompile.RelaxIEEE)' == 'true'">Fast</FloatingPointModel>
       </ClCompile>
 
       <ClCompile>
@@ -132,7 +134,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
              Optimization="%(ClCompile.Optimization)"
              StrictAliasing="%(ClCompile.StrictAliasing)"
              UnrollLoops="%(ClCompile.UnrollLoops)"
-             LinkTimeOptimization="%(ClCompile.LinkTimeOptimization)"
+             WholeProgramOptimization="%(ClCompile.WholeProgramOptimization)"
              OmitFramePointers="%(ClCompile.OmitFramePointers)"
              NoCommonBlocks="%(ClCompile.NoCommonBlocks)"
              PreprocessorDefinitions="%(ClCompile.PreprocessorDefinitions)"
@@ -141,7 +143,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
              ShowIncludes="%(ClCompile.ShowIncludes)"
              PositionIndependentCode="%(ClCompile.PositionIndependentCode)"
              ThreadSafeStatics="%(ClCompile.ThreadSafeStatics)"
-             RelaxIEEE="%(ClCompile.RelaxIEEE)"
+             FloatingPointModel="%(ClCompile.FloatingPointModel)"
              HideInlineMethods="%(ClCompile.HideInlineMethods)"
              SymbolsHiddenByDefault="%(ClCompile.SymbolsHiddenByDefault)"
              ExceptionHandling="%(ClCompile.ExceptionHandling)"

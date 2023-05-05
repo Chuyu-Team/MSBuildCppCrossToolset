@@ -35,7 +35,7 @@ namespace YY.Build.Cross.Tasks.Cross
             switchOrderList.Add("Optimization");
             switchOrderList.Add("StrictAliasing");
             switchOrderList.Add("UnrollLoops");
-            switchOrderList.Add("LinkTimeOptimization");
+            switchOrderList.Add("WholeProgramOptimization");
             switchOrderList.Add("OmitFramePointers");
             switchOrderList.Add("NoCommonBlocks");
             switchOrderList.Add("PreprocessorDefinitions");
@@ -44,7 +44,7 @@ namespace YY.Build.Cross.Tasks.Cross
             switchOrderList.Add("ShowIncludes");
             switchOrderList.Add("PositionIndependentCode");
             switchOrderList.Add("ThreadSafeStatics");
-            switchOrderList.Add("RelaxIEEE");
+            switchOrderList.Add("FloatingPointModel");
             switchOrderList.Add("HideInlineMethods");
             switchOrderList.Add("SymbolsHiddenByDefault");
             switchOrderList.Add("ExceptionHandling");
@@ -54,7 +54,7 @@ namespace YY.Build.Cross.Tasks.Cross
             switchOrderList.Add("ForcedIncludeFiles");
             switchOrderList.Add("EnableASAN");
             switchOrderList.Add("AdditionalOptions");
-            switchOrderList.Add("MapFile");
+            switchOrderList.Add("DependenceFile");
 
             base.IgnoreUnknownSwitchValues = true;
         }
@@ -407,27 +407,27 @@ namespace YY.Build.Cross.Tasks.Cross
             }
         }
 
-        public bool LinkTimeOptimization
+        public bool WholeProgramOptimization
         {
             get
             {
-                if (IsPropertySet("LinkTimeOptimization"))
+                if (IsPropertySet("WholeProgramOptimization"))
                 {
-                    return base.ActiveToolSwitches["LinkTimeOptimization"].BooleanValue;
+                    return base.ActiveToolSwitches["WholeProgramOptimization"].BooleanValue;
                 }
                 return false;
             }
             set
             {
-                base.ActiveToolSwitches.Remove("LinkTimeOptimization");
+                base.ActiveToolSwitches.Remove("WholeProgramOptimization");
                 ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.Boolean);
                 toolSwitch.DisplayName = "Link Time Optimization";
                 toolSwitch.Description = "Enable Inter-Procedural optimizations by allowing the optimizer to look across object files in your application.";
                 toolSwitch.ArgumentRelationList = new ArrayList();
                 toolSwitch.SwitchValue = "-flto";
-                toolSwitch.Name = "LinkTimeOptimization";
+                toolSwitch.Name = "WholeProgramOptimization";
                 toolSwitch.BooleanValue = value;
-                base.ActiveToolSwitches.Add("LinkTimeOptimization", toolSwitch);
+                base.ActiveToolSwitches.Add("WholeProgramOptimization", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }
@@ -633,27 +633,36 @@ namespace YY.Build.Cross.Tasks.Cross
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }
-        public bool RelaxIEEE
+
+        // 类似于微软Linux工具集的RelaxIEEE。
+        public string FloatingPointModel
         {
             get
             {
-                if (IsPropertySet("RelaxIEEE"))
+                if (IsPropertySet("FloatingPointModel"))
                 {
-                    return base.ActiveToolSwitches["RelaxIEEE"].BooleanValue;
+                    return base.ActiveToolSwitches["FloatingPointModel"].Value;
                 }
-                return false;
+                return null;
             }
             set
             {
-                base.ActiveToolSwitches.Remove("RelaxIEEE");
+                base.ActiveToolSwitches.Remove("FloatingPointModel");
                 ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.Boolean);
-                toolSwitch.DisplayName = "Floating Point Optimization";
-                toolSwitch.Description = "Enables floating point optimizations by relaxing IEEE-754 compliance.";
+                toolSwitch.DisplayName = "设置浮点模型";
+                toolSwitch.Description = "设置浮点模型。";
                 toolSwitch.ArgumentRelationList = new ArrayList();
-                toolSwitch.SwitchValue = "-ffast-math";
-                toolSwitch.Name = "RelaxIEEE";
-                toolSwitch.BooleanValue = value;
-                base.ActiveToolSwitches.Add("RelaxIEEE", toolSwitch);
+                string[][] switchMap = new string[][]
+                {
+                    new string[2] { "Precise", "" },
+                    new string[2] { "Strict", "" },
+                    new string[2] { "Fast", "-ffast-math" },
+                };
+                toolSwitch.SwitchValue = ReadSwitchMap("FloatingPointModel", switchMap, value);
+                toolSwitch.Name = "FloatingPointModel";
+                toolSwitch.Value = value;
+                toolSwitch.MultipleValues = true;
+                base.ActiveToolSwitches.Add("FloatingPointModel", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }
@@ -954,21 +963,21 @@ namespace YY.Build.Cross.Tasks.Cross
 
         protected override bool GenerateCostomCommandsAccordingToType(CommandLineBuilder builder, string switchName, bool dummyForBackwardCompatibility, CommandLineFormat format = CommandLineFormat.ForBuildLog, EscapeFormat escapeFormat = EscapeFormat.Default)
         {
-            if (string.Equals(switchName, "MapFile", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(switchName, "DependenceFile", StringComparison.OrdinalIgnoreCase))
             {
                 ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.File);
-                toolSwitch.DisplayName = "MapFile";
+                toolSwitch.DisplayName = "DependenceFile";
                 toolSwitch.ArgumentRelationList = new ArrayList();
                 toolSwitch.SwitchValue = "-MD -MF ";
-                toolSwitch.Name = "MapFile";
+                toolSwitch.Name = "DependenceFile";
 
                 if (IsPropertySet("ObjectFileName"))
                 {
-                    toolSwitch.Value = base.ActiveToolSwitches["ObjectFileName"].Value + ".map";
+                    toolSwitch.Value = base.ActiveToolSwitches["ObjectFileName"].Value + ".d";
                 }
                 else if(Sources.Length !=0)
                 {
-                    toolSwitch.Value = Environment.ExpandEnvironmentVariables(Sources[0].ItemSpec) + ".map";
+                    toolSwitch.Value = Environment.ExpandEnvironmentVariables(Sources[0].ItemSpec) + ".d";
                 }
                 else
                 {
@@ -1283,22 +1292,33 @@ namespace YY.Build.Cross.Tasks.Cross
 
                 foreach (ITaskItem taskItem in Sources)
                 {
-                    if (!MapReader.Init(ObjectFileName + ".map"))
-                        continue;
+                    var DependenceFile = ObjectFileName + ".d";
 
-                    string sourceKey = FileTracker.FormatRootingMarker(taskItem);
-                    WriteFileWriter.WriteLine("^" + sourceKey);
-
-                    for(; ; )
+                    if (MapReader.Init(DependenceFile))
                     {
-                        var Tmp = MapReader.ReadLine();
-                        if (Tmp == null)
-                            break;
+                        string sourceKey = FileTracker.FormatRootingMarker(taskItem);
+                        WriteFileWriter.WriteLine("^" + sourceKey);
 
-                        if (Tmp.Length == 0)
-                            continue;
+                        for (; ; )
+                        {
+                            var Tmp = MapReader.ReadLine();
+                            if (Tmp == null)
+                                break;
 
-                        WriteFileWriter.WriteLine(FileUtilities.NormalizePath(Tmp));
+                            if (Tmp.Length == 0)
+                                continue;
+
+                            WriteFileWriter.WriteLine(FileUtilities.NormalizePath(Tmp));
+                        }
+                    }
+
+                    try
+                    {
+                        File.Delete(DependenceFile);
+                    }
+                    catch
+                    {
+
                     }
                 }
             }
