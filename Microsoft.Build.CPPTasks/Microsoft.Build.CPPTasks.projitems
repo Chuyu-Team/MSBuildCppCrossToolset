@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ArgumentRelation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CPPClean.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GetOutOfDateItems.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MsbuildTaskUtilities.cs" />
