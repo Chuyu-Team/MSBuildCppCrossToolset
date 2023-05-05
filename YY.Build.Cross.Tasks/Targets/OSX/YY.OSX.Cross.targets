@@ -1,0 +1,327 @@
+﻿<!--
+***********************************************************************************************
+Linux.WSL.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file defines the steps/targets required to build Visual C++ projects
+specifically on x64 platforms.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="YY.Build.Cross.Tasks.Cross.Ar" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  <UsingTask TaskName="YY.Build.Cross.Tasks.OSX.Compile" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  <UsingTask TaskName="YY.Build.Cross.Tasks.OSX.Ld" AssemblyFile="$(CurrentVCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+
+  <!--
+  Linux.Cross.Common.targets 内部写死了一些远程编译的Task，所以我们不引入。
+  如果有什么特色行为，我们统一在这个文件实现。
+  <Import Project="$(MSBuildthisFileDirectory)Linux.Cross.Common.targets"/>
+  -->
+
+  <Target Name="CreateFullDebugSymbols" />
+
+  <PropertyGroup>
+    <WindowsSubsystem>MacOS</WindowsSubsystem>
+  </PropertyGroup>
+
+  <!-- Add Link output as a consumable similar to a library. -->
+  <ItemDefinitionGroup>
+    <Link>
+      <ImportLibrary>%(Link.OutputFile)</ImportLibrary>
+      <AdditionalLibraryDirectories>$(LibraryPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+
+      <!--微软Linux工具集兼容-->
+      <MapFileName Condition="'%(Link.GenerateMapFile)' != '' and '%(Link.GenerateMapFile)' != 'true' and '%(Link.GenerateMapFile)' != 'false'">%(Link.GenerateMapFile)</MapFileName>
+      <GenerateMapFile Condition="'%(Link.PrintMap)' == 'true'">true</GenerateMapFile>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <!-- *******************************************************************************************
+        Compile/Link targets and tasks
+       ******************************************************************************************* -->
+
+  <PropertyGroup>
+    <BeforeBuildCompileTargets>
+      $(BeforeBuildCompileTargets);
+      _PrepareForClCompile;
+    </BeforeBuildCompileTargets>
+
+    <BuildLinkTargets>
+      $(BuildLinkTargets);
+    </BuildLinkTargets>
+
+    <TargetPath Condition="'$(TargetPath)' == ''">$(OutDir)\$(TargetName)$(TargetExt)</TargetPath>
+    <RemoteTargetPath Condition="'$(RemoteTargetPath)' == ''">$(RemoteOutDir)/$(TargetName)$(TargetExt)</RemoteTargetPath>
+  </PropertyGroup>
+  
+  <Target Name="_Link" DependsOnTargets="$(BeforeLinkTargets);$(ComputeLinkInputsTargets);ComputeManifestInputsTargets;ManifestResourceCompile;PrepareResourceNames;MakeDirsForLink;DoLinkOutputFilesMatch;PreLinkEvent;Link;ComputeLinkImportLibraryOutputsForClean;$(AfterLinkTargets)" Condition="'$(LinkCompiled)' == 'true'">
+  </Target>
+
+  <Target Name="_PrepareForClCompile">
+  </Target>
+
+  <Target Name="FixupCLCompileOptions" Condition="'@(ClCompile)' != ''">
+    <ItemGroup>
+      <ClCompile>
+        <!--<ClangForcedIncludeFiles>%(ClCompile.ForcedIncludeFiles)</ClangForcedIncludeFiles>-->
+        <PrecompiledHeaderFile Condition="'%(ClCompile.PrecompiledHeader)' != 'Use'"></PrecompiledHeaderFile>
+        <MinimalRebuildFromTracking Condition="'$(_BuildActionType)' != 'Build' or '$(ForceRebuild)' == 'true'">false</MinimalRebuildFromTracking>
+        <WarningLevel Condition="'%(WarningLevel)' == 'Level1' or '%(WarningLevel)' == 'Level2' or '%(WarningLevel)' == 'Level3'">EnableAllWarnings</WarningLevel>
+        <CompileAs Condition="'%(ClCompile.CompileAs)' == 'Default' and '%(ClCompile.Extension)' == '.c'">CompileAsC</CompileAs>
+        <WholeProgramOptimization Condition="'%(ClCompile.LinkTimeOptimization)' == 'true'">true</WholeProgramOptimization>
+        <FloatingPointModel Condition="'%(ClCompile.RelaxIEEE)' == 'true'">Fast</FloatingPointModel>
+      </ClCompile>
+
+      <ClCompile>
+        <CompileAs Condition="'%(ClCompile.CompileAs)' == 'Default' and '%(ClCompile.Extension)' == '.m'">CompileAsObjC</CompileAs>
+      </ClCompile>
+
+      <ClCompile>
+        <CompileAs Condition="'%(ClCompile.CompileAs)' == 'Default' and '%(ClCompile.Extension)' == '.mm'">CompileAsObjCpp</CompileAs>
+      </ClCompile>
+
+      <ClCompile>
+        <!-- Still unknown extension, assume C++ -->
+        <CompileAs Condition="'%(ClCompile.CompileAs)' == 'Default'">CompileAsCpp</CompileAs>
+        
+        <!--兼容微软的Linux工具集-->
+        <LanguageStandard_C Condition="'%(ClCompile.CLanguageStandard)' != ''">%(ClCompile.CLanguageStandard)</LanguageStandard_C>
+        <LanguageStandard Condition="'%(ClCompile.CppLanguageStandard)' != ''">%(ClCompile.CppLanguageStandard)</LanguageStandard>
+      </ClCompile>
+
+      <ClCompile>
+        <!-- Only Pass C++ standard to Cpp files -->
+        <!-- C/ObjC share the same standard, and C++/ObjC++ share the same standard -->
+        <LanguageStandard_C Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp' or '%(ClCompile.CompileAs)' == 'CompileAsObjCpp'"></LanguageStandard_C>
+        <LanguageStandard Condition="'%(ClCompile.CompileAs)' == 'CompileAsC' or '%(ClCompile.CompileAs)' == 'CompileAsObjC'"></LanguageStandard>
+        <!-- GCC does not allow Wno-pointer-sign for C++ -->
+        <CAdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp' or '%(ClCompile.CompileAs)' == 'CompileAsObjCpp'"></CAdditionalWarning>
+        <CppAdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsC' or '%(ClCompile.CompileAs)' == 'CompileAsObjC'"></CppAdditionalWarning>
+      </ClCompile>
+
+      <ClCompile>
+        <RemoteCompileToolExe Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp' or '%(ClCompile.CompileAs)' == 'CompileAsObjCpp'">$(RemoteCppCompileToolExe)</RemoteCompileToolExe>
+        <RemoteCompileToolExe Condition="'%(ClCompile.CompileAs)' == 'CompileAsC' or '%(ClCompile.CompileAs)' == 'CompileAsObjC'">$(RemoteCCompileToolExe)</RemoteCompileToolExe>
+      </ClCompile>
+
+      <ClCompile>
+        <ThreadSafeStatics Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'" />
+        <RuntimeTypeInfo Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'" />
+      </ClCompile>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <MultiProcBuild Condition="'$(MultiProcBuild)' == '' and '$(MultiProcNumber)' != ''" >true</MultiProcBuild>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_AssignProjectReferencesPlatformType">
+    <ItemGroup>
+      <_MSBuildProjectReferenceExistent Include="@(_MSBuildProjectReferenceExistent)">
+        <ProjectApplicationType>Linux</ProjectApplicationType>
+      </_MSBuildProjectReferenceExistent>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ClCompile" Condition="'@(ClCompile)' != ''">
+    <Compile Condition="'%(ClCompile.ExcludedFromBuild)'!='true'"
+             Sources="@(ClCompile)"
+             AdditionalIncludeDirectories="%(ClCompile.AdditionalIncludeDirectories)"
+             DebugInformationFormat="%(ClCompile.DebugInformationFormat)"
+             ObjectFileName="%(ClCompile.ObjectFileName)"
+             WarningLevel="%(ClCompile.WarningLevel)"
+             TreatWarningAsError="%(ClCompile.TreatWarningAsError)"
+             AdditionalWarning="%(ClCompile.AdditionalWarning)"
+             Verbose="%(ClCompile.Verbose)"
+             Optimization="%(ClCompile.Optimization)"
+             StrictAliasing="%(ClCompile.StrictAliasing)"
+             UnrollLoops="%(ClCompile.UnrollLoops)"
+             WholeProgramOptimization="%(ClCompile.WholeProgramOptimization)"
+             OmitFramePointers="%(ClCompile.OmitFramePointers)"
+             NoCommonBlocks="%(ClCompile.NoCommonBlocks)"
+             PreprocessorDefinitions="%(ClCompile.PreprocessorDefinitions)"
+             UndefinePreprocessorDefinitions="%(ClCompile.UndefinePreprocessorDefinitions)"
+             UndefineAllPreprocessorDefinitions="%(ClCompile.UndefineAllPreprocessorDefinitions)"
+             ShowIncludes="%(ClCompile.ShowIncludes)"
+             PositionIndependentCode="%(ClCompile.PositionIndependentCode)"
+             ThreadSafeStatics="%(ClCompile.ThreadSafeStatics)"
+             FloatingPointModel="%(ClCompile.FloatingPointModel)"
+             HideInlineMethods="%(ClCompile.HideInlineMethods)"
+             SymbolsHiddenByDefault="%(ClCompile.SymbolsHiddenByDefault)"
+             ExceptionHandling="%(ClCompile.ExceptionHandling)"
+             RuntimeTypeInfo="%(ClCompile.RuntimeTypeInfo)"
+             LanguageStandard_C="%(ClCompile.LanguageStandard_C)"
+             LanguageStandard="%(ClCompile.LanguageStandard)"
+             CompileAs="%(ClCompile.CompileAs)"
+             ForcedIncludeFiles="%(ClCompile.ForcedIncludeFiles)"
+             EnableASAN="%(ClCompile.EnableASAN)"
+             AdditionalOptions="%(ClCompile.AdditionalOptions)"
+             ObjCAutomaticRefCounting="%(ClCompile.ObjCAutomaticRefCounting)"
+             ObjCAutomaticRefCountingExceptionHandlingSafe="%(ClCompile.ObjCAutomaticRefCountingExceptionHandlingSafe)"
+             ObjCExceptionHandling="%(ClCompile.ObjCExceptionHandling)"
+             TrackerLogDirectory="$(TLogLocation)"
+             TLogReadFiles="$(TLogLocation)\compile.read.1.tlog"
+             TLogWriteFiles="$(TLogLocation)\compile.write.1.tlog"
+             TrackFileAccess ="$(TrackFileAccess)"
+             MinimalRebuildFromTracking ="%(ClCompile.MinimalRebuildFromTracking)"
+             ToolExe="%(ClCompile.RemoteCompileToolExe)"
+             >
+    </Compile>
+  </Target>
+
+  <Target Name="Link">
+    <PropertyGroup>
+        <Link_MinimalRebuildFromTracking Condition="'@(Link->AnyHaveMetadataValue('MinimalRebuildFromTracking', 'false'))' == 'true'">false</Link_MinimalRebuildFromTracking>
+        <Link_MinimalRebuildFromTracking Condition="'$(_BuildActionType)' != 'Build' or '$(ForceRebuild)' == 'true'" >false</Link_MinimalRebuildFromTracking>
+        <Link_MinimalRebuildFromTracking Condition="'$(Link_MinimalRebuildFromTracking)' == ''">true</Link_MinimalRebuildFromTracking>
+    </PropertyGroup>
+    <Ld Condition="'@(Link)' != ''"
+        Sources="@(Link)"
+        OutputFile="%(Link.OutputFile)"
+        ShowProgress="%(Link.ShowProgress)"
+        Version="%(Link.Version)"
+        LinkStatus="%(Link.LinkStatus)"
+        Trace="%(Link.Trace)"
+        TraceSymbols="%(Link.TraceSymbols)"
+        MapFileName="%(Link.MapFileName)"
+        UnresolvedSymbolReferences="%(Link.UnresolvedSymbolReferences)"
+        OptimizeforMemory="%(Link.OptimizeforMemory)"
+        SharedLibrarySearchPath="%(Link.SharedLibrarySearchPath)"
+        AdditionalLibraryDirectories="%(Link.AdditionalLibraryDirectories)"
+        IgnoreSpecificDefaultLibraries="%(Link.IgnoreSpecificDefaultLibraries)"
+        IgnoreDefaultLibraries="%(Link.IgnoreDefaultLibraries)"
+        ForceUndefineSymbolReferences="%(Link.ForceUndefineSymbolReferences)"
+        DebuggerSymbolInformation="%(Link.DebuggerSymbolInformation)"
+        GenerateMapFile="%(Link.GenerateMapFile)"
+        Relocation="%(Link.Relocation)"
+        FunctionBinding="%(Link.FunctionBinding)"
+        NoExecStackRequired="%(Link.NoExecStackRequired)"
+        LinkDll="%(Link.LinkDll)"
+        WholeArchiveBegin="%(Link.WholeArchiveBegin)"
+        AdditionalOptions="%(Link.AdditionalOptions)"
+        AdditionalDependencies="%(Link.AdditionalDependencies)"
+        WholeArchiveEnd="%(Link.WholeArchiveEnd)"
+        LibraryDependencies="%(Link.LibraryDependencies)"
+        BuildingInIde="%(Link.BuildingInIde)"
+        EnableASAN="%(Link.EnableASAN)"
+        UseOfStl="%(Link.UseOfStl)"
+        Frameworks="%(Link.Frameworks)"
+        TrackerLogDirectory="$(TLogLocation)"
+        TLogReadFiles="$(TLogLocation)\link.read.1.tlog"
+        TLogWriteFiles="$(TLogLocation)\link.write.1.tlog"
+        TrackFileAccess ="$(TrackFileAccess)"
+        MinimalRebuildFromTracking ="$(Link_MinimalRebuildFromTracking)"
+        ToolExe="$(RemoteLdToolExe)"
+        >
+      <Output TaskParameter="SkippedExecution" PropertyName="LinkSkippedExecution" />
+    </Ld>
+    <Message Text="$(MSBuildProjectFile) -&gt; $(TargetPath)" Importance="High"/>
+  </Target>
+  
+  <Target Name="Lib">
+    <ItemGroup>
+      <!--These objects are removed because lib.exe can only remove objects from an existing lib. -->
+      <Lib Remove="%(Lib.RemoveObjects)" Condition="'%(Lib.RemoveObjects)' != ''"/>
+      <Lib>
+        <MinimalRebuildFromTracking Condition="'$(_BuildActionType)' != 'Build' or '$(ForceRebuild)' == 'true'">false</MinimalRebuildFromTracking>
+        <ExcludedInputPaths>$(ExcludePath)</ExcludedInputPaths>
+      </Lib>
+    </ItemGroup>
+
+    <Ar Condition="'@(Lib)' != ''"
+      Sources="@(Lib)"
+      Command="%(Lib.Command)"
+      CreateIndex="%(Lib.CreateIndex)"
+      CreateThinArchive="%(Lib.CreateThinArchive)"
+      NoWarnOnCreate="%(Lib.NoWarnOnCreate)"
+      TruncateTimestamp="%(Lib.TruncateTimestamp)"
+      SuppressStartupBanner="%(Lib.SuppressStartupBanner)"
+      Verbose="%(Lib.Verbose)"
+      OutputFile="%(Lib.OutputFile)"
+      AdditionalOptions="%(Lib.AdditionalOptions)"
+      TrackerLogDirectory="$(TLogLocation)"
+      TLogReadFiles="$(TLogLocation)\lib.read.1.tlog"
+      TLogWriteFiles="$(TLogLocation)\lib.write.1.tlog"
+      TrackFileAccess ="$(TrackFileAccess)"
+      MinimalRebuildFromTracking ="%(Lib.MinimalRebuildFromTracking)"
+      ToolExe="$(RemoteArToolExe)">
+    </Ar>
+    <Message Text="$(MSBuildProjectFile) -&gt; $(TargetPath)" Importance="High"/>
+  </Target>
+
+   <!-- Local build/link commands executed using MSBuild Exec task-->
+  <Target Name="PreBuildEvent" Condition="'$(PreBuildEventUseInBuild)'!='false'">
+    <Message Text="Description: %(PreBuildEvent.Message)" Condition="'%(PreBuildEvent.Message)' != '' and '%(PreBuildEvent.Command)' != ''"/>
+    <Exec Command="%(PreBuildEvent.Command)$(_BuildSuffix)" Condition="'%(PreBuildEvent.Command)' != ''"/>
+  </Target>
+
+  <Target Name="PreLinkEvent" Condition="'$(PreLinkEventUseInBuild)'!='false'" >
+    <Message Text="Description: %(PreLinkEvent.Message)" Condition="'%(PreLinkEvent.Message)' != '' and '%(PreLinkEvent.Command)' != ''"/>
+    <Exec Command="%(PreLinkEvent.Command)$(_BuildSuffix)" Condition="'%(PreLinkEvent.Command)' != ''"/>
+  </Target>
+
+  <Target Name="PostBuildEvent" AfterTargets="RemotePostBuildEvent"  Condition="'$(PostBuildEventUseInBuild)'!='false'">
+    <Message Text="Description: %(PostBuildEvent.Message)" Condition="'%(PostBuildEvent.Message)' != '' and '%(PostBuildEvent.Command)' != ''"/>
+    <Exec Command="%(PostBuildEvent.Command)$(_BuildSuffix)" Condition="'%(PostBuildEvent.Command)' != ''"/>
+  </Target>
+
+  <!--************************************
+       PROPERTY PAGES AND DESIGNTIME DEFS
+       ***********************************-->
+  
+  <!-- Designtime definitions -->
+  <ItemGroup>
+    <PropertyPageSchema Condition="'$(LocalRemoteCopySources)' == 'false'" Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_general_linux.xml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Condition="'$(LocalRemoteCopySources)' != 'false'" Include="$(LinuxCommonTargetsPath)$(LangID)\wsl2_general_linux.xml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\folder.xml">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_directories_linux.xml"/>
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_gcc_linux.xml"/>
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_ld_linux.xml" />
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_ar_linux.xml" />
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_debugger_linux.xml" />
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\wsl_build_events.xml" />
+    <PropertyPageSchema Include="$(LinuxCommonTargetsPath)$(LangID)\remote_copy_sources.xml"/>
+  </ItemGroup>
+
+  <!-- Property pages -->
+  <ItemGroup>
+    <!-- Unique items for the project -->
+    <CustomBuildStep Include="$(ProjectName)" />
+    <PreBuildEvent Include="$(ProjectName)" />
+    <PreLinkEvent Include="$(ProjectName)" />
+    <PostBuildEvent Include="$(ProjectName)" />
+
+    <!-- Tools that show up in the IDE property pages for Link/Lib -->
+    <ProjectTools Condition="'$(ConfigurationType)' == 'Application' or '$(ConfigurationType)' == 'DynamicLibrary'" Include="Link" />
+    <ProjectTools Condition="'$(ConfigurationType)' == 'StaticLibrary'" Include="Lib" />
+    <ProjectTools Include="CustomBuildStep" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <DetermineProjectTypeTargets>_SetLinuxISenseIdentifier;$(DetermineProjectTypeTargets)</DetermineProjectTypeTargets>
+  </PropertyGroup>
+
+  <Target Name="_SetLinuxISenseIdentifier">
+    <PropertyGroup>
+      <ToolsetISenseIdentifier>Linux;$(IntDir)iconfig.json</ToolsetISenseIdentifier>
+    </PropertyGroup>
+  </Target>
+
+  <ItemGroup>
+    <ProjectCapability Include="LinuxNative"/>
+    <ProjectCapability Include="LinuxWSLNative"/>
+  </ItemGroup>
+
+</Project>

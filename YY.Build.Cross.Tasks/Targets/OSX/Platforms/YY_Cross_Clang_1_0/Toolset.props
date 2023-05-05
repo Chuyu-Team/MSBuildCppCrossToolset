@@ -1,0 +1,48 @@
+﻿<!--
+***********************************************************************************************
+Toolset.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)ImportBefore\*.props" Condition="Exists('$(MSBuildThisFileDirectory)ImportBefore')" />
+
+  <Import Project="$(VCTargetsPath)\Application Type\$(ApplicationType)\$(ApplicationTypeRevision)\YY.OSX.Cross.props" />
+  
+  <PropertyGroup>
+    <Sysroot></Sysroot>
+    <ClangTarget></ClangTarget>
+    <ToolExe>clang++</ToolExe>
+    <RemoteCCompileToolExe Condition="'$(RemoteCCompileToolExe)' == ''">clang++</RemoteCCompileToolExe>
+    <RemoteCppCompileToolExe Condition="'$(RemoteCppCompileToolExe)' == ''">clang++</RemoteCppCompileToolExe>
+    <RemoteLdToolExe Condition="'$(RemoteLdToolExe)' == ''">clang++</RemoteLdToolExe>
+    <RemoteArToolExe Condition="'$(RemoteArToolExe)' == ''">ar</RemoteArToolExe>
+    <RemoteGdbserverToolExe Condition="'$(RemoteGdbserverToolExe)' == ''">gdbserver</RemoteGdbserverToolExe>
+    <RemoteGdbToolExe Condition="'$(RemoteGdbToolExe)' == ''">gdb</RemoteGdbToolExe>
+    <!-- Set $(ExecutablePath) used by Microsoft.Cpp.CurrentVersion.targets's SetBuildDefaultEnvironmentVariables target to set the PATH env var -->
+    <ExecutablePath>$(Path)</ExecutablePath>
+    <_IsClang>true</_IsClang>
+    <__IsYYLinuxCross>true</__IsYYLinuxCross>
+  </PropertyGroup>
+  
+  <ItemDefinitionGroup> 
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(StlIncludeDirectories);%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ThumbMode Condition="'$(ThumbMode)' != ''">$(ThumbMode)</ThumbMode>
+      <EnableNeonCodegen>false</EnableNeonCodegen>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(StlAdditionalDependencies);%(Link.AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(Link.AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SharedLibrarySearchPath>%(Link.SharedLibrarySearchPath)</SharedLibrarySearchPath>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)ImportAfter\*.props" Condition="Exists('$(MSBuildThisFileDirectory)ImportAfter')" />
+</Project>

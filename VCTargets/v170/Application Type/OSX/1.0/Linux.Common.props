@@ -1,0 +1,33 @@
+<!--
+***********************************************************************************************
+Linux.Common.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="$(MSBuildThisFileDirectory)ImportBefore\*.props" Condition="Exists('$(MSBuildThisFileDirectory)ImportBefore')" />
+
+  <PropertyGroup>
+    <!-- Set project references resolve order to be breadthfirst. -->
+    <GetResolvedLinkLibs_Order Condition="'$(GetResolvedLinkLibs_Order)' == ''">BreadthFirst</GetResolvedLinkLibs_Order>
+
+    <!-- Set ProjectPublicIncludePath to share this directory in Project Refernces. -->
+    <!--<ProjectPublicIncludePath Condition="'$(ProjectPublicIncludePath)' == ''">$(ProjectDir)</ProjectPublicIncludePath>-->
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ConfigurationType)' == 'Makefile'">
+    <IncrementalBuild Condition="'$(IncrementalBuild)' == ''">false</IncrementalBuild>
+  </PropertyGroup>
+
+  <Import Project="$(UserRootDir)\Microsoft.Cpp.Linux.user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.Linux.user.props')"/>
+
+  <Import Project="$(MSBuildThisFileDirectory)ImportAfter\*.props" Condition="Exists('$(MSBuildThisFileDirectory)ImportAfter')" />
+
+</Project>

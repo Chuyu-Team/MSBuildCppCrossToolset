@@ -36,19 +36,39 @@ MSBuild.exe "Build.proj"
     </ItemGroup>
     <Copy SourceFiles="@(VCTargetsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\%(RecursiveDir)%(Filename)%(Extension)" />
     <Copy SourceFiles="$(MSBuildThisFileDirectory)\Microsoft.Build.CppTasks.Common\bin\Release\net6.0\Microsoft.Build.CppTasks.Common.dll" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170" />
-      
+    <PropertyGroup>
+      <ApplicationTypeDefaultPropsRootPath>$(MSBuildThisFileDirectory)VCTargets\v170\Application Type\</ApplicationTypeDefaultPropsRootPath>
+    </PropertyGroup>
     <ItemGroup>
-      <PlatformsRootFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Cross.Tasks\Targets\Linux\*.*"/>
-      <PlatformsFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Cross.Tasks\Targets\Linux\Platforms\**\*.*"/>
+      <ApplicationTypeDefaultPropsPath Include="$(ApplicationTypeDefaultPropsRootPath)\*\Default.props"/>
     </ItemGroup>
-    <Copy SourceFiles="@(PlatformsRootFiles)" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0" />
-    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\ARM\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\ARM64\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\MIPS\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\x64\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\Linux\1.0\Platforms\x86\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
+    <ItemGroup>
+      <ApplicationType
+        Include="@(ApplicationTypeDefaultPropsPath-&gt;Remove(0, $(ApplicationTypeDefaultPropsRootPath.Length))-&gt;Replace('\Default.props','')-&gt;Replace('/Default.props',''))"/>
+    </ItemGroup>
+    <MSBuild Projects="$(MSBuildThisFileFullPath)" StopOnFirstFailure="True" Targets="CopyApplicationTypeFiles" BuildInParallel="True" Properties="CurrentApplicationType=%(ApplicationType.Identity)"/>
   </Target>
-  
+  <Target Name="CopyApplicationTypeFiles">
+    <PropertyGroup>
+      <PlatformsRootPath>$(MSBuildThisFileDirectory)VCTargets\v170\Application Type\$(CurrentApplicationType)\1.0\Platforms\</PlatformsRootPath>
+    </PropertyGroup>
+    <ItemGroup>
+      <PlatformsPath Include="$(PlatformsRootPath)*\Platform.props"/>
+    </ItemGroup>
+    <ItemGroup>
+      <PlatformsName
+        Include="@(PlatformsPath-&gt;Remove(0, $(PlatformsRootPath.Length))-&gt;Replace('\Platform.props','')-&gt;Replace('/Platform.props',''))"/>
+    </ItemGroup>
+    <MSBuild Projects="$(MSBuildThisFileFullPath)" StopOnFirstFailure="True" Targets="CopyPlatformToolsetsFiles" BuildInParallel="True" Properties="CurrentPlatformName=%(PlatformsName.Identity)"/>
+  </Target>
+  <Target Name="CopyPlatformToolsetsFiles">
+    <ItemGroup>
+      <PlatformsRootFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Cross.Tasks\Targets\$(CurrentApplicationType)\*.*"/>
+      <PlatformsFiles Include="$(MSBuildThisFileDirectory)\YY.Build.Cross.Tasks\Targets\$(CurrentApplicationType)\Platforms\**\*.*"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(PlatformsRootFiles)" DestinationFolder="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\$(CurrentApplicationType)\1.0" />
+    <Copy SourceFiles="@(PlatformsFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\v170\Application Type\$(CurrentApplicationType)\1.0\Platforms\$(CurrentPlatformName)\PlatformToolsets\%(RecursiveDir)%(Filename)%(Extension)" />
+  </Target>
   <Target Name="_GetProjectAllConfiguration" Returns="@(AllProjectReferenceConfigurations)">
     <!--故意过滤Debug配置-->
     <CreateItem
