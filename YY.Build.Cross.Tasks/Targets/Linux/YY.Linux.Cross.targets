@@ -93,8 +93,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <LanguageStandard_C Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp'"></LanguageStandard_C>
         <LanguageStandard Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'"></LanguageStandard>
         <!-- GCC does not allow Wno-pointer-sign for C++ -->
-        <CAdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp'"></CAdditionalWarning>
-        <CppAdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'"></CppAdditionalWarning>
+        <AdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp'">%(ClCompile.CppAdditionalWarning);%(ClCompile.AdditionalWarning)</AdditionalWarning>
+        <AdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsC'">%(ClCompile.CAdditionalWarning);%(ClCompile.AdditionalWarning)</AdditionalWarning>
       </ClCompile>
 
       <ClCompile>

@@ -101,8 +101,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <LanguageStandard_C Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp' or '%(ClCompile.CompileAs)' == 'CompileAsObjCpp'"></LanguageStandard_C>
         <LanguageStandard Condition="'%(ClCompile.CompileAs)' == 'CompileAsC' or '%(ClCompile.CompileAs)' == 'CompileAsObjC'"></LanguageStandard>
         <!-- GCC does not allow Wno-pointer-sign for C++ -->
-        <CAdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp' or '%(ClCompile.CompileAs)' == 'CompileAsObjCpp'"></CAdditionalWarning>
-        <CppAdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsC' or '%(ClCompile.CompileAs)' == 'CompileAsObjC'"></CppAdditionalWarning>
+        <AdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsCpp' or '%(ClCompile.CompileAs)' == 'CompileAsObjCpp'">%(ClCompile.CppAdditionalWarning);%(ClCompile.AdditionalWarning)</AdditionalWarning>
+        <AdditionalWarning Condition="'%(ClCompile.CompileAs)' == 'CompileAsC' or '%(ClCompile.CompileAs)' == 'CompileAsObjC'">%(ClCompile.CAdditionalWarning);%(ClCompile.AdditionalWarning)</AdditionalWarning>
       </ClCompile>
 
       <ClCompile>

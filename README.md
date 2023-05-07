@@ -108,7 +108,7 @@ msbuild "D:\ConsoleApplication2\ConsoleApplication2.vcxproj" -p:Configuration=Re
 示例：
 ```xml
 <ClCompile>
-  <AdditionalIncludeDirectories>C:\CppInlcude;D:\CppInlcude</AdditionalIncludeDirectories>
+  <AdditionalIncludeDirectories>C:\CppInlcude;D:\CppInlcude;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 </ClCompile>
 ```
 
@@ -118,6 +118,9 @@ msbuild "D:\ConsoleApplication2\ConsoleApplication2.vcxproj" -p:Configuration=Re
 | 选项              | Windows(MSVC)     | Linux(GCC/CLang)  | OSX(GCC/CLang)    | 选项含义
 | ----------------- | ----------------- | ----------------- | --------          | ------
 | None              |                   | -g0               | -g0               | 没有生成调试信息，因此编译可能会更快。
+| OldStyle          | /Z7               | -g2 -gdwarf-2     | -g2 -gdwarf-2     | 选择为程序创建的调试信息的类型，并选择是将此信息保存在对象(.obj)文件中，还是保存在程序数据库(PDB)中。
+| ProgramDatabase   | /Zi               | -g2 -gdwarf-2     | -g2 -gdwarf-2     | 生成一个程序数据库(PDB)，其中包含供调试器使用的类型信息和符号化调试信息。符号化调试信息包含变量的名称和类型以及函数和行号。
+| EditAndContinue   | /ZI               | -g2 -gdwarf-2     | -g2 -gdwarf-2     | 采用支持“编辑并继续”功能的格式生成程序数据库(如上所述)。
 | Minimal           | 不支持            | -g1               | -g1               | 生成最小调试信息。
 | FullDebug         | 不支持            | -g2 -gdwarf-2     | -g2 -gdwarf-2     | 生成 DWARF2 调试信息。
 
@@ -181,6 +184,8 @@ msbuild "D:\ConsoleApplication2\ConsoleApplication2.vcxproj" -p:Configuration=Re
 |                   | Windows(MSVC)     | Linux(GCC/CLang)  | OSX(GCC/CLang)
 | ----------------- | ----------------- | ----------------- | --------
 | 映射参数          | 自动忽略          | -W                | -W
+
+温馨提示：`CppAdditionalWarning` 与 `CAdditionalWarning` 也可以使用。
 
 
 ### 3.1.8. Optimization 属性（枚举）
@@ -563,8 +568,8 @@ ObjCAutomaticRefCounting开启时发生异常保证不泄露内存。
 
 |                   | Windows(MSVC)     | Linux(GCC/CLang)  | OSX(GCC/CLang)
 | ----------------- | ----------------- | ----------------- | --------
-| true              | 自动忽略          | -Wl,--print-map   | -Wl,--print-map
-| false             | 自动忽略          |                   |
+| true              | /MAP              | -Wl,--print-map   | -Wl,--print-map
+| false             |                   |                   |
 
 示例：
 ```xml
@@ -653,7 +658,6 @@ ObjCAutomaticRefCounting开启时发生异常保证不泄露内存。
 | IncludeAll         | 自动忽略          |                   |                   | 包含全部符号。
 | OmitDebuggerSymbolInformation | 自动忽略 | -Wl,--strip-debug | -Wl,--strip-debug | 仅忽略调试器符号信息。
 | OmitAllSymbolInformation | 自动忽略    | -Wl,--strip-all   | -Wl,--strip-all   | 忽略所有符号信息。 
-```
 
 示例：
 ```xml
@@ -667,7 +671,7 @@ ObjCAutomaticRefCounting开启时发生异常保证不泄露内存。
 
 |                   | Windows(MSVC)     | Linux(GCC/CLang)  | OSX(GCC/CLang)
 | ----------------- | ----------------- | ----------------- | --------
-| 映射参数          | 自动忽略          | -Wl,-Map          | -Wl,-Map
+| 映射参数          | /Map              | -Wl,-Map          | -Wl,-Map
 
 
 示例：
