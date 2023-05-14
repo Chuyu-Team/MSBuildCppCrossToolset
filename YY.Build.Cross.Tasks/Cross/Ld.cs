@@ -41,6 +41,7 @@ namespace YY.Build.Cross.Tasks.Cross
             switchOrderList.Add("Relocation");
             switchOrderList.Add("FunctionBinding");
             switchOrderList.Add("NoExecStackRequired");
+            switchOrderList.Add("SysRoot");
             switchOrderList.Add("LinkDll");
             switchOrderList.Add("WholeArchiveBegin");
             switchOrderList.Add("AdditionalOptions");
@@ -797,6 +798,31 @@ namespace YY.Build.Cross.Tasks.Cross
                 toolSwitch.Value = value;
                 toolSwitch.MultipleValues = true;
                 base.ActiveToolSwitches.Add("UseOfStl", toolSwitch);
+                AddActiveSwitchToolValue(toolSwitch);
+            }
+        }
+
+        public virtual string SysRoot
+        {
+            get
+            {
+                if (IsPropertySet("SysRoot"))
+                {
+                    return base.ActiveToolSwitches["SysRoot"].Value;
+                }
+                return null;
+            }
+            set
+            {
+                base.ActiveToolSwitches.Remove("SysRoot");
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.String);
+                toolSwitch.DisplayName = "SysRoot";
+                toolSwitch.Description = "Folder path to the root directory for headers and libraries.";
+                toolSwitch.ArgumentRelationList = new ArrayList();
+                toolSwitch.SwitchValue = "--sysroot=";
+                toolSwitch.Name = "SysRoot";
+                toolSwitch.Value = value;
+                base.ActiveToolSwitches.Add("SysRoot", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }

@@ -54,6 +54,7 @@ namespace YY.Build.Cross.Tasks.Cross
             switchOrderList.Add("ForcedIncludeFiles");
             switchOrderList.Add("EnableASAN");
             switchOrderList.Add("AdditionalOptions");
+            switchOrderList.Add("Sysroot");
             switchOrderList.Add("DependenceFile");
 
             base.IgnoreUnknownSwitchValues = true;
@@ -962,6 +963,31 @@ namespace YY.Build.Cross.Tasks.Cross
                 toolSwitch.Name = "EnableASAN";
                 toolSwitch.BooleanValue = value;
                 base.ActiveToolSwitches.Add("EnableASAN", toolSwitch);
+                AddActiveSwitchToolValue(toolSwitch);
+            }
+        }
+
+        public virtual string Sysroot
+        {
+            get
+            {
+                if (IsPropertySet("Sysroot"))
+                {
+                    return base.ActiveToolSwitches["Sysroot"].Value;
+                }
+                return null;
+            }
+            set
+            {
+                base.ActiveToolSwitches.Remove("Sysroot");
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.String);
+                toolSwitch.DisplayName = "Sysroot";
+                toolSwitch.Description = "Folder path to the root directory for headers and libraries.";
+                toolSwitch.ArgumentRelationList = new ArrayList();
+                toolSwitch.Name = "Sysroot";
+                toolSwitch.Value = value;
+                toolSwitch.SwitchValue = "--sysroot=";
+                base.ActiveToolSwitches.Add("Sysroot", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }

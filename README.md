@@ -519,6 +519,20 @@ ObjCAutomaticRefCounting开启时发生异常保证不泄露内存。
 </ClCompile>
 ```
 
+### 3.1.31. Sysroot 属性（字符串）
+设置库和头文件的根目录，一般交叉编译时需要。
+
+| Windows(MSVC)     | Linux(GCC/CLang)  | OSX(GCC/CLang)
+| ----------------- | ----------------- | --------
+| 自动忽略          | --sysroot         | --sysroot
+
+示例：
+```xml
+<ClCompile>
+  <Sysroot>Usr/aarch64-linux-gnu</Sysroot>
+</ClCompile>
+```
+
 ## 3.2. Link
 链接配置。
 
@@ -798,6 +812,19 @@ Apple特有的Framework引用（-framework）。
 </Link>
 ```
 
+### 3.1.22. Sysroot 属性（字符串）
+设置库和头文件的根目录，一般交叉编译时需要。
+
+| Windows(MSVC)     | Linux(GCC/CLang)  | OSX(GCC/CLang)
+| ----------------- | ----------------- | --------
+| 自动忽略          | --sysroot         | --sysroot
+
+示例：
+```xml
+<Link>
+  <Sysroot>Usr/aarch64-linux-gnu</Sysroot>
+</Link>
+```
 
 # 附： 我怎么自己编译 MSBuildCppCrossToolset？
 > 温馨提示：普通用户无需关心如何编译 MSBuildCppCrossToolset。只需要从Release产物中下载即可。
