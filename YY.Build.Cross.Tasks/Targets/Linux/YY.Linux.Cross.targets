@@ -76,6 +76,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <CompileAs Condition="'%(ClCompile.CompileAs)' == 'Default' and '%(ClCompile.Extension)' == '.c'">CompileAsC</CompileAs>
         <WholeProgramOptimization Condition="'%(ClCompile.LinkTimeOptimization)' == 'true'">true</WholeProgramOptimization>
         <FloatingPointModel Condition="'%(ClCompile.RelaxIEEE)' == 'true'">Fast</FloatingPointModel>
+        <Sysroot>$(Sysroot)</Sysroot>
+        <TargetArch>$(ClangTarget)</TargetArch>
       </ClCompile>
 
       <ClCompile>
@@ -155,6 +157,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
              EnableASAN="%(ClCompile.EnableASAN)"
              AdditionalOptions="%(ClCompile.AdditionalOptions)"
              Sysroot="%(ClCompile.Sysroot)"
+             TargetArch="%(ClCompile.TargetArch)"
              TrackerLogDirectory="$(TLogLocation)"
              TLogReadFiles="$(TLogLocation)\compile.read.1.tlog"
              TLogWriteFiles="$(TLogLocation)\compile.write.1.tlog"
@@ -201,7 +204,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         BuildingInIde="%(Link.BuildingInIde)"
         EnableASAN="%(Link.EnableASAN)"
         UseOfStl="%(Link.UseOfStl)"
-        Sysroot="%(ClCompile.Sysroot)"
+        Sysroot="$(Sysroot)"
+        TargetArch="$(ClangTarget)"
         TrackerLogDirectory="$(TLogLocation)"
         TLogReadFiles="$(TLogLocation)\link.read.1.tlog"
         TLogWriteFiles="$(TLogLocation)\link.write.1.tlog"

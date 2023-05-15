@@ -14,13 +14,25 @@ export VCTargetsPath=/home/mouri/Workspace/MSBuildCppCrossToolsetRelease/VCTarge
 
 ### 编译项目
 一般来说，Platform拥有以下几种可能：
-* ARM
-* ARM64
-* MIPS
-* x64
-* x86（注意：对于Windows系统下的vcxproj来说叫Win32）
 
-> 温馨提示：Windows下搞不懂x86还是Win32的可以先尝试Win32，如果报错那么尝试一下x86。
+| Platform  | Linux PlatformTriplet 默认值 | MacOS PlatformTriplet 默认值 | 备注
+| --------- | ---------------------------- | --------------------- | ---
+| x86       | i686-linux-gnu               | 尚未就绪              | （注意：对于Windows系统下的vcxproj来说叫Win32）
+| x64       | x86_64-linux-gnu             | 尚未就绪
+| ARM       | arm-linux-gnueabihf          | 尚未就绪
+| ARM64     | aarch64-linux-gnu            | 尚未就绪
+| MIPS      | mips-linux-gnu               | 不支持
+
+> 温馨提示：Windows下Platform搞不懂x86还是Win32的可以先尝试Win32，如果报错那么尝试一下x86。
+
+如果对默认的PlatformTriplet不满意，可以在Configuration区域覆盖PlatformTriplet属性实现自定义。Configuration区域亦可自定义Sysroot属性。
+
+
+交叉编译时，必须安装对应的Triplet，比如对于一个x64的Ubuntu，使用GCC编译ARM64小端的Linux程序，则先安装`g++-aarch64-linux-gun`。
+
+```
+sudo apt-get install g++-aarch64-linux-gun
+```
 
 ; 假设项目位置为 `/home/mouri/Workspace/MSBuildCppCrossToolsetWorkspace/Samples`。并且编译一些 Release，那么可以输入如下命令：
 

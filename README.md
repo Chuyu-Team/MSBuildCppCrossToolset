@@ -75,8 +75,51 @@ msbuild "D:\ConsoleApplication2\ConsoleApplication2.vcxproj" -p:Configuration=Re
 msbuild "D:\ConsoleApplication2\ConsoleApplication2.vcxproj" -p:Configuration=Release;Platform=x64
 
 ```
+## 2.4. 全局支持的属性
+### 2.4.1. PlatformToolset 全局属性
+工具集，目前支持`YY_Cross_Clang_1_0`、`YY_Cross_GCC_1_0`。
+
+示例：
+```xml
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <PlatformToolset>YY_Cross_GCC_1_0</PlatformToolset>
+</PropertyGroup>
+```
+### 2.4.2. Platform 全局属性
+一般来说，Platform拥有以下几种可能：
+* ARM
+* ARM64
+* MIPS
+* x64
+* x86
+
+> 注意：Platform是在调用msbuild时传入的，一般不应该直接设置到工程。
+
+### 2.4.3. PlatformTriplet 全局属性
+平台的Triplet值，比如说：i686-linux-gnu。一般无需设置，框架会根据Platform属性自动调整。
+其默认对照关系如下：
+
+| Platform  | Linux PlatformTriplet 默认值 | MacOS PlatformTriplet 默认值 |
+| --------- | ---------------------------- | ---------------------------- |
+| x86       | i686-linux-gnu               | 尚未就绪                     
+| x64       | x86_64-linux-gnu             | 尚未就绪
+| ARM       | arm-linux-gnueabihf          | 尚未就绪
+| ARM64     | aarch64-linux-gnu            | 尚未就绪
+| MIPS      | mips-linux-gnu               | 不支持
+
+示例：
+```xml
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <PlatformTriplet>i686-linux-gnu</PlatformTriplet>
+</PropertyGroup>
+```
+
+### 2.4.4. Sysroot 全局属性
+用于自定义库目录以及头文件位置。此路径会通过`--sysroot`传递给编译器以及链接器。
+
 
 # 3. 支持的属性以及元素参数映射情况
+
 ## 3.1. ClCompile
 它描述了C/C++代码编译参数配置情况。
 
@@ -519,20 +562,6 @@ ObjCAutomaticRefCounting开启时发生异常保证不泄露内存。
 </ClCompile>
 ```
 
-### 3.1.31. Sysroot 属性（字符串）
-设置库和头文件的根目录，一般交叉编译时需要。
-
-| Windows(MSVC)     | Linux(GCC/CLang)  | OSX(GCC/CLang)
-| ----------------- | ----------------- | --------
-| 自动忽略          | --sysroot         | --sysroot
-
-示例：
-```xml
-<ClCompile>
-  <Sysroot>Usr/aarch64-linux-gnu</Sysroot>
-</ClCompile>
-```
-
 ## 3.2. Link
 链接配置。
 
@@ -809,20 +838,6 @@ Apple特有的Framework引用（-framework）。
 ```xml
 <Link>
   <Frameworks>Foundation;Cocoa;%(Frameworks)</Frameworks>
-</Link>
-```
-
-### 3.1.22. Sysroot 属性（字符串）
-设置库和头文件的根目录，一般交叉编译时需要。
-
-| Windows(MSVC)     | Linux(GCC/CLang)  | OSX(GCC/CLang)
-| ----------------- | ----------------- | --------
-| 自动忽略          | --sysroot         | --sysroot
-
-示例：
-```xml
-<Link>
-  <Sysroot>Usr/aarch64-linux-gnu</Sysroot>
 </Link>
 ```
 

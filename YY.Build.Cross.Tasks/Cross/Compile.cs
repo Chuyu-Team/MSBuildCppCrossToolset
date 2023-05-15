@@ -54,6 +54,7 @@ namespace YY.Build.Cross.Tasks.Cross
             switchOrderList.Add("ForcedIncludeFiles");
             switchOrderList.Add("EnableASAN");
             switchOrderList.Add("AdditionalOptions");
+            switchOrderList.Add("TargetArch");
             switchOrderList.Add("Sysroot");
             switchOrderList.Add("DependenceFile");
 
@@ -988,6 +989,33 @@ namespace YY.Build.Cross.Tasks.Cross
                 toolSwitch.Value = value;
                 toolSwitch.SwitchValue = "--sysroot=";
                 base.ActiveToolSwitches.Add("Sysroot", toolSwitch);
+                AddActiveSwitchToolValue(toolSwitch);
+            }
+        }
+
+        // 例如 x86_64-linux-gnu
+        // 注意：仅clang支持，并且此选项位内部设置，跟随PlatformTriplet
+        public virtual string TargetArch
+        {
+            get
+            {
+                if (IsPropertySet("TargetArch"))
+                {
+                    return base.ActiveToolSwitches["TargetArch"].Value;
+                }
+                return null;
+            }
+            set
+            {
+                base.ActiveToolSwitches.Remove("TargetArch");
+                ToolSwitch toolSwitch = new ToolSwitch(ToolSwitchType.String);
+                toolSwitch.DisplayName = "目标体系结构";
+                toolSwitch.Description = "目标的体系结构";
+                toolSwitch.ArgumentRelationList = new ArrayList();
+                toolSwitch.Name = "TargetArch";
+                toolSwitch.Value = value;
+                toolSwitch.SwitchValue = "--target=";
+                base.ActiveToolSwitches.Add("TargetArch", toolSwitch);
                 AddActiveSwitchToolValue(toolSwitch);
             }
         }

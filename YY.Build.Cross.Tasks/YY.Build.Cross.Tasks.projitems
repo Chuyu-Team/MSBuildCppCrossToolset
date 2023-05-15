@@ -25,6 +25,8 @@
     <None Include="$(MSBuildThisFileDirectory)Targets\Linux\YY.Linux.Cross.targets" />
     <None Include="$(MSBuildThisFileDirectory)Targets\OSX\Platforms\YY_Cross_Clang_1_0\Toolset.props" />
     <None Include="$(MSBuildThisFileDirectory)Targets\OSX\Platforms\YY_Cross_Clang_1_0\Toolset.targets" />
+    <None Include="$(MSBuildThisFileDirectory)Targets\OSX\Platforms\YY_Cross_GCC_1_0\Toolset.props" />
+    <None Include="$(MSBuildThisFileDirectory)Targets\OSX\Platforms\YY_Cross_GCC_1_0\Toolset.targets" />
     <None Include="$(MSBuildThisFileDirectory)Targets\OSX\YY.OSX.Cross.props" />
     <None Include="$(MSBuildThisFileDirectory)Targets\OSX\YY.OSX.Cross.targets" />
   </ItemGroup>

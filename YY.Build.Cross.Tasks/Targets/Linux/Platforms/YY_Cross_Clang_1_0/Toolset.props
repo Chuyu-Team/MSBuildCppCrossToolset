@@ -16,13 +16,12 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   <Import Project="$(VCTargetsPath)\Application Type\$(ApplicationType)\$(ApplicationTypeRevision)\YY.Linux.Cross.props" />
   
   <PropertyGroup>
-    <Sysroot></Sysroot>
-    <ClangTarget></ClangTarget>
+    <ClangTarget>$(PlatformTriplet)</ClangTarget>
     <ToolExe>clang++</ToolExe>
     <RemoteCCompileToolExe Condition="'$(RemoteCCompileToolExe)' == ''">clang++</RemoteCCompileToolExe>
     <RemoteCppCompileToolExe Condition="'$(RemoteCppCompileToolExe)' == ''">clang++</RemoteCppCompileToolExe>
     <RemoteLdToolExe Condition="'$(RemoteLdToolExe)' == ''">clang++</RemoteLdToolExe>
-    <RemoteArToolExe Condition="'$(RemoteArToolExe)' == ''">ar</RemoteArToolExe>
+    <RemoteArToolExe Condition="'$(RemoteArToolExe)' == ''">$(PlatformTriplet)-ar</RemoteArToolExe>
     <RemoteGdbserverToolExe Condition="'$(RemoteGdbserverToolExe)' == ''">gdbserver</RemoteGdbserverToolExe>
     <RemoteGdbToolExe Condition="'$(RemoteGdbToolExe)' == ''">gdb</RemoteGdbToolExe>
     <!-- Set $(ExecutablePath) used by Microsoft.Cpp.CurrentVersion.targets's SetBuildDefaultEnvironmentVariables target to set the PATH env var -->

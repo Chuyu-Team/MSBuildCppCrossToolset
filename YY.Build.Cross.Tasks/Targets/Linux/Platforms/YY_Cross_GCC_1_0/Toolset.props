@@ -16,13 +16,12 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   <Import Project="$(VCTargetsPath)\Application Type\$(ApplicationType)\$(ApplicationTypeRevision)\YY.Linux.Cross.props" />
   
   <PropertyGroup>
-    <Sysroot></Sysroot>
     <ClangTarget></ClangTarget>
     <ToolExe>g++</ToolExe>
-    <RemoteCCompileToolExe Condition="'$(RemoteCCompileToolExe)' == ''">g++</RemoteCCompileToolExe>
-    <RemoteCppCompileToolExe Condition="'$(RemoteCppCompileToolExe)' == ''">g++</RemoteCppCompileToolExe>
-    <RemoteLdToolExe Condition="'$(RemoteLdToolExe)' == ''">g++</RemoteLdToolExe>
-    <RemoteArToolExe Condition="'$(RemoteArToolExe)' == ''">ar</RemoteArToolExe>
+    <RemoteCCompileToolExe Condition="'$(RemoteCCompileToolExe)' == ''">$(PlatformTriplet)-g++</RemoteCCompileToolExe>
+    <RemoteCppCompileToolExe Condition="'$(RemoteCppCompileToolExe)' == ''">$(PlatformTriplet)-g++</RemoteCppCompileToolExe>
+    <RemoteLdToolExe Condition="'$(RemoteLdToolExe)' == ''">$(PlatformTriplet)-g++</RemoteLdToolExe>
+    <RemoteArToolExe Condition="'$(RemoteArToolExe)' == ''">$(PlatformTriplet)-ar</RemoteArToolExe>
     <RemoteGdbserverToolExe Condition="'$(RemoteGdbserverToolExe)' == ''">gdbserver</RemoteGdbserverToolExe>
     <RemoteGdbToolExe Condition="'$(RemoteGdbToolExe)' == ''">gdb</RemoteGdbToolExe>
     <!-- Set $(ExecutablePath) used by Microsoft.Cpp.CurrentVersion.targets's SetBuildDefaultEnvironmentVariables target to set the PATH env var -->
