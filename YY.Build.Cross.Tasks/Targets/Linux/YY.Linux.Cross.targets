@@ -153,6 +153,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
              CompileAs="%(ClCompile.CompileAs)"
              ForcedIncludeFiles="%(ClCompile.ForcedIncludeFiles)"
              EnableASAN="%(ClCompile.EnableASAN)"
+             AdditionalOptions="%(ClCompile.AdditionalOptions)"
              Sysroot="%(ClCompile.Sysroot)"
              TrackerLogDirectory="$(TLogLocation)"
              TLogReadFiles="$(TLogLocation)\compile.read.1.tlog"
