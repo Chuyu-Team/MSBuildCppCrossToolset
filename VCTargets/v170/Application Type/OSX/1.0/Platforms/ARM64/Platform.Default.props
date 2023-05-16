@@ -20,7 +20,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <PlatformArchitecture>ARM64</PlatformArchitecture>
     <PlatformTarget>ARM64</PlatformTarget>
     <PlatformNativeArch>armv7</PlatformNativeArch>
-    <PlatformTriplet>aarch64-linux-gnu</PlatformTriplet>
+    <PlatformTriplet>aarch64-apple-darwin</PlatformTriplet>
   </PropertyGroup>
 
   <!-- Import After -->

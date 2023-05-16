@@ -50,22 +50,14 @@ export VCTargetsPath=/home/john/Desktop/VCTargets/v170/
 ## 2.3. 编译vcxproj项目
 我们也提供了示例项目，点击查看[Samples](Samples)
 
-一般来说，Platform拥有以下几种可能：
-* ARM
-* ARM64
-* MIPS
-* x64
-* x86（注意：对于Windows系统下的vcxproj来说叫Win32）
-
-
 假设项目位置： `/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj`。并且编译 Release版的x86版本，那么可以输入如下命令：
 
 ```
-; Linux下编译 x86
-dotnet msbuild '/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj' '-p:Configuration=Release;Platform=x86'
-
-; Linux下编译 x64
+; Linux、MacOS下编译 x64
 dotnet msbuild '/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj' '-p:Configuration=Release;Platform=x64'
+
+; Linux、MacOS下编译小端 ARM64
+dotnet msbuild '/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj' '-p:Configuration=Release;Platform=ARM64'
 
 
 ; Windows下编译 x86。新人特别注意了，vcxproj里没有x86，只有Win32！！！
@@ -77,46 +69,66 @@ msbuild "D:\ConsoleApplication2\ConsoleApplication2.vcxproj" -p:Configuration=Re
 ```
 ## 2.4. 全局支持的属性
 ### 2.4.1. PlatformToolset 全局属性
-工具集，目前支持`YY_Cross_Clang_1_0`、`YY_Cross_GCC_1_0`。
+工具集，目前支持以下工具集：
+
+| 工具集             | 说明
+| ------------------ | -----------------
+| YY_Cross_GCC_1_0   | GCC工具集，Linux系统默认的工具集，MacOS暂时对YY_Cross_GCC_1_0支持不好。
+| YY_Cross_Clang_1_0 | CLang工具集，MacOS系统默认的工具集。
 
 示例：
 ```xml
 <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
-    <PlatformToolset>YY_Cross_GCC_1_0</PlatformToolset>
+  <PlatformToolset>YY_Cross_GCC_1_0</PlatformToolset>
 </PropertyGroup>
 ```
 ### 2.4.2. Platform 全局属性
 一般来说，Platform拥有以下几种可能：
-* ARM
-* ARM64
-* MIPS
-* x64
-* x86
+
+| 目标系统 | 支持的 Platform
+| -------- | ---------
+| Linux    | x86、x64、ARM、ARM64、MIPS
+| MacOS    | x86、x64、ARM64
 
 > 注意：Platform是在调用msbuild时传入的，一般不应该直接设置到工程。
 
+示例：
+```
+dotnet msbuild '/home/john/Desktop/ConsoleApplication2/ConsoleApplication2.vcxproj' '-p:Configuration=Release;Platform=x64'
+```
+
+> 特别提醒：特别是Linux系统。编译时，必须安装Platform对应的Triplet，否则将找不到g++而失败！比如对于一个x64的Ubuntu，使用GCC编译ARM64小端的Linux程序，则先安装 `g++-aarch64-linux-gun`，命令如下所示：
+```
+sudo apt-get install g++-aarch64-linux-gun
+```
+
+
 ### 2.4.3. PlatformTriplet 全局属性
 平台的Triplet值，比如说：i686-linux-gnu。一般无需设置，框架会根据Platform属性自动调整。
-其默认对照关系如下：
+各个平台Platform的PlatformTriplet默认值如下表所示：
 
-| Platform  | Linux PlatformTriplet 默认值 | MacOS PlatformTriplet 默认值 |
+| Platform  | Linux                        | MacOS                        |
 | --------- | ---------------------------- | ---------------------------- |
-| x86       | i686-linux-gnu               | 尚未就绪                     
-| x64       | x86_64-linux-gnu             | 尚未就绪
-| ARM       | arm-linux-gnueabihf          | 尚未就绪
-| ARM64     | aarch64-linux-gnu            | 尚未就绪
+| x86       | i686-linux-gnu               | i686-apple-darwin                     
+| x64       | x86_64-linux-gnu             | x86_64-apple-darwin
+| ARM       | arm-linux-gnueabihf          | 不支持
+| ARM64     | aarch64-linux-gnu            | aarch64-apple-darwin
 | MIPS      | mips-linux-gnu               | 不支持
 
-示例：
+如果对默认的`PlatformTriplet`值不满意，可以考虑手工调整，示例：
 ```xml
-<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
-    <PlatformTriplet>i686-linux-gnu</PlatformTriplet>
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <PlatformTriplet>x86_64-linux-gnu</PlatformTriplet>
 </PropertyGroup>
 ```
 
 ### 2.4.4. Sysroot 全局属性
-用于自定义库目录以及头文件位置。此路径会通过`--sysroot`传递给编译器以及链接器。
-
+用于自定义库目录以及头文件位置。此路径会通过`--sysroot`传递给编译器以及链接器。示例：
+```xml
+<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <Sysroot>urs/opt/mysysroot</Sysroot>
+</PropertyGroup>
+```
 
 # 3. 支持的属性以及元素参数映射情况
 

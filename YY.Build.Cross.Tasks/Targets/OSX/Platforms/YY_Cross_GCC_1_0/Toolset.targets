@@ -33,7 +33,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   </PropertyGroup>
 
   <!-- Linux specific targets to override ClCompile, Link & Lib -->
-  <Import Project="$(LinuxCommonTargetsPath)\YY.Linux.Cross.targets" />
+  <Import Project="$(LinuxCommonTargetsPath)\YY.OSX.Cross.targets" />
  
   <Import Project="$(MSBuildThisFileDirectory)ImportAfter\*.targets" Condition="Exists('$(MSBuildThisFileDirectory)ImportAfter')" />
 </Project>

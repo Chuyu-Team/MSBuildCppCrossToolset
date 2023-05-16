@@ -16,8 +16,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   <Import Project="$(VCTargetsPath)\Application Type\$(ApplicationType)\$(ApplicationTypeRevision)\YY.OSX.Cross.props" />
   
   <PropertyGroup>
-    <Sysroot></Sysroot>
-    <ClangTarget></ClangTarget>
+    <ClangTarget>$(PlatformTriplet)</ClangTarget>
     <ToolExe>clang++</ToolExe>
     <RemoteCCompileToolExe Condition="'$(RemoteCCompileToolExe)' == ''">clang++</RemoteCCompileToolExe>
     <RemoteCppCompileToolExe Condition="'$(RemoteCppCompileToolExe)' == ''">clang++</RemoteCppCompileToolExe>

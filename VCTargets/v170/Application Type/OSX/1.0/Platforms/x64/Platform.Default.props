@@ -21,7 +21,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <PlatformTarget>x64</PlatformTarget>
     <PlatformNativeArch>x86_64</PlatformNativeArch>
     <ThumbMode Condition="'$(ThumbMode)' == ''">Disabled</ThumbMode>
-    <PlatformTriplet>x86_64-linux-gnu</PlatformTriplet>
+    <PlatformTriplet>x86_64-apple-darwin</PlatformTriplet>
   </PropertyGroup>
 
   <!-- Import After -->

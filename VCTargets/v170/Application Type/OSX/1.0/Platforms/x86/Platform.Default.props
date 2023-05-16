@@ -21,7 +21,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     <PlatformTarget>x86</PlatformTarget>
     <PlatformNativeArch>i386</PlatformNativeArch>
     <ThumbMode Condition="'$(ThumbMode)' == ''">Disabled</ThumbMode>
-    <PlatformTriplet>i686-linux-gnu</PlatformTriplet>
+    <PlatformTriplet>i686-apple-darwin</PlatformTriplet>
   </PropertyGroup>
 
   <!-- Import After -->
