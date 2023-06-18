@@ -78,6 +78,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <FloatingPointModel Condition="'%(ClCompile.RelaxIEEE)' == 'true'">Fast</FloatingPointModel>
         <Sysroot>$(Sysroot)</Sysroot>
         <TargetArch>$(ClangTarget)</TargetArch>
+        <ObjectFileName Condition="HasTrailingSlash('%(ClCompile.ObjectFileName)')">%(ClCompile.ObjectFileName)%(FileName).o</ObjectFileName>          
       </ClCompile>
 
       <ClCompile>
