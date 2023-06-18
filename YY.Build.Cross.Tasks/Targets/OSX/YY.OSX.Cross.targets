@@ -134,7 +134,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
   <Target Name="ClCompile" Condition="'@(ClCompile)' != ''">
     <Compile Condition="'%(ClCompile.ExcludedFromBuild)'!='true'"
              Sources="@(ClCompile)"
-             AdditionalIncludeDirectories="%(ClCompile.AdditionalIncludeDirectories)"
+             AdditionalIncludeDirectories="%(ClCompile.AdditionalIncludeDirectories);$(IncludePath)"
              DebugInformationFormat="%(ClCompile.DebugInformationFormat)"
              ObjectFileName="%(ClCompile.ObjectFileName)"
              WarningLevel="%(ClCompile.WarningLevel)"
