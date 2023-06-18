@@ -1,0 +1,25 @@
+<!--
+***********************************************************************************************
+Microsoft.NuGet.ImportAfter.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!--<NuGetTargets Condition="'$(NuGetTargets)'==''">$(MSBuildExtensionsPath)\Microsoft\NuGet\$(VisualStudioVersion)\Microsoft.NuGet.targets</NuGetTargets>-->
+    <NuGetTargets Condition="'$(NuGetTargets)'==''">$(VCTargetsPath)\Microsoft\NuGet\Microsoft.NuGet.targets</NuGetTargets>
+
+    <!--为了避免修改 Microsoft.NuGet.targets，我们指定一下 NuGet必须的属性，让其正常工作。-->
+    <BaseNuGetRuntimeIdentifier Condition="'$(BaseNuGetRuntimeIdentifier)' == '' and '$(TargetPlatformIdentifier)' == 'Linux'">linux</BaseNuGetRuntimeIdentifier>
+    <BaseNuGetRuntimeIdentifier Condition="'$(BaseNuGetRuntimeIdentifier)' == '' and '$(TargetPlatformIdentifier)' == 'OSX'">osx</BaseNuGetRuntimeIdentifier>
+    
+    <RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)' == '' and '$(BaseNuGetRuntimeIdentifier)' == 'linux'">linux;linux-x86;linux-x64;linux-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)' == '' and '$(BaseNuGetRuntimeIdentifier)' == 'osx'">osx;osx-x86;osx-x64;osx-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <Import Condition="Exists('$(NuGetTargets)') and '$(SkipImportNuGetBuildTargets)' != 'true'" Project="$(NuGetTargets)" />
+</Project>

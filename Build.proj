@@ -47,6 +47,21 @@ MSBuild.exe "Build.proj"
         Include="@(ApplicationTypeDefaultPropsPath-&gt;Remove(0, $(ApplicationTypeDefaultPropsRootPath.Length))-&gt;Replace('\Default.props','')-&gt;Replace('/Default.props',''))"/>
     </ItemGroup>
     <MSBuild Projects="$(MSBuildThisFileFullPath)" StopOnFirstFailure="True" Targets="CopyApplicationTypeFiles" BuildInParallel="True" Properties="CurrentApplicationType=%(ApplicationType.Identity)"/>
+    <!--复制Patch文件-->
+    <ItemGroup>
+      <PatchFiles Include="$(MSBuildThisFileDirectory)\Patch\**\*.*"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(PatchFiles)" DestinationFiles="$(MSBuildThisFileDirectory)\Release\VCTargets\%(RecursiveDir)%(Filename)%(Extension)" />
+
+    <!--下载NuGet还原插件-->
+    <DownloadFile
+      Condition="!Exists('$(MSBuildThisFileDirectory)Release\NuGet.zip')"
+      SourceUrl="https://github.com/mingkuang-Chuyu/NuGet.BuildTasks/releases/download/v1.0.0/NuGet.zip"
+      DestinationFolder="$(MSBuildThisFileDirectory)Release" DestinationFileName="NuGet.zip"/>
+    <Unzip
+      SourceFiles="$(MSBuildThisFileDirectory)Release\NuGet.zip"
+      DestinationFolder="$(MSBuildThisFileDirectory)Release\VCTargets\v170\Microsoft\NuGet"
+      OverwriteReadOnlyFiles="true"/>
   </Target>
   <Target Name="CopyApplicationTypeFiles">
     <PropertyGroup>

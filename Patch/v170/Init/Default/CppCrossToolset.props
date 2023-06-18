@@ -1,0 +1,12 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!--特意给工程配置 ApplicationType与ApplicationTypeRevision显得非常基类,减少一些用户配置.-->
+    <ApplicationType Condition="'$(ApplicationType)' == '' and '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">OSX</ApplicationType>
+    <ApplicationType Condition="'$(ApplicationType)' == '' and '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">Linux</ApplicationType>
+    <ApplicationTypeRevision Condition="'$(ApplicationTypeRevision)' == '' and '$(ApplicationType)' != ''">1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform Condition="'$(TargetLinuxPlatform)' == '' and '$(ApplicationType)' != ''">Generic</TargetLinuxPlatform>
+
+    <CustomBeforeMicrosoftCommonProps>$(VCTargetsPath)\Current\Imports\Microsoft.Common.Props\ImportBefore.props</CustomBeforeMicrosoftCommonProps>
+    <CustomAfterMicrosoftCommonTargets>$(VCTargetsPath)\Current\Microsoft.Common.Targets\ImportAfter.targets</CustomAfterMicrosoftCommonTargets>
+  </PropertyGroup>
+</Project>

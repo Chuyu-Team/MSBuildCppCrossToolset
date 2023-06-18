@@ -1,0 +1,4 @@
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)\ImportAfter\*" Condition="'$(ImportUserLocationsByWildcardAfterMicrosoftCommonTargets)' == 'true' and exists('$(MSBuildThisFileDirectory)\ImportAfter')"/>
+</Project>
