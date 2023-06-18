@@ -5,6 +5,8 @@
 [![release](https://img.shields.io/github/v/release/Chuyu-Team/MSBuildCppCrossToolset?include_prereleases)](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/releases)
 [![Build](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/actions/workflows/Build.yml/badge.svg)](https://github.com/Chuyu-Team/MSBuildCppCrossToolset/actions/workflows/Build.yml)
 
+* QQ群：[860674930](https://qm.qq.com/cgi-bin/qm/qr?k=n4INZdXYqxCgTnTLE5vUmD6qOT6jBsiL&jump_from=webapi&authKey=rEvllm8VBBgAAevZS0IOaGmwYnqFGUPKxX5AjyLWhMIaiF5Ded3ooMKf++G8hLAD)
+
 重要提示：VCTargets中的文件从 `Microsoft Visual Studio\?\?\MSBuild\Microsoft\VC` 提取，Microsoft拥有其所有权利。
 
 重要提示：本项目还未完工……
