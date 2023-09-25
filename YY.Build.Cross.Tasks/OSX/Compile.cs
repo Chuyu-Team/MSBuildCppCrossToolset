@@ -48,7 +48,10 @@ namespace YY.Build.Cross.Tasks.OSX
                     new string[2] { "CompileAsC", "-x c" },
                     new string[2] { "CompileAsCpp", "-x c++" },
                     new string[2] { "CompileAsObjC", "-x objective-c" },
-                    new string[2] { "CompileAsObjCpp", "-x objective-c++" }
+                    new string[2] { "CompileAsObjCpp", "-x objective-c++" },
+                    // assembler这2个是隐藏功能，给AS特意开的洞。
+                    new string[2] { "CompileAsAsm", "-x assembler" },
+                    new string[2] { "CompileAsAsmWithCpp", "-x assembler-with-cpp" },
                 };
                 toolSwitch.SwitchValue = ReadSwitchMap("CompileAs", switchMap, value);
                 toolSwitch.Name = "CompileAs";

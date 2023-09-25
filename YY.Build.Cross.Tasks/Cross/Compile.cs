@@ -903,11 +903,14 @@ namespace YY.Build.Cross.Tasks.Cross
                 toolSwitch.DisplayName = "Compile As";
                 toolSwitch.Description = "Select compile language option for .c and .cpp files.  'Default' will detect based on .c or .cpp extention. (-x c, -x c++)";
                 toolSwitch.ArgumentRelationList = new ArrayList();
-                string[][] switchMap = new string[3][]
+                string[][] switchMap = new string[][]
                 {
                     new string[2] { "Default", "" },
                     new string[2] { "CompileAsC", "-x c" },
-                    new string[2] { "CompileAsCpp", "-x c++" }
+                    new string[2] { "CompileAsCpp", "-x c++" },
+                    // assembler这2个是隐藏功能，给AS特意开的洞。
+                    new string[2] { "CompileAsAsm", "-x assembler" },
+                    new string[2] { "CompileAsAsmWithCpp", "-x assembler-with-cpp" },
                 };
                 toolSwitch.SwitchValue = ReadSwitchMap("CompileAs", switchMap, value);
                 toolSwitch.Name = "CompileAs";
