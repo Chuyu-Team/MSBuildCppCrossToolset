@@ -918,7 +918,7 @@ namespace Microsoft.Build.CPPTasks
 #if __REMOVE
                     builder.AppendSwitchIfNotNull(toolSwitch.SwitchValue, Environment.ExpandEnvironmentVariables(taskItem.ItemSpec));
 #else
-                    var ExpandItemSpec =Environment.ExpandEnvironmentVariables(toolSwitch.TaskItem.ItemSpec);
+                    var ExpandItemSpec =Environment.ExpandEnvironmentVariables(taskItem.ItemSpec);
                     if(toolSwitch.TaskItemFullPath)
                     {
                         ExpandItemSpec = FileUtilities.NormalizePath(ExpandItemSpec);
